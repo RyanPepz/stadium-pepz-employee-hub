@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stadium Pepz Employee Hub</title>
+  <style>
+    :root {
+      --navy: #b91d47;
+      --navy-dark: #8c1437;
+      --gold: #d4a017;
+      --gold-light: #e8b830;
+      --white: #ffffff;
+      --off-white: #fdf6f8;
+      --gray: #6b7280;
+      --border: #f0d5db;
+      --card-bg: #ffffff;
+      --shadow: 0 2px 12px rgba(185, 29, 71, 0.10);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--off-white); color: var(--navy); min-height: 100vh; }
+
+    header { background: var(--navy-dark); padding: 0 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon { width: 36px; height: 36px; background: var(--gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .logo-text { color: var(--white); font-size: 15px; font-weight: 700; }
+    .logo-sub { color: var(--gold-light); font-size: 11px; font-weight: 400; letter-spacing: 0.5px; text-transform: uppercase; }
+
+    nav { background: var(--navy); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    nav::-webkit-scrollbar { display: none; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; }
+    nav a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; padding: 14px 18px; white-space: nowrap; border-bottom: 3px solid transparent; transition: color 0.15s, border-color 0.15s; }
+    nav a:hover, nav a.active { color: var(--gold-light); border-bottom-color: var(--gold-light); }
+
+    main { max-width: 900px; margin: 0 auto; padding: 0 16px 60px; }
+
+    .section { display: none; padding-top: 28px; }
+    .section.active { display: block; }
+
+    .hero { background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); border-radius: 14px; padding: 32px 24px; margin-bottom: 24px; position: relative; overflow: hidden; }
+    .hero::before { content: '🍕'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 64px; opacity: 0.15; }
+    .hero h1 { color: var(--white); font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .hero p { color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.5; }
+    .hero .badge { display: inline-block; background: var(--gold); color: var(--navy-dark); font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+
+    .section-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px; }
+    @media (max-width: 480px) { .section-grid { grid-template-columns: 1fr; } }
+    .section-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: box-shadow 0.15s, transform 0.15s; text-decoration: none; display: block; }
+    .section-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+    .section-card .card-icon { font-size: 28px; margin-bottom: 10px; }
+    .section-card h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .section-card p { font-size: 12px; color: var(--gray); line-height: 1.4; }
+    .section-card .arrow { margin-top: 12px; font-size: 12px; color: var(--gold); font-weight: 600; }
+
+    .page-header { margin-bottom: 20px; }
+    .page-header h2 { font-size: 20px; font-weight: 800; color: var(--navy-dark); display: flex; align-items: center; gap: 8px; }
+    .page-header p { font-size: 13px; color: var(--gray); margin-top: 4px; }
+
+    /* ─── Menu styles ─── */
+    .menu-controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .search-bar { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; background: white; color: var(--navy); outline: none; }
+    .search-bar:focus { border-color: var(--gold); }
+    .cat-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cat-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: white; font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+    .cat-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .cat-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+    .menu-count { font-size: 13px; color: var(--gray); margin-bottom: 16px; }
+
+    .menu-item { background: white; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+    .menu-item-header { padding: 14px 16px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; cursor: pointer; }
+    .menu-item-header:hover { background: #fafaf9; }
+    .item-name-row { flex: 1; }
+    .item-name { font-size: 15px; font-weight: 700; color: var(--navy-dark); }
+    .item-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+    .cat-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; }
+    .cat-pizza { background: #fff3e8; color: #c05c00; }
+    .cat-pasta { background: #fffbe8; color: #a06800; }
+    .cat-starters { background: #e8f5e9; color: #2e7d32; }
+    .cat-wings { background: #fce4ec; color: #c62828; }
+    .cat-sandwiches { background: #fde8ef; color: #8c1437; }
+    .cat-salads { background: #f3e5f5; color: #6a1b9a; }
+    .cat-keto { background: #e8f5e9; color: #1b5e20; }
+    .cat-desserts { background: #fbe9e7; color: #bf360c; }
+    .cat-drinks { background: #fde8ef; color: #b91d47; }
+    .allergen-pills { display: flex; gap: 4px; flex-wrap: wrap; }
+    .allergen-pill { font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 600; }
+    .a-gluten { background: #fff8e1; color: #e65100; }
+    .a-dairy { background: #fde8ef; color: #8c1437; }
+    .a-eggs { background: #fce4ec; color: #880e4f; }
+    .a-vegetarian { background: #e8f5e9; color: #1b5e20; }
+    .a-vegan { background: #f3e5f5; color: #4a148c; }
+    .a-nuts { background: #fff3e0; color: #bf360c; }
+    .a-shellfish { background: #e0f2f1; color: #004d40; }
+    .item-price { font-size: 15px; font-weight: 700; color: var(--gold); white-space: nowrap; }
+    .item-expand-icon { color: var(--gray); font-size: 18px; margin-left: 4px; transition: transform 0.2s; }
+    .menu-item.expanded .item-expand-icon { transform: rotate(180deg); }
+
+    .menu-item-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+    .menu-item.expanded .menu-item-body { display: block; }
+    .menu-item-body .detail-section { margin-top: 12px; }
+    .menu-item-body .detail-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); margin-bottom: 3px; }
+    .menu-item-body .detail-text { font-size: 13px; color: var(--navy); line-height: 1.5; }
+    .upsell-box { background: #fffbe8; border: 1px solid #f0d060; border-radius: 8px; padding: 10px 12px; margin-top: 12px; }
+    .upsell-box .detail-label { color: #a06800; }
+    .upsell-box .detail-text { color: #7a5000; }
+
+    .no-results { text-align: center; padding: 48px 24px; color: var(--gray); font-size: 14px; }
+
+    .coming-soon { background: var(--card-bg); border: 2px dashed var(--border); border-radius: 14px; padding: 48px 24px; text-align: center; }
+    .coming-soon .cs-icon { font-size: 48px; margin-bottom: 16px; }
+    .coming-soon h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .coming-soon p { font-size: 14px; color: var(--gray); max-width: 320px; margin: 0 auto; line-height: 1.6; }
+    .coming-soon .cs-tag { display: inline-block; background: var(--off-white); border: 1px solid var(--border); color: var(--gray); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+
+    /* ─── Events section ─── */
+    .week-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .week-tab { padding: 8px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-size: 12px; font-weight: 700; color: var(--gray); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .week-tab:hover { border-color: var(--navy); color: var(--navy); }
+    .week-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
+    .week-block { display: none; }
+    .week-block.active { display: block; }
+    .event-day { background: white; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+    .day-header { background: var(--navy); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .day-header .day-name { color: white; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+    .day-header .day-date { color: var(--gold-light); font-size: 12px; font-weight: 600; }
+    .event-row { padding: 11px 14px; display: flex; align-items: flex-start; gap: 10px; border-bottom: 1px solid var(--border); }
+    .event-row:last-child { border-bottom: none; }
+    .event-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .event-info { flex: 1; min-width: 0; }
+    .event-title { font-size: 13px; font-weight: 700; color: var(--navy-dark); line-height: 1.3; }
+    .event-title.highlight { color: #b91c1c; }
+    .event-details { font-size: 11px; color: var(--gray); margin-top: 3px; line-height: 1.5; }
+    .event-staff-note { font-size: 11px; color: #6b7280; background: var(--off-white); border-left: 2px solid var(--gold); padding: 5px 8px; margin-top: 6px; border-radius: 0 6px 6px 0; line-height: 1.4; }
+    .vol-badge { flex-shrink: 0; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin-top: 2px; white-space: nowrap; }
+    .vol-low { background: #f3f4f6; color: #6b7280; }
+    .vol-medium { background: #fef9c3; color: #854d0e; }
+    .vol-high { background: #fee2e2; color: #991b1b; }
+    .vol-holiday { background: #ede9fe; color: #5b21b6; }
+    .events-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--gray); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .events-updated { font-size: 11px; color: var(--gray); margin-bottom: 16px; }
+
+    /* ─── Training Hub ─── */
+    .training-nav { display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; scrollbar-width: none; }
+    .training-nav::-webkit-scrollbar { display: none; }
+    .training-tab { display: none; }
+    .training-tab.active { display: block; }
+    .tr-hero { background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); border-radius: 14px; padding: 24px 20px; margin-bottom: 20px; }
+    .tr-hero h3 { color: var(--white); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .tr-hero p { color: rgba(255,255,255,0.75); font-size: 13px; line-height: 1.5; }
+    .tr-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; }
+    .tr-card h4 { font-size: 15px; font-weight: 700; color: var(--navy-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .tr-card p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+    .tr-card ul, .tr-card ol { margin-top: 8px; padding-left: 18px; }
+    .tr-card li { font-size: 13px; color: var(--navy); line-height: 1.7; }
+    .tr-alert { background: #fffbe8; border: 1px solid #f0d060; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+    .tr-alert p { font-size: 13px; color: #7a5000; line-height: 1.5; margin: 0; }
+    .tr-alert strong { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; color: #a06800; }
+    .tr-alert-red { background: #fff3f3; border-color: #f0a0a0; }
+    .tr-alert-red p { color: #8b0000; }
+    .tr-alert-red strong { color: #c00000; }
+    .tr-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; border-radius: 8px; overflow: hidden; }
+    .tr-table th { background: var(--navy); color: white; padding: 8px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tr-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--navy); }
+    .tr-table tr:last-child td { border-bottom: none; }
+    .tr-table tr:nth-child(even) td { background: var(--off-white); }
+    .module-card { background: white; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+    .module-header { padding: 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; user-select: none; }
+    .module-header:hover { background: #fafaf9; }
+    .module-num { width: 36px; height: 36px; border-radius: 50%; background: var(--navy); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .module-title { flex: 1; }
+    .module-title h4 { font-size: 14px; font-weight: 700; color: var(--navy-dark); }
+    .module-title p { font-size: 12px; color: var(--gray); margin-top: 2px; }
+    .module-chevron { color: var(--gray); font-size: 18px; transition: transform 0.2s; }
+    .module-card.expanded .module-chevron { transform: rotate(180deg); }
+    .module-body { display: none; padding: 4px 16px 16px; border-top: 1px solid var(--border); }
+    .module-card.expanded .module-body { display: block; }
+    .module-body p { font-size: 13px; color: var(--navy); line-height: 1.5; margin-top: 10px; }
+    .module-body ol, .module-body ul { margin-top: 8px; padding-left: 18px; }
+    .module-body li { font-size: 13px; color: var(--navy); line-height: 1.7; }
+    .module-body .key-note { background: var(--off-white); border-left: 3px solid var(--gold); padding: 10px 12px; border-radius: 0 8px 8px 0; margin-top: 12px; font-size: 12px; color: var(--gray); line-height: 1.5; }
+    .role-item { background: white; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+    .role-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; }
+    .role-header:hover { background: #fafaf9; }
+    .role-icon { font-size: 22px; }
+    .role-info { flex: 1; }
+    .role-info h4 { font-size: 14px; font-weight: 700; color: var(--navy-dark); }
+    .role-info .role-sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+    .role-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+    .tag-foh { background: #fde8ef; color: #8c1437; }
+    .tag-boh { background: #fce4ec; color: #c62828; }
+    .tag-all { background: #e8f5e9; color: #2e7d32; }
+    .role-chevron { color: var(--gray); font-size: 18px; transition: transform 0.2s; flex-shrink: 0; }
+    .role-item.expanded .role-chevron { transform: rotate(180deg); }
+    .role-body { display: none; padding: 4px 16px 16px; border-top: 1px solid var(--border); }
+    .role-item.expanded .role-body { display: block; }
+    .role-body h5 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gold); margin: 14px 0 5px; }
+    .role-body p { font-size: 13px; color: var(--navy); line-height: 1.55; margin-bottom: 5px; }
+    .role-body ul, .role-body ol { padding-left: 18px; margin-bottom: 8px; }
+    .role-body li { font-size: 13px; color: var(--navy); line-height: 1.7; }
+    .role-body .key-note { background: var(--off-white); border-left: 3px solid var(--gold); padding: 10px 12px; border-radius: 0 8px 8px 0; margin-top: 10px; font-size: 12px; color: var(--gray); line-height: 1.5; }
+    .role-body .script-box { background: #fdf0f3; border: 1px solid #f0c0cc; border-radius: 8px; padding: 10px 12px; margin-top: 8px; font-style: italic; font-size: 13px; color: #8c1437; line-height: 1.5; }
+    .cert-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; }
+    .cert-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .cert-icon { font-size: 28px; }
+    .cert-title h4 { font-size: 15px; font-weight: 700; color: var(--navy-dark); }
+    .cert-title p { font-size: 12px; color: var(--gray); margin-top: 2px; }
+    .cert-badge { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding: 3px 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid; }
+    .cert-req { background: #fff3f3; color: #c00000; border-color: #f0a0a0; }
+    .cert-opt { background: #e8f5e9; color: #2e7d32; border-color: #a0d0a0; }
+    .cert-body p { font-size: 13px; color: var(--navy); line-height: 1.55; margin-bottom: 6px; }
+    .cert-body ul { padding-left: 16px; margin-top: 4px; }
+    .cert-body li { font-size: 13px; color: var(--navy); line-height: 1.7; }
+    .cert-send-box { background: var(--navy-dark); border-radius: 10px; padding: 14px 16px; margin-top: 20px; text-align: center; }
+    .cert-send-box p { font-size: 13px; color: rgba(255,255,255,0.8); margin: 0; }
+    .cert-send-box strong { color: var(--gold-light); }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.5); text-align: center; font-size: 12px; padding: 16px; }
+    footer strong { color: var(--gold-light); }
+
+    /* ─── Quiz styles ─── */
+    .quiz-list { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin-bottom: 24px; }
+    @media (max-width: 480px) { .quiz-list { grid-template-columns: 1fr; } }
+    .quiz-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 22px; cursor: pointer; transition: box-shadow 0.15s, transform 0.15s; text-align: left; }
+    .quiz-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+    .quiz-card .qc-icon { font-size: 32px; margin-bottom: 10px; }
+    .quiz-card h3 { font-size: 16px; font-weight: 700; color: var(--navy-dark); margin-bottom: 6px; }
+    .quiz-card p { font-size: 12px; color: var(--gray); line-height: 1.5; }
+    .quiz-card .qc-meta { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .qc-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding: 3px 9px; border-radius: 20px; border: 1px solid var(--border); color: var(--gray); }
+    .quiz-card .qc-start { margin-top: 14px; font-size: 13px; font-weight: 700; color: var(--gold); }
+
+    .quiz-active { display: none; }
+    .quiz-active.visible { display: block; }
+    .quiz-list-wrap { display: block; }
+    .quiz-list-wrap.hidden { display: none; }
+
+    .qz-progress-bar-wrap { background: var(--border); border-radius: 99px; height: 6px; margin-bottom: 20px; }
+    .qz-progress-bar { background: var(--gold); border-radius: 99px; height: 6px; transition: width 0.3s; }
+    .qz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .qz-counter { font-size: 12px; color: var(--gray); font-weight: 600; }
+    .qz-score-live { font-size: 12px; color: var(--gray); font-weight: 600; }
+    .qz-category { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gold); margin-bottom: 10px; }
+    .qz-question { font-size: 16px; font-weight: 700; color: var(--navy-dark); line-height: 1.45; margin-bottom: 20px; }
+    .qz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .qz-option { background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 13px 16px; font-size: 14px; color: var(--navy); cursor: pointer; text-align: left; transition: border-color 0.15s, background 0.15s; line-height: 1.4; }
+    .qz-option:hover:not(:disabled) { border-color: var(--gold); background: #fffbe8; }
+    .qz-option.correct { border-color: #16a34a; background: #dcfce7; color: #14532d; }
+    .qz-option.wrong { border-color: #dc2626; background: #fee2e2; color: #7f1d1d; }
+    .qz-option.reveal-correct { border-color: #16a34a; background: #dcfce7; color: #14532d; }
+    .qz-option:disabled { cursor: default; }
+    .qz-explanation { background: var(--off-white); border-left: 3px solid var(--gold); padding: 12px 14px; border-radius: 0 8px 8px 0; font-size: 13px; color: var(--navy); line-height: 1.5; margin-bottom: 16px; display: none; }
+    .qz-explanation.visible { display: block; }
+    .qz-next-btn { background: var(--navy); color: white; border: none; border-radius: 10px; padding: 13px 24px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; transition: background 0.15s; display: none; }
+    .qz-next-btn.visible { display: block; }
+    .qz-next-btn:hover { background: var(--navy-dark); }
+
+    .qz-results { display: none; text-align: center; padding: 12px 0; }
+    .qz-results.visible { display: block; }
+    .qz-score-circle { width: 100px; height: 100px; border-radius: 50%; background: var(--navy); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 18px; }
+    .qz-score-circle .score-num { font-size: 28px; font-weight: 800; color: var(--gold-light); line-height: 1; }
+    .qz-score-circle .score-denom { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+    .qz-result-msg { font-size: 18px; font-weight: 700; color: var(--navy-dark); margin-bottom: 8px; }
+    .qz-result-sub { font-size: 13px; color: var(--gray); margin-bottom: 24px; line-height: 1.5; }
+    .qz-result-breakdown { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; text-align: left; }
+    .qz-result-breakdown h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); margin-bottom: 10px; }
+    .qz-breakdown-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .qz-breakdown-row:last-child { border-bottom: none; }
+    .qz-breakdown-row .brow-q { flex: 1; color: var(--navy); line-height: 1.4; margin-right: 10px; }
+    .brow-icon { font-size: 16px; flex-shrink: 0; }
+    .qz-retake-btn { background: var(--gold); color: var(--navy-dark); border: none; border-radius: 10px; padding: 13px 24px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; margin-bottom: 10px; transition: background 0.15s; }
+    .qz-retake-btn:hover { background: var(--gold-light); }
+    .qz-back-btn { background: white; color: var(--navy); border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 24px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; transition: border-color 0.15s; }
+    .qz-back-btn:hover { border-color: var(--navy); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a class="logo" href="#" onclick="showSection('home');return false;">
+        <div class="logo-icon">🍕</div>
+        <div>
+          <div class="logo-text">Stadium Pepz</div>
+          <div class="logo-sub">Employee Hub</div>
+        </div>
+      </a>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="active" onclick="showSection('home');return false;" data-section="home">Home</a>
+      <a href="#" onclick="showSection('menu');return false;" data-section="menu">📋 Menu</a>
+      <a href="#" onclick="showSection('training');return false;" data-section="training">🎓 Training</a>
+      <a href="#" onclick="showSection('events');return false;" data-section="events">📅 Events</a>
+      <a href="#" onclick="showSection('quizzes');return false;" data-section="quizzes">📊 Quizzes</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- HOME -->
+    <section id="home" class="section active">
+      <div class="hero">
+        <div class="badge">Staff Portal</div>
+        <h1>Welcome to the Hub 👋</h1>
+        <p>Your one-stop resource for menu knowledge, training docs, upcoming events, and staff quizzes. Built for the team at Stadium Pepz — 726 S State College Blvd, Anaheim.</p>
+      </div>
+      <div class="section-grid">
+        <a class="section-card" href="#" onclick="showSection('menu');return false;">
+          <div class="card-icon">📋</div>
+          <h3>Menu Knowledge</h3>
+          <p>Descriptions, ingredients, allergens, and upsell tips for every item.</p>
+          <div class="arrow">Explore →</div>
+        </a>
+        <a class="section-card" href="#" onclick="showSection('training');return false;">
+          <div class="card-icon">🎓</div>
+          <h3>Training Hub</h3>
+          <p>Onboarding guides, policies, certifications, and role-specific docs.</p>
+          <div class="arrow">Explore →</div>
+        </a>
+        <a class="section-card" href="#" onclick="showSection('events');return false;">
+          <div class="card-icon">📅</div>
+          <h3>Events & Games</h3>
+          <p>Upcoming Angels games, Ducks games, and special events with prep notes.</p>
+          <div class="arrow">Explore →</div>
+        </a>
+        <a class="section-card" href="#" onclick="showSection('quizzes');return false;">
+          <div class="card-icon">📊</div>
+          <h3>Quizzes</h3>
+          <p>Test your menu knowledge, policy know-how, and service skills.</p>
+          <div class="arrow">Explore →</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- MENU -->
+    <section id="menu" class="section">
+      <div class="page-header">
+        <h2>📋 Menu Knowledge Base</h2>
+        <p>73 items — descriptions, ingredients, allergens, and upsell notes. Updated from R15 menu.</p>
+      </div>
+      <div class="menu-controls">
+        <input class="search-bar" type="search" placeholder="Search menu items…" id="menuSearch" oninput="filterMenu()">
+        <div class="cat-filters" id="catFilters">
+          <button class="cat-btn active" onclick="setCategory('all')">All</button>
+          <button class="cat-btn" onclick="setCategory('Pizza')">🍕 Pizza</button>
+          <button class="cat-btn" onclick="setCategory('Pasta')">🍝 Pasta</button>
+          <button class="cat-btn" onclick="setCategory('Starters')">🧀 Starters</button>
+          <button class="cat-btn" onclick="setCategory('Wings')">🍗 Wings</button>
+          <button class="cat-btn" onclick="setCategory('Sandwiches')">🥖 Sandwiches</button>
+          <button class="cat-btn" onclick="setCategory('Salads')">🥗 Salads</button>
+          <button class="cat-btn" onclick="setCategory('Keto Bowls')">🥣 Keto Bowls</button>
+          <button class="cat-btn" onclick="setCategory('Desserts')">🍪 Desserts</button>
+          <button class="cat-btn" onclick="setCategory('Drinks')">🥤 Drinks</button>
+        </div>
+      </div>
+      <div class="menu-count" id="menuCount"></div>
+      <div id="menuList"></div>
+    </section>
+
+    <!-- TRAINING -->
+    <section id="training" class="section">
+      <div class="page-header">
+        <h2>🎓 Training Hub</h2>
+        <p>Tap a section below to get started</p>
+      </div>
+
+      <div class="training-nav">
+        <button class="cat-btn active" onclick="showTraining('start')">🚀 Start Here</button>
+        <button class="cat-btn" onclick="showTraining('roadmap')">🗺️ Roadmap</button>
+        <button class="cat-btn" onclick="showTraining('roles')">📖 Role Guides</button>
+        <button class="cat-btn" onclick="showTraining('certs')">🛡️ Certifications</button>
+        <button class="cat-btn" onclick="showTraining('location')">📍 Store Info</button>
+      </div>
+
+      <!-- ── START HERE ── -->
+      <div id="training-start" class="training-tab active">
+        <div class="tr-hero">
+          <h3>🚀 Before Your First Shift</h3>
+          <p>Two apps to set up, one email to send. Takes about 15 minutes.</p>
+        </div>
+
+        <div class="tr-card">
+          <h4>📱 Step 1 — Add This Hub to Your Home Screen</h4>
+          <p>Save this page as an app on your phone so you can open it anytime with one tap — no login required.</p>
+        </div>
+
+        <div class="tr-card">
+          <p style="font-weight:700;font-size:13px;color:var(--navy-dark);">🍎 On iPhone (Safari)</p>
+          <ol style="margin-top:8px;">
+            <li>Open <strong>Safari</strong> and go to <strong>stadium-pepz-hub.netlify.app</strong></li>
+            <li>Tap the <strong>Share button</strong> at the bottom of the screen (the box with an arrow pointing up)</li>
+            <li>Scroll down and tap <strong>Add to Home Screen</strong></li>
+            <li>Tap <strong>Add</strong> in the top right corner</li>
+            <li>The hub icon will appear on your home screen like any other app</li>
+          </ol>
+          <p style="margin-top:10px;font-size:12px;color:var(--gray);">⚠️ Must use Safari — this won't work in Chrome or other browsers on iPhone.</p>
+
+          <p style="margin-top:16px;font-weight:700;font-size:13px;color:var(--navy-dark);">🤖 On Android (Chrome)</p>
+          <ol style="margin-top:8px;">
+            <li>Open <strong>Chrome</strong> and go to <strong>stadium-pepz-hub.netlify.app</strong></li>
+            <li>Tap the <strong>three dots</strong> in the top right corner (⋮)</li>
+            <li>Tap <strong>Add to Home screen</strong></li>
+            <li>Tap <strong>Add</strong> to confirm</li>
+            <li>The hub icon will appear on your home screen</li>
+          </ol>
+
+          <div class="tr-alert" style="margin-top:14px;">
+            <strong>Why bother?</strong>
+            <p>Opens instantly like an app. No searching — just tap and you're in.</p>
+          </div>
+        </div>
+
+        <div class="tr-card">
+          <h4>💰 QuickBooks — Your Paychecks</h4>
+          <p>Accept the QuickBooks invitation from your email. This is how your paychecks are sent.</p>
+          <div class="tr-alert" style="margin-top:10px;">
+            <strong>Pay Schedule</strong>
+            <p><strong>Every Friday.</strong> Hours worked Monday–Sunday are paid out the following Friday.</p>
+          </div>
+        </div>
+
+        <div class="tr-card">
+          <h4>📧 Step 2 — Send Your Certifications</h4>
+          <p>Email your certifications to <strong>ryan@stadiumpepz.com</strong> before your first day.</p>
+          <table class="tr-table">
+            <tr><th>Certification</th><th>Who Needs It</th><th>Deadline</th></tr>
+            <tr><td>Food Handler Card</td><td>All staff</td><td>Before Day 1</td></tr>
+            <tr><td>RBS Certificate</td><td>FOH only</td><td>Before bar work</td></tr>
+          </table>
+          <p style="margin-top:10px;font-size:12px;color:var(--gray);">Don't have yours yet? Tap <strong>Certifications</strong> above for how to get them.</p>
+        </div>
+
+        <div class="tr-card">
+          <h4>✅ Day 1 Checklist</h4>
+          <ol>
+            <li>Accept 7Shifts invitation and download the app</li>
+            <li>Set your availability in 7Shifts</li>
+            <li>Accept QuickBooks invitation</li>
+            <li>Email Food Handler Card to ryan@stadiumpepz.com</li>
+            <li>Come in ready to learn — ask questions freely</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- ── ROADMAP ── -->
+      <div id="training-roadmap" class="training-tab">
+        <div class="tr-hero">
+          <h3>🗺️ Training Roadmap</h3>
+          <p>6 modules, a few weeks. Each one builds on the last — take your time and ask questions.</p>
+        </div>
+
+        <div class="module-card" onclick="toggleModule(this)">
+          <div class="module-header">
+            <div class="module-num">0</div>
+            <div class="module-title">
+              <h4>Before Your First Shift</h4>
+              <p>Apps, pay info, and certifications</p>
+            </div>
+            <div class="module-chevron">▾</div>
+          </div>
+          <div class="module-body">
+            <ol>
+              <li>Accept 7Shifts and QuickBooks invitations</li>
+              <li>Download 7Shifts and set your availability</li>
+              <li>Email Food Handler Card to ryan@stadiumpepz.com</li>
+            </ol>
+            <div class="key-note">See <strong>Start Here</strong> for the full walkthrough.</div>
+          </div>
+        </div>
+
+        <div class="module-card" onclick="toggleModule(this)">
+          <div class="module-header">
+            <div class="module-num">1</div>
+            <div class="module-title">
+              <h4>First Two Weeks — The Floor</h4>
+              <p>Running food, touching tables, and handling phones</p>
+            </div>
+            <div class="module-chevron">▾</div>
+          </div>
+          <div class="module-body">
+            <p>By the end of Week 2, you should be comfortable with all of the following:</p>
+            <ol>
+              <li><strong>Running food</strong> — match dishes to table numbers. One ticket may cover multiple dishes, so always verify.</li>
+              <li><strong>Touching tables</strong> — check in at least twice per table. Ask how the food is, offer sauces.</li>
+              <li><strong>Pre-bussing</strong> — ask about boxes and clear empty dishes before guests leave. Your shift lead may call this "pruning."</li>
+              <li><strong>Answering phones</strong> — always answer: <em>"Thank you for calling Stadium Pepz on State College! My name is ___, will this be for takeout or delivery?"</em></li>
+              <li><strong>Handling takeout orders</strong> — verify last name or phone number every time. Print the receipt and check off every item.</li>
+              <li><strong>Getting Google reviews</strong> — it comes naturally through great service. Script: <em>"Thank you so much for coming in — any feedback you leave, good or bad, really helps us grow."</em></li>
+            </ol>
+            <div class="key-note"><strong>Our mission:</strong> Every guest leaves happy. If you think something would improve their experience, ask your shift lead.</div>
+          </div>
+        </div>
+
+        <div class="module-card" onclick="toggleModule(this)">
+          <div class="module-header">
+            <div class="module-num">2</div>
+            <div class="module-title">
+              <h4>Working Through the Stations</h4>
+              <p>Cashier, then Wings</p>
+            </div>
+            <div class="module-chevron">▾</div>
+          </div>
+          <div class="module-body">
+            <ol>
+              <li><strong>Cashier</strong> — take orders on Toast POS. First face guests see — be warm, accurate, and upsell naturally (desserts, drinks, Sauced & Tossed Potatoes). Keep your cash drawer clean.</li>
+              <li><strong>Wings Station</strong> — receive tickets and fill orders. You put wings in the oven; cooks handle desserts and appetizers. Keep your station clean — tossing wings gets messy.</li>
+            </ol>
+            <div class="key-note">See <strong>Cashier SOP</strong> and <strong>Wings Station SOP</strong> in Role Guides.</div>
+          </div>
+        </div>
+
+        <div class="module-card" onclick="toggleModule(this)">
+          <div class="module-header">
+            <div class="module-num">3</div>
+            <div class="module-title">
+              <h4>Final Stations</h4>
+              <p>Oven, then Bar — you're almost there</p>
+            </div>
+            <div class="module-chevron">▾</div>
+          </div>
+          <div class="module-body">
+            <ol>
+              <li><strong>Pizza Oven</strong> — you are quality control. Cut and dress every pizza to match the ticket exactly.
+                <ul style="margin-top:6px;">
+                  <li>Small (8"): 4 slices</li>
+                  <li>Medium (12"): 8 slices</li>
+                  <li>Large (16"): 10 slices</li>
+                  <li>Extra Large (18"): 12 slices</li>
+                </ul>
+              </li>
+              <li><strong>Bar</strong> — a flex position. Pour beers correctly (16oz = ½" head, 34oz = 1" head), wash glassware, help with food running and takeout when slow. <strong>RBS certificate required before working this station.</strong></li>
+            </ol>
+            <div class="key-note">See <strong>Oven SOP</strong> and <strong>Bar SOP</strong> in Role Guides.</div>
+          </div>
+        </div>
+
+        <div class="module-card" onclick="toggleModule(this)">
+          <div class="module-header">
+            <div class="module-num">4</div>
+            <div class="module-title">
+              <h4>Best Practices</h4>
+              <p>How we work every shift</p>
+            </div>
+            <div class="module-chevron">▾</div>
+          </div>
+          <div class="module-body">
+            <ul>
+              <li>There's always something to do. Check the <strong>7Shifts downtime checklist</strong> if you're unsure.</li>
+              <li>If your station is slow, ask how you can support another station.</li>
+              <li>If your station is falling behind, ask for help — don't wait until guests are affected.</li>
+              <li>Before clocking out, check with your shift lead for any outstanding tasks.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="module-card" onclick="toggleModule(this)">
+          <div class="module-header">
+            <div class="module-num">5</div>
+            <div class="module-title">
+              <h4>Shift Roles & Responsibilities</h4>
+              <p>Read your role guides fully</p>
+            </div>
+            <div class="module-chevron">▾</div>
+          </div>
+          <div class="module-body">
+            <p>Each position at Stadium Pepz has a specific set of responsibilities. Copies are posted in the restaurant and available in this hub. Read yours completely before your first shift in that role.</p>
+            <div class="key-note">Tap <strong>Role Guides</strong> at the top of this section.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ROLE GUIDES ── -->
+      <div id="training-roles" class="training-tab">
+        <div class="tr-hero">
+          <h3>📖 Role Guides & SOPs</h3>
+          <p>Tap a role to see your full responsibilities. Read yours before your first shift in that position.</p>
+        </div>
+
+        <!-- Cashier -->
+        <div class="role-item" onclick="toggleRole(this)">
+          <div class="role-header">
+            <div class="role-icon">💳</div>
+            <div class="role-info">
+              <h4>Cashier</h4>
+              <div class="role-sub">First point of contact for every guest</div>
+            </div>
+            <span class="role-tag tag-foh">FOH</span>
+            <div class="role-chevron">▾</div>
+          </div>
+          <div class="role-body">
+            <h5>Taking Orders</h5>
+            <ol>
+              <li>Greet the guest before touching the POS</li>
+              <li>Tap <strong>New Order</strong> and select order type (Dine-In / Takeout / Delivery)</li>
+              <li>Collect required info: table number for dine-in; name + phone for takeout; name, phone, and full address for delivery</li>
+              <li>Enter all items and modifiers carefully</li>
+              <li>Review the full order before moving to payment</li>
+              <li>Tap <strong>Pay</strong>, confirm total, accept payment (card/cash/gift card), close check</li>
+              <li>For alcohol orders: always print the receipt and hand it to the guest to present at the bar</li>
+            </ol>
+            <h5>Upselling</h5>
+            <ul>
+              <li><em>"Would you like any drinks with that?"</em></li>
+              <li><em>"Can I add a Pepz Cookie or Cinnasquares for dessert?"</em></li>
+              <li><em>"Would you like to upgrade your potatoes to Sauced & Tossed?"</em></li>
+              <li><em>"Any ranch with that order?"</em></li>
+            </ul>
+            <h5>When the Register Is Slow</h5>
+            <p>Help run food or assist with takeout orders — but always keep one eye on the door for incoming guests.</p>
+            <h5>Cash Drawer</h5>
+            <p>Keep it organized. Double-check change before handing it over. If you need change in the till, notify your shift lead immediately — don't wait until guests are waiting.</p>
+            <div class="key-note">Accuracy over speed, every time.</div>
+          </div>
+        </div>
+
+        <!-- Food Runner -->
+        <div class="role-item" onclick="toggleRole(this)">
+          <div class="role-header">
+            <div class="role-icon">🏃</div>
+            <div class="role-info">
+              <h4>Food Runner / Floor Management</h4>
+              <div class="role-sub">Guest experience from first bite to last</div>
+            </div>
+            <span class="role-tag tag-foh">FOH</span>
+            <div class="role-chevron">▾</div>
+          </div>
+          <div class="role-body">
+            <h5>Running Food</h5>
+            <p>Each dish comes out with a ticket showing the table number. One ticket may cover multiple dishes — always confirm the right items go to the right table before you walk out.</p>
+            <h5>Touching Tables</h5>
+            <p>Check in at least <strong>twice</strong> per table during their meal. Ask how the food is, offer extra sauces, see if they need anything. If a guest seems unhappy, notify your shift lead immediately.</p>
+            <h5>Pre-Bussing ("Pruning")</h5>
+            <p>Toward the end of the meal, ask about boxes and clear empty dishes. Fully bus the table as soon as guests leave — don't let it sit.</p>
+            <h5>Trash Cans</h5>
+            <p>Check throughout your shift. Replace the bag right away if one is full.</p>
+            <h5>Getting Google Reviews</h5>
+            <p>This is part of your role. Get your review card lanyard from your shift lead at the start of your shift. Return it before clocking out — it doesn't leave the building.</p>
+            <div class="script-box">"Thank you so much for coming in today. We're trying to get more feedback from our community — the good, the bad, the ugly. Any feedback you leave really helps us grow."</div>
+            <div class="key-note">You are the face of the guest experience. Every table interaction is a chance to earn a 5-star review.</div>
+          </div>
+        </div>
+
+        <!-- Wings -->
+        <div class="role-item" onclick="toggleRole(this)">
+          <div class="role-header">
+            <div class="role-icon">🍗</div>
+            <div class="role-info">
+              <h4>Wings Station</h4>
+              <div class="role-sub">Toss to order, bag everything, keep it clean</div>
+            </div>
+            <span class="role-tag tag-foh">FOH</span>
+            <div class="role-chevron">▾</div>
+          </div>
+          <div class="role-body">
+            <h5>Wings</h5>
+            <p>Receive tickets from the printer, put wings in the oven, and toss them to order.</p>
+            <h5>Appetizers & Seasonal Items</h5>
+            <p>You also prepare: pizza rolls, breadsticks, cinnasquares, Pepz cookies, and seasonal items (love bites, pizza skulls, gingerbread pizza pockets). Cooks handle putting most desserts and appetizers in the oven for you.</p>
+            <h5>Sauces & Sides</h5>
+            <p>Most dishes come with sides of different sauces — always include them. Missing a sauce is one of the most common mistakes.</p>
+            <h5>Bagging Orders</h5>
+            <ol>
+              <li>Bag all completed items securely</li>
+              <li>Attach the ticket to the outside of the bag</li>
+              <li>Place finished orders on the counter in the ready orders area</li>
+            </ol>
+            <h5>Station Cleanliness</h5>
+            <p>Tossing wings gets messy. Wipe down your prep surface consistently throughout the shift.</p>
+            <div class="key-note">Fill orders completely, include every sauce, and keep the station clean. When your ticket volume is low, see how you can help another station.</div>
+          </div>
+        </div>
+
+        <!-- Oven -->
+        <div class="role-item" onclick="toggleRole(this)">
+          <div class="role-header">
+            <div class="role-icon">🍕</div>
+            <div class="role-info">
+              <h4>Oven / Pizza Station</h4>
+              <div class="role-sub">Quality control — you're the last check before the guest</div>
+            </div>
+            <span class="role-tag tag-all">ALL</span>
+            <div class="role-chevron">▾</div>
+          </div>
+          <div class="role-body">
+            <h5>Your Responsibilities</h5>
+            <ul>
+              <li>Cut all pizzas and calzones symmetrically</li>
+              <li>Supply orders with cheese/pepper packets, marinara sauce, and pizza toppers</li>
+              <li>Verify every pizza matches the ticket (size, toppings, modifiers) before it leaves</li>
+              <li>Dine-in: cut on trays, place with ready orders. Takeout: stack pizzas, attach ticket with the last pizza in the order.</li>
+            </ul>
+            <h5>Pizza Slice Counts</h5>
+            <table class="tr-table" style="margin-top:6px;">
+              <tr><th>Size</th><th>Diameter</th><th>Slices</th></tr>
+              <tr><td>Small</td><td>8"</td><td>4</td></tr>
+              <tr><td>Medium</td><td>12"</td><td>8</td></tr>
+              <tr><td>Large</td><td>16"</td><td>10</td></tr>
+              <tr><td>Extra Large</td><td>18"</td><td>12</td></tr>
+            </table>
+            <h5>Specialty Pizza Dressing</h5>
+            <table class="tr-table" style="margin-top:6px;">
+              <tr><th>Pizza</th><th>Add After Oven</th></tr>
+              <tr><td>California Delight</td><td>Sliced avocado + cilantro</td></tr>
+              <tr><td>BBQ Chicken</td><td>Cilantro</td></tr>
+              <tr><td>BBQ Pulled Pork</td><td>Chopped onion rings + side of coleslaw</td></tr>
+            </table>
+            <h5>Detroit Style Pizzas</h5>
+            <p>Deep dish — baked in pans. Must go through the oven <strong>1.5 times</strong>. Push them back through to ensure full cook.</p>
+            <h5>Quality Control</h5>
+            <p>If a pizza doesn't match the ticket: notify the kitchen, report to your shift lead so waste is tracked. Never send out a pizza you're not sure about.</p>
+            <div class="key-note">You are the last line of defense before food hits the table. Catch it here — not at the table.</div>
+          </div>
+        </div>
+
+        <!-- Bar -->
+        <div class="role-item" onclick="toggleRole(this)">
+          <div class="role-header">
+            <div class="role-icon">🍺</div>
+            <div class="role-info">
+              <h4>Bar</h4>
+              <div class="role-sub">Flex position — pour right, stay active on the floor</div>
+            </div>
+            <span class="role-tag tag-foh">FOH</span>
+            <div class="role-chevron">▾</div>
+          </div>
+          <div class="role-body">
+            <div class="tr-alert tr-alert-red" style="margin-top:10px;">
+              <strong>RBS Required</strong>
+              <p>You must have a valid RBS certificate on file before working this station. Email it to ryan@stadiumpepz.com.</p>
+            </div>
+            <h5>Pouring Beer</h5>
+            <ul>
+              <li>Keep the glass tilted against the nozzle to minimize foam</li>
+              <li>16oz beers: ~½ inch of head</li>
+              <li>34oz beers: ~1 inch of head</li>
+            </ul>
+            <h5>Beer Buckets</h5>
+            <p>5 beers + a scoop of ice. When handing over: <em>"Do you need a bottle opener?"</em> Provide a bar key if needed.</p>
+            <h5>Alcohol Receipt Process</h5>
+            <p>When guests are waiting on beers, ask for their receipt. Mark or slightly tear it to show it's been fulfilled, then pour.</p>
+            <h5>Glassware</h5>
+            <p>Wash 16oz, 34oz, and 60oz glasses/pitchers throughout the shift. Keep sinks at the right temperature. Always have cold glasses ready.</p>
+            <h5>When the Bar Is Slow</h5>
+            <p>The bar is a flex position — help run food or assist with takeout. Check in with your shift lead for anything else.</p>
+            <div class="key-note">Pour right, keep glasses clean, and be a resource to the floor when traffic is light.</div>
+          </div>
+        </div>
+
+        <!-- Takeout -->
+        <div class="role-item" onclick="toggleRole(this)">
+          <div class="role-header">
+            <div class="role-icon">📦</div>
+            <div class="role-info">
+              <h4>Takeout / 3rd Party</h4>
+              <div class="role-sub">Every order verified and complete before handoff</div>
+            </div>
+            <span class="role-tag tag-foh">FOH</span>
+            <div class="role-chevron">▾</div>
+          </div>
+          <div class="role-body">
+            <h5>Step-by-Step Process</h5>
+            <ol>
+              <li><strong>Greet the guest warmly</strong> — ask for the name on the order</li>
+              <li><strong>Locate the order</strong> — search in Orders Hub or payment terminal. <strong>Always verify by last name or phone number</strong> — duplicate names are common</li>
+              <li><strong>Check payment</strong> — look for a red "NOT PAID" banner. If unpaid: use handheld for card, POS for cash. Collect payment before proceeding.</li>
+              <li><strong>Print the receipt</strong> — use it to check off every item</li>
+              <li><strong>Verify the order:</strong> all entrées and sides, sauces and dressings (most commonly missed), drinks and add-ons, special instructions</li>
+              <li><strong>Large orders:</strong> include plates, napkins, and utensils automatically</li>
+              <li><strong>Hand off:</strong> confirm customer name one more time, then: <em>"Everything should be in the bag, including sauces and sides."</em></li>
+            </ol>
+            <h5>3rd Party Drivers (DoorDash, Uber Eats, etc.)</h5>
+            <p>The driver must confirm pickup in their app before you hand over the order. Never hand off to a driver who hasn't confirmed in their system.</p>
+            <div class="key-note">Zero missing items, zero unprocessed payments, every time. When in doubt, re-check the receipt.</div>
+          </div>
+        </div>
+
+        <!-- Toast POS -->
+        <div class="role-item" onclick="toggleRole(this)">
+          <div class="role-header">
+            <div class="role-icon">🖥️</div>
+            <div class="role-info">
+              <h4>Toast POS — Order Entry</h4>
+              <div class="role-sub">Step-by-step order taking on the POS system</div>
+            </div>
+            <span class="role-tag tag-foh">FOH</span>
+            <div class="role-chevron">▾</div>
+          </div>
+          <div class="role-body">
+            <h5>Order Entry Steps</h5>
+            <ol>
+              <li>Tap <strong>New Order</strong> and select order type</li>
+              <li>Enter customer info (see below)</li>
+              <li>Input items and modifiers</li>
+              <li>Review the full order — read it back if needed</li>
+              <li>Tap <strong>Pay</strong> and confirm total</li>
+              <li>Accept payment: card, cash, or gift card</li>
+              <li>Confirm approval and close the check</li>
+            </ol>
+            <h5>Required Info by Order Type</h5>
+            <table class="tr-table" style="margin-top:6px;">
+              <tr><th>Type</th><th>Info to Collect</th></tr>
+              <tr><td>Dine-In</td><td>Table number (enter as tab name)</td></tr>
+              <tr><td>Takeout</td><td>Customer name + phone number</td></tr>
+              <tr><td>Delivery</td><td>Name, phone, full address — repeat back to confirm</td></tr>
+            </table>
+            <h5>Receipts</h5>
+            <ul>
+              <li>Standard orders: offer receipt if requested</li>
+              <li>Alcohol orders: always print and hand to guest to present at the bar</li>
+            </ul>
+            <div class="key-note">Accuracy prevents remakes. Never skip required customer info.</div>
+          </div>
+        </div>
+
+        <!-- Best Practices -->
+        <div class="role-item" onclick="toggleRole(this)">
+          <div class="role-header">
+            <div class="role-icon">⭐</div>
+            <div class="role-info">
+              <h4>Best Practices — All Staff</h4>
+              <div class="role-sub">Standards that apply to every role, every shift</div>
+            </div>
+            <span class="role-tag tag-all">ALL</span>
+            <div class="role-chevron">▾</div>
+          </div>
+          <div class="role-body">
+            <h5>During Your Shift</h5>
+            <ul>
+              <li>There's always something to do. Check the 7Shifts downtime checklist or ask your shift lead.</li>
+              <li>If your station is slow, ask coworkers how you can support them.</li>
+              <li>If your station is falling behind, ask for help before it affects the guest experience.</li>
+              <li>Keep your work station clean and organized.</li>
+            </ul>
+            <h5>Before You Clock Out</h5>
+            <ul>
+              <li>Check in with your shift lead — ask if there's anything left to knock out</li>
+              <li>Return any borrowed items (lanyards, bar keys, etc.)</li>
+            </ul>
+            <h5>Questions?</h5>
+            <ul>
+              <li>Ask your shift lead first</li>
+              <li>Or reach Ryan at <strong>(707) 978-8072</strong></li>
+            </ul>
+            <div class="key-note">We're a team. When one of us helps another, shifts run smoother for everyone — including the guests.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CERTIFICATIONS ── -->
+      <div id="training-certs" class="training-tab">
+        <div class="tr-hero">
+          <h3>🛡️ Certifications & Compliance</h3>
+          <p>What you need, who needs it, and where to send it.</p>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-header">
+            <div class="cert-icon">🥗</div>
+            <div class="cert-title">
+              <h4>Food Handler Card</h4>
+              <p>All staff — FOH and BOH</p>
+            </div>
+          </div>
+          <span class="cert-badge cert-req">Required — Before Day 1</span>
+          <div class="cert-body">
+            <p>Required for every person who works with food. This is California law.</p>
+            <ul>
+              <li><strong>Valid for:</strong> 3 years from the issue date</li>
+              <li><strong>How to get it:</strong> Complete a Food Handler course online through an ANSI-accredited provider. StateFoodSafety.com or ServSafe.com are both accepted. Takes 1–2 hours, costs ~$15.</li>
+              <li><strong>Where to send:</strong> Email a copy to ryan@stadiumpepz.com</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-header">
+            <div class="cert-icon">🍺</div>
+            <div class="cert-title">
+              <h4>RBS Certificate</h4>
+              <p>FOH staff only (not required for BOH)</p>
+            </div>
+          </div>
+          <span class="cert-badge cert-req">Required — Before Bar Work</span>
+          <div class="cert-body">
+            <p>Required for all FOH staff who serve or handle alcohol. You cannot work the bar without it on file.</p>
+            <ul>
+              <li><strong>How to get it:</strong> Complete the California RBS training through the ABC-approved portal at abcbiz.abc.ca.gov. Available online, takes a few hours.</li>
+              <li><strong>Where to send:</strong> Email your certificate to ryan@stadiumpepz.com</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-header">
+            <div class="cert-icon">📋</div>
+            <div class="cert-title">
+              <h4>Other Paperwork</h4>
+              <p>Completed with HR on or before your first day</p>
+            </div>
+          </div>
+          <div class="cert-body">
+            <ul>
+              <li><strong>I-9 Verification</strong> — federal employment eligibility form</li>
+              <li><strong>CA DE-4 / W-4</strong> — payroll withholding forms</li>
+              <li><strong>LWTA Wage Notice</strong> — California-required; signed on hire</li>
+              <li><strong>Employee Handbook Acknowledgment</strong> — signed receipt of the handbook</li>
+            </ul>
+            <p style="margin-top:8px;">Questions? Ask your shift lead or reach out to Ryan.</p>
+          </div>
+        </div>
+
+        <div class="cert-send-box">
+          <p>Send all certifications to</p>
+          <strong>ryan@stadiumpepz.com</strong>
+        </div>
+      </div>
+
+      <!-- ── LOCATION & STORE INFO ── -->
+      <div id="training-location" class="training-tab">
+        <div class="tr-hero">
+          <h3>📍 Store Information</h3>
+          <p>Everything you need to know about Stadium Pepz — hours, contact, and what we stand for.</p>
+        </div>
+
+        <div class="tr-card">
+          <h4>🏠 Address & Contact</h4>
+          <table class="tr-table">
+            <tr><th>Details</th><th></th></tr>
+            <tr><td>Address</td><td>726 S State College Blvd, Anaheim, CA 92806</td></tr>
+            <tr><td>Phone</td><td>(714) 991-9900</td></tr>
+            <tr><td>Email</td><td>ryan@stadiumpepz.com</td></tr>
+            <tr><td>Website</td><td>stadiumpepz.com</td></tr>
+          </table>
+        </div>
+
+        <div class="tr-card">
+          <h4>🕐 Store Hours</h4>
+          <table class="tr-table">
+            <tr><th>Day</th><th>Hours</th></tr>
+            <tr><td>Monday</td><td>11:00 AM – 9:00 PM</td></tr>
+            <tr><td>Tuesday</td><td>11:00 AM – 9:00 PM</td></tr>
+            <tr><td>Wednesday</td><td>11:00 AM – 9:00 PM</td></tr>
+            <tr><td>Thursday</td><td>11:00 AM – 9:00 PM</td></tr>
+            <tr><td>Friday</td><td>11:00 AM – 10:00 PM</td></tr>
+            <tr><td>Saturday</td><td>11:00 AM – 10:00 PM</td></tr>
+            <tr><td>Sunday</td><td>12:00 PM – 9:00 PM</td></tr>
+          </table>
+          <p style="margin-top:10px;font-size:12px;color:var(--gray);">Friday and Saturday are our highest-volume nights. Plan accordingly.</p>
+        </div>
+
+        <div class="tr-card">
+          <h4>📲 Social Media</h4>
+          <table class="tr-table">
+            <tr><th>Platform</th><th>Handle</th></tr>
+            <tr><td>Instagram</td><td>@stadiumpepz</td></tr>
+            <tr><td>TikTok</td><td>@stadiumpepzpizza</td></tr>
+            <tr><td>Facebook</td><td>pepzpizza</td></tr>
+          </table>
+          <p style="margin-top:10px;font-size:12px;color:var(--gray);">If a guest asks where to follow us, these are the handles to share.</p>
+        </div>
+
+        <div class="tr-card">
+          <h4>🎮 What We Offer</h4>
+          <ul>
+            <li>Dine-in, takeout, and delivery</li>
+            <li>Full bar with draft beer, wine, and cocktails</li>
+            <li>Arcade and gaming area</li>
+            <li>Team parties and birthday party packages</li>
+            <li>Community fundraiser nights</li>
+            <li>Stadium Pepz Rewards — 1 point per $1 spent, $7 off every 100 points</li>
+            <li>Physical and digital gift cards</li>
+          </ul>
+        </div>
+
+        <div class="tr-card" style="border-color: var(--gold);">
+          <h4>⭐ Who We Are</h4>
+          <p>Stadium Pepz has been serving Anaheim since 2001. We're a local, family-owned business built on hand-crafted recipes and genuine hospitality. Every guest who walks through our door deserves an upbeat, welcoming experience — from the food to the service to the atmosphere.</p>
+          <p style="margin-top:10px;">We're proud to give back to our community through fundraisers and local initiatives. When you work here, you represent all of that.</p>
+        </div>
+
+        <div class="tr-card" style="border-color: var(--gold);">
+          <h4>🌟 Our Core Values</h4>
+          <ul>
+            <li><strong>Guest first, always.</strong> Our number one priority is providing the best possible customer service, every single shift. A great visit today means a returning guest tomorrow.</li>
+            <li><strong>Fresh quality food.</strong> We take pride in hand-crafted recipes made with quality ingredients. That standard starts at the oven and ends at the table.</li>
+            <li><strong>We're a team.</strong> When one station is struggling, we all feel it. When we support each other, shifts run smoother and guests notice.</li>
+            <li><strong>Community matters.</strong> We're not just a restaurant — we're part of the Anaheim community. How you treat guests reflects on all of us.</li>
+            <li><strong>Own it.</strong> If something's wrong — a mistake on an order, an unhappy guest, a station falling behind — speak up. Don't let it fester. Ask for help and fix it fast.</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- EVENTS -->
+    <section id="events" class="section">
+      <div class="page-header">
+        <h2>📅 Events & Upcoming Games</h2>
+        <p>3 rolling weeks of sports, events &amp; expected volume — updated every Monday</p>
+      </div>
+
+      <div class="events-legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#6b7280"></span>Low volume</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#ca8a04"></span>Medium volume</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#dc2626"></span>High volume</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#7c3aed"></span>Holiday</div>
+      </div>
+
+      <div class="week-tabs">
+        <button class="week-tab active" onclick="showWeek('week1',this)">Jun 23–29</button>
+        <button class="week-tab" onclick="showWeek('week2',this)">Jun 30–Jul 6</button>
+        <button class="week-tab" onclick="showWeek('week3',this)">Jul 7–13</button>
+      </div>
+
+      <!-- ═══ WEEK 1: June 23–29 ═══ -->
+      <div id="week1" class="week-block active">
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Tuesday</span><span class="day-date">June 23</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Day 8</div>
+              <div class="event-details">Portugal vs Uzbekistan 10 AM · England vs Ghana 1 PM · Panama vs Croatia 4 PM · Colombia vs DR Congo 7 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels HOME vs Baltimore Orioles</div>
+              <div class="event-details">6:38 PM PT · Angel Stadium, Anaheim</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers AWAY @ Minnesota Twins</div>
+              <div class="event-details">4:40 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Away</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Wednesday</span><span class="day-date">June 24</span></div>
+          <div class="event-row">
+            <div class="event-icon">🇲🇽</div>
+            <div class="event-info">
+              <div class="event-title highlight">⭐ WORLD CUP: Mexico vs Czechia</div>
+              <div class="event-details">6:00 PM PT — HIGH TRAFFIC</div>
+              <div class="event-staff-note">Mexico plays again at 6 PM. Same high-energy scenario as June 18. Angels home game same night — big evening.</div>
+            </div>
+            <span class="vol-badge vol-high">High</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Day 9</div>
+              <div class="event-details">Switzerland vs Canada 12 PM · Scotland vs Brazil 3 PM · Morocco vs Haiti 3 PM · South Africa vs South Korea 6 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels HOME vs Baltimore</div>
+              <div class="event-details">6:38 PM PT · Angel Stadium, Anaheim</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Thursday</span><span class="day-date">June 25</span></div>
+          <div class="event-row">
+            <div class="event-icon">🇺🇸</div>
+            <div class="event-info">
+              <div class="event-title highlight">⭐ WORLD CUP: USA vs Türkiye</div>
+              <div class="event-details">7:00 PM PT — HIGH TRAFFIC</div>
+              <div class="event-staff-note">USA plays at 7 PM — evening kickoff. Angels home game at 6:38 PM overlaps. Expect a busy evening with both audiences.</div>
+            </div>
+            <span class="vol-badge vol-high">High</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Day 10</div>
+              <div class="event-details">Ecuador vs Germany 1 PM · Japan vs Sweden 4 PM · Tunisia vs Netherlands 4 PM · Paraguay vs Australia 7 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels HOME vs Athletics</div>
+              <div class="event-details">6:38 PM PT · Angel Stadium, Anaheim</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Friday</span><span class="day-date">June 26</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Day 11</div>
+              <div class="event-details">Norway vs France 12 PM · Senegal vs Iraq 12 PM · Cabo Verde vs Saudi Arabia 5 PM · Uruguay vs Spain 5 PM · Egypt vs Iran 8 PM · New Zealand vs Belgium 8 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels HOME vs Athletics</div>
+              <div class="event-details">6:38 PM PT · Angel Stadium, Anaheim</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers AWAY @ San Diego Padres</div>
+              <div class="event-details">~6:40 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Away</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Saturday</span><span class="day-date">June 27</span></div>
+          <div class="event-row">
+            <div class="event-icon">🥊</div>
+            <div class="event-info">
+              <div class="event-title">UFC Fight Night: Fiziev vs Torres</div>
+              <div class="event-details">Prelims 9:00 AM · Main Card 12:00 PM PT · Baku, Azerbaijan (early PT times)</div>
+              <div class="event-staff-note">UFC in Baku — main card at noon, lighter fight crowd in evening. Good Saturday overall with Angels home.</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Day 12 — Final Group Stage Day</div>
+              <div class="event-details">Panama vs England 2 PM · Croatia vs Ghana 2 PM · Colombia vs Portugal 4:30 PM · DR Congo vs Uzbekistan 4:30 PM · Algeria vs Austria 7 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels HOME vs Athletics</div>
+              <div class="event-details">6:38 PM PT · Angel Stadium, Anaheim</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Sunday</span><span class="day-date">June 28</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title highlight">⭐ WORLD CUP ROUND OF 32 — Match at SoFi Stadium LA</div>
+              <div class="event-details">12:00 PM PT · SoFi Stadium, Inglewood CA ← NEARBY</div>
+              <div class="event-staff-note">Knockout round begins. Match right down the freeway at noon. Expect elevated local excitement and post-match walk-ins.</div>
+            </div>
+            <span class="vol-badge vol-high">High</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers AWAY @ San Diego Padres</div>
+              <div class="event-details">~1:10 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Away</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Monday</span><span class="day-date">June 29</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Round of 32</div>
+              <div class="event-details">Match 1 — 10:00 AM · Match 2 — 1:30 PM · Match 3 — 6:00 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels AWAY @ Seattle Mariners · Dodgers AWAY @ Athletics</div>
+              <div class="event-details">Angels ~7:10 PM PT · Dodgers ~6:40 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Away</span>
+          </div>
+        </div>
+
+      </div><!-- end week1 -->
+
+      <!-- ═══ WEEK 2: June 30–July 6 ═══ -->
+      <div id="week2" class="week-block">
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Tuesday</span><span class="day-date">June 30</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Round of 32</div>
+              <div class="event-details">Multiple matches — 1F vs 2C (Monterrey) · 2E vs 2I (Dallas) · 1I vs 3rd place (NY/NJ)</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels AWAY @ Seattle Mariners</div>
+              <div class="event-details">~7:10 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Away</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Wednesday</span><span class="day-date">July 1</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Round of 32</div>
+              <div class="event-details">1A vs 3rd place (Mexico City) · 1L vs 3rd place (Atlanta) · 1G vs 3rd place (Seattle)</div>
+              <div class="event-staff-note">Match in Mexico City could drive local excitement if Mexico advanced. Monitor standings.</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Thursday</span><span class="day-date">July 2</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title highlight">⭐ WORLD CUP: Match at SoFi Stadium LA — 7:00 PM</div>
+              <div class="event-details">7:00 PM PT · SoFi Stadium, Inglewood CA ← NEARBY</div>
+              <div class="event-staff-note">WORLD CUP KNOCKOUT MATCH RIGHT DOWN THE FREEWAY at 7 PM. Staff up Thursday evening. Pre-game and post-match traffic surge expected. Impact depends on teams — could be huge.</div>
+            </div>
+            <span class="vol-badge vol-high">High</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">Also Today</div>
+              <div class="event-details">1D vs 3rd place — Levi's Stadium, San Francisco Bay Area, 10:00 AM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Friday</span><span class="day-date">July 3</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Round of 32 — Final Matches</div>
+              <div class="event-details">Knockout round wraps up today</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels HOME vs Boston Red Sox</div>
+              <div class="event-details">6:38 PM PT · Angel Stadium, Anaheim</div>
+              <div class="event-staff-note">4th of July Eve. Angels home + pre-holiday crowd. Good Friday evening expected.</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header" style="background:linear-gradient(90deg,#8c1437,#b91d47)"><span class="day-name">🎆 HOLIDAY — Saturday</span><span class="day-date">July 4</span></div>
+          <div class="event-row">
+            <div class="event-icon">🎆</div>
+            <div class="event-info">
+              <div class="event-title highlight">4TH OF JULY — FULL STAFF REQUIRED</div>
+              <div class="event-details">Independence Day — Holiday volume all day</div>
+              <div class="event-staff-note">One of the biggest days of the year. No call-outs. Early arrivals from 4 PM. Patio, bar, and dining room all busy.</div>
+            </div>
+            <span class="vol-badge vol-holiday">Holiday</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels HOME vs Boston Red Sox + POST-GAME FIREWORKS</div>
+              <div class="event-details">6:38 PM PT · Angel Stadium, Anaheim · Fireworks show after the game</div>
+            </div>
+            <span class="vol-badge vol-high">High</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Round of 16</div>
+              <div class="event-details">Matchups TBD — check standings</div>
+            </div>
+            <span class="vol-badge vol-low">TBD</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Sunday</span><span class="day-date">July 5</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels HOME vs Boston Red Sox</div>
+              <div class="event-details">6:30 PM PT · Angel Stadium, Anaheim</div>
+              <div class="event-staff-note">Post-holiday Sunday. Angels home game. Solid evening volume.</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers AWAY @ San Diego Padres</div>
+              <div class="event-details">~4:30 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Away</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Round of 16</div>
+              <div class="event-details">Matchups TBD</div>
+            </div>
+            <span class="vol-badge vol-low">TBD</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Monday</span><span class="day-date">July 6</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers HOME vs Colorado Rockies</div>
+              <div class="event-details">~7:10 PM PT · Dodger Stadium, LA</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Round of 16</div>
+              <div class="event-details">Matchups TBD</div>
+            </div>
+            <span class="vol-badge vol-low">TBD</span>
+          </div>
+        </div>
+
+      </div><!-- end week2 -->
+
+      <!-- ═══ WEEK 3: July 7–13 ═══ -->
+      <div id="week3" class="week-block">
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Monday</span><span class="day-date">July 7</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Round of 16</div>
+              <div class="event-details">Match at Atlanta 9:00 AM PT · Match at Vancouver 1:00 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers HOME vs Colorado Rockies</div>
+              <div class="event-details">~7:10 PM PT · Dodger Stadium, LA</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels AWAY @ Texas Rangers</div>
+              <div class="event-details">~5:05 PM PT · Globe Life Field, Arlington TX</div>
+            </div>
+            <span class="vol-badge vol-low">Away</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Tuesday</span><span class="day-date">July 8</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers HOME vs Colorado Rockies</div>
+              <div class="event-details">7:10 PM PT · Dodger Stadium, LA</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels AWAY @ Texas Rangers</div>
+              <div class="event-details">~5:05 PM PT · Globe Life Field, Arlington TX</div>
+            </div>
+            <span class="vol-badge vol-low">Away</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Wednesday</span><span class="day-date">July 9</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup Quarterfinal 1</div>
+              <div class="event-details">1:00 PM PT · Gillette Stadium, Foxborough MA</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Angels AWAY @ Texas Rangers</div>
+              <div class="event-details">~5:05 PM PT · Globe Life Field, Arlington TX</div>
+            </div>
+            <span class="vol-badge vol-low">Away</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Thursday</span><span class="day-date">July 10</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title highlight">⭐ WORLD CUP QF2 at SoFi Stadium</div>
+              <div class="event-details">12:00 PM PT · SoFi Stadium, Inglewood CA ← NEARBY</div>
+              <div class="event-staff-note">Quarterfinal right down the freeway at noon. Expect elevated pre/post-match walk-in traffic. Staff up for lunch and afternoon service Thursday.</div>
+            </div>
+            <span class="vol-badge vol-high">High</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers HOME vs Arizona Diamondbacks</div>
+              <div class="event-details">7:10 PM PT · Dodger Stadium, LA</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Friday</span><span class="day-date">July 11</span></div>
+          <div class="event-row">
+            <div class="event-icon">🥊</div>
+            <div class="event-info">
+              <div class="event-title highlight">⭐ UFC 329 PPV: McGregor vs. Holloway 2</div>
+              <div class="event-details">Prelims 3:00 PM · Main Card 7:00 PM PT · T-Mobile Arena, Las Vegas · PPV</div>
+              <div class="event-staff-note">McGregor PPV — expect strong fight crowd all evening. Put fight on TVs. Bar traffic picks up 6 PM onward.</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚽</div>
+            <div class="event-info">
+              <div class="event-title">World Cup QF3 + QF4</div>
+              <div class="event-details">QF3 Miami 2:00 PM PT · QF4 Kansas City 6:00 PM PT</div>
+            </div>
+            <span class="vol-badge vol-low">Low</span>
+          </div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers HOME vs Arizona Diamondbacks</div>
+              <div class="event-details">6:10 PM PT · Dodger Stadium, LA</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+        </div>
+
+        <div class="event-day">
+          <div class="day-header"><span class="day-name">Saturday</span><span class="day-date">July 12</span></div>
+          <div class="event-row">
+            <div class="event-icon">⚾</div>
+            <div class="event-info">
+              <div class="event-title">Dodgers HOME vs Arizona Diamondbacks</div>
+              <div class="event-details">1:10 PM PT · Dodger Stadium, LA</div>
+              <div class="event-staff-note">Last regular season games before MLB All-Star break (Jul 13–14). Normal Saturday volume.</div>
+            </div>
+            <span class="vol-badge vol-medium">Medium</span>
+          </div>
+        </div>
+
+      </div><!-- end week3 -->
+
+    </section>
+
+    <!-- QUIZZES -->
+    <section id="quizzes" class="section">
+      <div class="page-header">
+        <h2>📊 Quizzes</h2>
+        <p>15 random questions per session, drawn from a 65-question bank</p>
+      </div>
+
+      <!-- Quiz list (landing) -->
+      <div class="quiz-list-wrap" id="quizListWrap">
+        <div class="quiz-list">
+          <div class="quiz-card" onclick="startQuiz('menu')">
+            <div class="qc-icon">🍕</div>
+            <h3>Menu Knowledge</h3>
+            <p>Toppings, ingredients, allergens, descriptions, and upsell opportunities across the full menu.</p>
+            <div class="qc-meta">
+              <span class="qc-tag">15 Questions</span>
+              <span class="qc-tag">65-Question Bank</span>
+            </div>
+            <div class="qc-start">Start Quiz →</div>
+          </div>
+          <div class="quiz-card" onclick="startQuiz('ops')">
+            <div class="qc-icon">⚙️</div>
+            <h3>Operations Knowledge</h3>
+            <p>Role SOPs, certifications, store policies, POS procedures, and guest scenarios.</p>
+            <div class="qc-meta">
+              <span class="qc-tag">15 Questions</span>
+              <span class="qc-tag">67-Question Bank</span>
+            </div>
+            <div class="qc-start">Start Quiz →</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active quiz UI -->
+      <div class="quiz-active" id="quizActive">
+        <div id="quizQuestionView">
+          <div class="qz-header">
+            <span class="qz-counter" id="qzCounter">Question 1 of 15</span>
+            <span class="qz-score-live" id="qzScoreLive">✓ 0 correct</span>
+          </div>
+          <div class="qz-progress-bar-wrap"><div class="qz-progress-bar" id="qzProgressBar" style="width:0%"></div></div>
+          <div class="qz-category" id="qzCategory"></div>
+          <div class="qz-question" id="qzQuestion"></div>
+          <div class="qz-options" id="qzOptions"></div>
+          <div class="qz-explanation" id="qzExplanation"></div>
+          <button class="qz-next-btn" id="qzNextBtn" onclick="nextQuestion()">Next Question →</button>
+        </div>
+        <div class="qz-results" id="quizResults">
+          <div class="qz-score-circle"><div class="score-num" id="qzFinalScore">0</div><div class="score-denom" id="qzFinalDenom">/ 15</div></div>
+          <div class="qz-result-msg" id="qzResultMsg"></div>
+          <div class="qz-result-sub" id="qzResultSub"></div>
+          <div class="qz-result-breakdown">
+            <h4>Question Breakdown</h4>
+            <div id="qzBreakdown"></div>
+          </div>
+          <button class="qz-retake-btn" onclick="retakeQuiz()">Retake Quiz</button>
+          <button class="qz-back-btn" onclick="backToQuizList()">← Back to Quizzes</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <strong>Stadium Pepz Pizza & Eatery</strong> &nbsp;·&nbsp; 726 S State College Blvd, Anaheim, CA &nbsp;·&nbsp; (714) 991-9900
+  </footer>
+
+  <script>
+  const MENU_ITEMS = [
+    // PIZZAS
+    {name:"Pepz House Special",cat:"Pizza",price:14.99,desc:"The kitchen sink pizza — our most loaded specialty pie with green peppers, olives, onions, mushrooms, ham, pepperoni, sausage, and extra cheese. Great for groups who want a little of everything.",ingredients:"Pizza dough, marinara sauce, mozzarella, green peppers, black olives, onions, mushrooms, ham, pepperoni, sausage",allergens:["Gluten","Dairy"],upsell:"Upsell to 16\" or 18\" for tables of 3+. Pair with a house salad or garlic knots."},
+    {name:"BBQ Chicken",cat:"Pizza",price:13.99,desc:"Chicken tossed in our housemade BBQ sauce, topped with red and green onions and fresh cilantro. Sweet, smoky, and a crowd favorite.",ingredients:"Pizza dough, housemade BBQ sauce, mozzarella, chicken, red onions, green onions, cilantro",allergens:["Gluten","Dairy"],upsell:"Pair with ranch on the side. Great for guests who like sweeter flavors."},
+    {name:"Roasted Artichoke & Spinach",cat:"Pizza",price:14.99,desc:"A gourmet white pizza built on spinach artichoke sauce with oven-roasted artichoke hearts, sautéed spinach, garlic, chicken breast, and a blend of mozzarella and Parmesan. Only available in 8\", 16\", and 18\".",ingredients:"Pizza dough, spinach artichoke sauce, mozzarella, Parmesan, artichoke hearts, sautéed spinach, garlic, chicken breast",allergens:["Gluten","Dairy"],upsell:"Great upsell for guests who want something different from a traditional red sauce pizza."},
+    {name:"Vegetarian",cat:"Pizza",price:14.99,desc:"A hearty veggie pizza packed with green peppers, mushrooms, olives, onions, spinach, fresh tomatoes, garlic, and extra cheese. No meat, but it's fully loaded.",ingredients:"Pizza dough, marinara, mozzarella, green peppers, mushrooms, black olives, onions, spinach, fresh tomatoes, garlic",allergens:["Gluten","Dairy","Vegetarian"],upsell:"Good option for vegetarian guests. Can request gluten-free crust (+$3)."},
+    {name:"Pepz Italian",cat:"Pizza",price:13.99,desc:"Simple and fresh — this pizza celebrates Italian flavors with fresh tomatoes, fresh basil, garlic, and sausage. Light and bright.",ingredients:"Pizza dough, marinara, mozzarella, fresh tomatoes, fresh basil, garlic, sausage",allergens:["Gluten","Dairy"],upsell:"Great for guests who prefer lighter toppings. Mention the fresh basil."},
+    {name:"Philly Cheesesteak",cat:"Pizza",price:14.99,desc:"All the flavors of a Philly cheesesteak on a pizza — thinly sliced beef steak, green peppers, onions, mushrooms, and a light house mayo sauce. Only available in 8\", 16\", and 18\".",ingredients:"Pizza dough, house mayo sauce, mozzarella, thinly sliced beef steak, green peppers, onions, mushrooms",allergens:["Gluten","Dairy","Eggs"],upsell:"Good pairing with the Philly Cheesesteak Sub for guests who love the flavor profile."},
+    {name:"Bacon Chicken Ranch",cat:"Pizza",price:13.99,desc:"Buttermilk ranch sauce as the base, topped with chicken, bacon, and red onion. Rich and savory — a hit with ranch fans.",ingredients:"Pizza dough, buttermilk ranch sauce, mozzarella, chicken, bacon, red onion",allergens:["Gluten","Dairy","Eggs"],upsell:"Pair with extra ranch on the side. Popular with kids and ranch lovers."},
+    {name:"California Delight",cat:"Pizza",price:13.99,desc:"A California-inspired pizza on ranch sauce with chicken breast, green onions, cilantro, tomatoes, and a housemade avocado crème. Fresh and unique. Only in 8\", 16\", and 18\".",ingredients:"Pizza dough, buttermilk ranch sauce, mozzarella, chicken breast, green onions, cilantro, fresh tomatoes, homemade avocado crème",allergens:["Gluten","Dairy"],upsell:"Avocado crème is house-made — great talking point. Good for guests who want something lighter and fresh."},
+    {name:"Cheese Lovers",cat:"Pizza",price:14.99,desc:"A cheese lover's dream — an extra-heavy blend of mozzarella and provolone for maximum ooey-gooey pull. No toppings, just cheese perfection. Only in 8\", 16\", and 18\".",ingredients:"Pizza dough, marinara, extra mozzarella, provolone",allergens:["Gluten","Dairy","Vegetarian"],upsell:"Suggest adding toppings for an upgrade. Great base for guests who are picky or have kids."},
+    {name:"Hawaiian",cat:"Pizza",price:13.99,desc:"Classic Hawaiian — Canadian bacon and pineapple. Sweet meets savory. Simple, consistent, always popular.",ingredients:"Pizza dough, marinara, mozzarella, Canadian bacon, pineapple",allergens:["Gluten","Dairy"],upsell:"If a guest is on the fence about pineapple, remind them ours is well-balanced — not overly sweet."},
+    {name:"The Meat",cat:"Pizza",price:14.99,desc:"Four meats, no compromise — pepperoni, sausage, ham, and bacon bits on a classic marinara base. Great for meat lovers and game day groups.",ingredients:"Pizza dough, marinara, mozzarella, pepperoni, sausage, ham, bacon bits",allergens:["Gluten","Dairy"],upsell:"Upsell to 18\" for large parties. Pairs well with a pitcher of beer or garlic knots."},
+    {name:"The Alfredo",cat:"Pizza",price:13.99,desc:"Creamy Alfredo sauce as the base, topped with pepperoni, chicken, fresh basil, and onions. A rich, indulgent pizza that's different from a typical red sauce pie.",ingredients:"Pizza dough, Alfredo sauce, mozzarella, pepperoni, chicken, fresh basil, onions",allergens:["Gluten","Dairy"],upsell:"Mention the Alfredo base for guests who want something creamy and different."},
+    {name:"The Pastrami",cat:"Pizza",price:13.99,desc:"A deli-inspired pizza with mustard, pickles, and pastrami. Unique, bold flavors — not your average pie. Only in 8\", 16\", and 18\".",ingredients:"Pizza dough, mustard, mozzarella, pastrami, pickles",allergens:["Gluten","Dairy"],upsell:"Good conversation starter. Mention that it tastes like a pastrami sandwich on pizza."},
+    {name:"BBQ Pulled Pork",cat:"Pizza",price:14.99,desc:"Pulled pork tossed in housemade BBQ sauce, topped with beer-battered onion rings and a drizzle of coleslaw. Smoky, sweet, and a little crunchy.",ingredients:"Pizza dough, housemade BBQ sauce, mozzarella, pulled pork, beer-battered onion rings, coleslaw drizzle",allergens:["Gluten","Dairy"],upsell:"Lean into the onion rings and coleslaw as a differentiator."},
+    {name:"Breakfast Pizza",cat:"Pizza",price:14.99,desc:"A loaded breakfast on a pizza — refried bean base with cheese, egg, ham, sausage, bacon bits, chorizo, and jalapeño. Perfect for brunch crowds or adventurous eaters.",ingredients:"Pizza dough, refried beans, mozzarella, egg, ham, sausage, bacon bits, chorizo, jalapeño",allergens:["Gluten","Dairy","Eggs"],upsell:"Unique item — great talking point for guests who ask what's different about us."},
+    {name:"D Town",cat:"Pizza",price:20.99,desc:"Detroit-style square pizza — thick, crispy-edged crust with mozzarella and double pepperoni. Only available in Detroit size.",ingredients:"Detroit-style dough, mozzarella, double pepperoni",allergens:["Gluten","Dairy"],upsell:"Explain Detroit style to guests unfamiliar — it's a square pan pizza with a crispy cheese-crusted edge. Upgrade suggestion: D Town Sweet Heat."},
+    {name:"D Town Sweet Heat",cat:"Pizza",price:23.99,desc:"Detroit-style with double pepperoni, topped with ricotta and Mike's Hot Honey. Sweet, spicy, and creamy. Note: ricotta may melt and spread during takeout/delivery — it still tastes amazing.",ingredients:"Detroit-style dough, mozzarella, double pepperoni, ricotta, Mike's Hot Honey",allergens:["Gluten","Dairy"],upsell:"Best seller among Detroit-style. Always mention the Hot Honey. Warn takeout guests about ricotta appearance."},
+    {name:"The Viral Pepzone",cat:"Pizza",price:43.99,desc:"Our signature showstopper — ¾ pizza paired with a calzone stuffed with creamy chicken fettuccine Alfredo, ricotta, mozzarella, and provolone. A pizza-pasta hybrid in one massive creation. Guests can add toppings to the pizza side or upgrade to any specialty pizza.",ingredients:"Pizza dough, mozzarella, provolone, ricotta, chicken, fettuccine Alfredo, creamy Alfredo sauce",allergens:["Gluten","Dairy","Eggs"],upsell:"Our highest-ticket item — always mention it to groups of 2-4. It's shareable and photogenic. Suggest upgrading the pizza side to a specialty pie."},
+    {name:"Calzone",cat:"Pizza",price:12.99,desc:"Thin pizza dough stuffed with ricotta, herbs, and mozzarella, brushed with garlic spread and Parmesan. Served with homemade marinara. Personal = 2 toppings, Small & Large = 3 toppings.",ingredients:"Pizza dough, ricotta, mozzarella, herbs, garlic spread, Parmesan, marinara",allergens:["Gluten","Dairy"],upsell:"Remind guests they can customize with toppings. Upsell to large for bigger appetites."},
+    // PASTA
+    {name:"Spaghetti",cat:"Pasta",price:11.99,desc:"Classic spaghetti with Pepz homemade marinara sauce. Made with organic non-GMO pasta sourced from Italy.",ingredients:"Organic spaghetti (Italy-sourced), Pepz homemade marinara sauce",allergens:["Gluten","Vegan"],upsell:"Upsell to add meatballs or sausage (+$4 side). Pair with garlic bread."},
+    {name:"Spaghetti & Meatballs",cat:"Pasta",price:13.99,desc:"Spaghetti with two large house-made meatballs in Pepz marinara. A classic comfort dish.",ingredients:"Organic spaghetti, Pepz marinara, two house-made meatballs",allergens:["Gluten","Dairy"],upsell:"Pair with garlic bread. The meatballs are house-made — good talking point."},
+    {name:"Spaghetti & Sausage",cat:"Pasta",price:13.99,desc:"Spaghetti with two house-made sausages in Pepz marinara.",ingredients:"Organic spaghetti, Pepz marinara, two house-made sausages",allergens:["Gluten"],upsell:"Good alternative for guests who prefer sausage over meatballs."},
+    {name:"Lasagna",cat:"Pasta",price:15.99,desc:"House special lasagna recipe served with Pepz homemade marinara sauce. A hearty, layered baked dish.",ingredients:"Lasagna noodles, house meat sauce, ricotta, mozzarella, marinara",allergens:["Gluten","Dairy"],upsell:"Our highest-priced pasta. Upsell to guests who want something more filling. Good with garlic bread."},
+    {name:"Penne Vodka",cat:"Pasta",price:13.99,desc:"Penne pasta in a light tomato and garlic cream sauce. Smooth, slightly rich, and crowd-pleasing.",ingredients:"Organic penne, tomato cream sauce, garlic",allergens:["Gluten","Dairy"],upsell:"Good choice for guests who want something between marinara and Alfredo."},
+    {name:"Penne Arrabbiata",cat:"Pasta",price:13.99,desc:"Penne tossed with sautéed garlic and spicy marinara sauce. Bold and spicy — good for heat lovers.",ingredients:"Organic penne, sautéed garlic, spicy marinara",allergens:["Gluten","Vegan"],upsell:"Flag the spice level to guests unfamiliar with arrabbiata. Can add protein for +$4.99."},
+    {name:"Fettuccine Alfredo",cat:"Pasta",price:13.99,desc:"Fettuccine in Pepz creamy homemade Alfredo sauce. Rich, buttery, and classic.",ingredients:"Organic fettuccine, Pepz homemade Alfredo sauce, Parmesan",allergens:["Gluten","Dairy"],upsell:"Add chicken or sausage for +$4.99. Great pairing with garlic bread."},
+    {name:"Penne Pesto",cat:"Pasta",price:14.99,desc:"Penne with house pesto sauce. Herbaceous, garlicky, and fresh-tasting.",ingredients:"Organic penne, pesto sauce (basil, garlic, Parmesan, olive oil)",allergens:["Gluten","Dairy"],upsell:"Good for guests who want something lighter than cream sauce but more flavorful than plain marinara."},
+    {name:"Cheese Ravioli",cat:"Pasta",price:13.99,desc:"Cheese ravioli covered with mozzarella and Pepz homemade marinara. Cheesy and filling.",ingredients:"Cheese ravioli, mozzarella, Pepz marinara",allergens:["Gluten","Dairy"],upsell:"Good for guests who want something different from standard pasta shapes."},
+    {name:"Create Your Own Pasta",cat:"Pasta",price:13.99,desc:"Build your own pasta dish. Choose penne, spaghetti, or fettuccine; select a sauce (Alfredo +$4.99, marinara, pesto, or olive oil); add meat (sausage, meatballs, ground beef, or chicken +$4.99); pick from veggie toppings.",ingredients:"Choice of pasta, choice of sauce, optional meats and toppings",allergens:["Gluten"],upsell:"Walk guests through the options. Adding premium sauce and protein adds significant value."},
+    // STARTERS
+    {name:"Pepz Potatoes Sauced & Tossed",cat:"Starters",price:13.99,desc:"A full pound of crispy potato wedges tossed in garlic butter, topped with grated Parmesan and fresh cilantro. Bold and savory.",ingredients:"Potato wedges, garlic butter, Parmesan, fresh cilantro",allergens:["Dairy","Vegetarian"],upsell:"Great shareable side for the table. Upsell as an add-on to any entrée."},
+    {name:"Pepz Potatoes",cat:"Starters",price:8.99,desc:"Crispy seasoned potato wedges. Available in ½lb ($8.99) or 1lb ($11.99).",ingredients:"Potato wedges, house seasoning",allergens:["Vegan","Vegetarian"],upsell:"Upsell to the 1lb or the Sauced & Tossed version. Good shareable side."},
+    {name:"Chili Cheese Potatoes",cat:"Starters",price:11.99,desc:"Pepz potato wedges topped with chili, melted cheese, and red onions.",ingredients:"Potato wedges, chili, melted cheese, red onions",allergens:["Dairy"],upsell:"Good for guests who want something heartier than plain fries."},
+    {name:"Pepz Potato Nachos",cat:"Starters",price:11.99,desc:"Potato wedges loaded with melted mozzarella, green onion, bacon bits, and our famous ranch sauce.",ingredients:"Potato wedges, mozzarella, green onion, bacon bits, ranch sauce",allergens:["Dairy","Eggs"],upsell:"Great shareable app. Ranch is house-made — mention that to guests."},
+    {name:"Fried Pickles",cat:"Starters",price:8.99,desc:"Golden crispy fried pickles with a tangy bite, served hot with housemade chipotle ranch for a smoky kick.",ingredients:"Pickles, breading, chipotle ranch sauce",allergens:["Gluten","Eggs"],upsell:"The chipotle ranch is housemade — good talking point."},
+    {name:"Pizza Roll",cat:"Starters",price:12.99,desc:"Pizza dough stuffed with mozzarella and pepperoni, served with Pepz homemade marinara for dipping.",ingredients:"Pizza dough, mozzarella, pepperoni, marinara",allergens:["Gluten","Dairy"],upsell:"Good shareable app for pizza-loving guests."},
+    {name:"Mozzarella Sticks",cat:"Starters",price:8.99,desc:"100% mozzarella cheese, breaded and broasted to a golden brown. Served with Pepz homemade marinara.",ingredients:"Mozzarella, breading, marinara",allergens:["Gluten","Dairy"],upsell:"Classic crowd-pleaser. Good add-on for tables with kids."},
+    {name:"Chicken Tenders",cat:"Starters",price:8.99,desc:"All white meat chicken tenders served with a dipping sauce. Available 3pc ($8.99) or 5pc ($10.99).",ingredients:"All white meat chicken, breading, choice of dipping sauce",allergens:["Gluten"],upsell:"Upsell to 5pc. Ask guests what dipping sauce they'd like."},
+    {name:"Garlic Knots",cat:"Starters",price:9.99,desc:"Homemade dough tied into knots, baked, then tossed in garlic sauce and Parmesan. Served with marinara.",ingredients:"House pizza dough, garlic sauce, Parmesan, marinara",allergens:["Gluten","Dairy","Vegetarian"],upsell:"Great table add-on. House-made dough — mention it. Good companion to any pasta dish."},
+    {name:"Garlic Bread",cat:"Starters",price:5.99,desc:"French bread slices topped with cheese and brushed with garlic spread. Simple and satisfying. Add extra cheese for $2.",ingredients:"French bread, garlic spread, mozzarella",allergens:["Gluten","Dairy","Vegetarian"],upsell:"Low-cost add-on — suggest to every pasta order. Upsell extra cheese."},
+    {name:"Zucchini",cat:"Starters",price:9.99,desc:"Fresh zucchini, lightly breaded and broasted to a golden brown. Served with our famous ranch sauce.",ingredients:"Fresh zucchini, light breading, ranch sauce",allergens:["Gluten","Eggs","Vegetarian"],upsell:"Good lighter veggie option for guests who want something fried but less heavy."},
+    {name:"Breadsticks",cat:"Starters",price:9.99,desc:"Pizza dough brushed with garlic spread and Parmesan, served with Pepz homemade marinara.",ingredients:"House pizza dough, garlic spread, Parmesan, marinara",allergens:["Gluten","Dairy","Vegetarian"],upsell:"Great for dipping. Suggest as a starter for any table ordering pizza or pasta."},
+    {name:"Fried Chicken",cat:"Starters",price:10.99,desc:"Chicken fried to a deep golden brown — crispy perfection. Served with Pepz potatoes. Available 2pc ($10.99), 4pc ($14.99), 8pc ($23.99), or 12pc ($33.99). Breast & Wing add $2.",ingredients:"Chicken (leg, thigh options), seasoned breading, Pepz potatoes",allergens:["Gluten"],upsell:"Upsell to larger portions for groups. Mention the breast & wing upgrade. Great add-on for game day parties."},
+    // WINGS
+    {name:"Wings",cat:"Wings",price:11.99,desc:"Wings marinated and baked in fresh spices, then drizzled in your choice of sauce. Served with celery, carrots, and ranch or bleu cheese. Available 6pc ($11.99), 10pc ($16.99), or 20pc ($30.99).\n\nSauces: Original Hot, Honey Garlic, Sweet Chili, Seasoned Sauce, Mango Habanero, Chipotle, Teriyaki, Fire, Garlic Parmesan, Plain, Lemon Pepper, House BBQ, Korean BBQ, Kickin' Bourbon, Honey Hot.",ingredients:"Chicken wings, house marinade, choice of 15 sauces, celery, carrots, ranch or bleu cheese",allergens:["Gluten","Dairy"],upsell:"Upsell to 20pc for parties. Kickin' Bourbon and Honey Hot are popular. Extra carrots & celery for $4.50."},
+    // SANDWICHES
+    {name:"Pesto Chicken Panini",cat:"Sandwiches",price:10.99,desc:"Grilled panini with chicken breast, garlic aioli, pesto sauce, spinach, mushrooms, and mozzarella. Small ($10.99) or Large ($13.99).",ingredients:"Chicken breast, garlic aioli, pesto sauce, spinach, mushrooms, mozzarella, panini bread",allergens:["Gluten","Dairy"],upsell:"Mention the fresh pesto and garlic aioli — elevated flavor compared to a standard sandwich."},
+    {name:"Chicken Spinach Artichoke Panini",cat:"Sandwiches",price:10.99,desc:"Spinach artichoke spread, mushrooms, chicken, garlic, spinach, tomatoes, and provolone, served with fire sauce on the side. Small ($10.99) or Large ($13.99).",ingredients:"Chicken, spinach artichoke spread, mushrooms, garlic, spinach, tomatoes, provolone, fire sauce, panini bread",allergens:["Gluten","Dairy"],upsell:"Fire sauce on the side — let guests know it has a kick."},
+    {name:"Italian Sub",cat:"Sandwiches",price:10.99,desc:"Italian salami, pepperoni, ham, melted provolone, avocado, lettuce, tomatoes, mustard, mayo, and Italian dressing on a French deli roll. Small ($10.99) or Large ($13.99).",ingredients:"Italian salami, pepperoni, ham, provolone, avocado, lettuce, tomatoes, mustard, mayo, Italian dressing, French deli roll",allergens:["Gluten","Dairy","Eggs"],upsell:"Loaded sandwich with avocado — mention it. Great for guests who want something classic and filling."},
+    {name:"Pastrami Sub",cat:"Sandwiches",price:12.99,desc:"Sliced pastrami with provolone, mustard, and mayo. Simple and deli-classic. Small ($12.99) or Large ($16.99).",ingredients:"Sliced pastrami, provolone, mustard, mayo, French deli roll",allergens:["Gluten","Dairy","Eggs"],upsell:"Our highest-priced sub. Good for guests who love deli-style sandwiches."},
+    {name:"Meatball Sub",cat:"Sandwiches",price:10.99,desc:"Fresh house-made meatballs with Pepz marinara and mozzarella. Small ($10.99) or Large ($13.99).",ingredients:"House-made meatballs, Pepz marinara, mozzarella, French deli roll",allergens:["Gluten","Dairy"],upsell:"House-made meatballs — use that as a selling point over competitors."},
+    {name:"Sausage Sub",cat:"Sandwiches",price:10.99,desc:"Fresh house-made sausages with Pepz marinara and mozzarella. Small ($10.99) or Large ($13.99).",ingredients:"House-made sausages, Pepz marinara, mozzarella, French deli roll",allergens:["Gluten","Dairy"],upsell:"Good swap for guests who prefer sausage over meatballs."},
+    {name:"Chicken Philly Sub",cat:"Sandwiches",price:10.99,desc:"Sautéed chicken breast with green peppers, mushrooms, onions, mayo, and provolone. Small ($10.99) or Large ($13.99).",ingredients:"Chicken breast, green peppers, mushrooms, onions, mayo, provolone, roll",allergens:["Gluten","Dairy","Eggs"],upsell:"Good alternative to the beef Philly for guests avoiding red meat."},
+    {name:"Philly Cheesesteak Sub",cat:"Sandwiches",price:11.99,desc:"Sautéed beef steak with green peppers, mushrooms, onions, mayo, and provolone. Small ($11.99) or Large ($14.99). Also available as a Lunch Special for +$3.",ingredients:"Beef steak, green peppers, mushrooms, onions, mayo, provolone, roll",allergens:["Gluten","Dairy","Eggs"],upsell:"Our most popular hot sandwich. Upsell to large. Also available in the Lunch Special combo."},
+    {name:"Southern Pulled Pork Sandwich",cat:"Sandwiches",price:13.99,desc:"Pulled pork smothered in BBQ sauce, topped with tangy coleslaw and onion rings on a brioche bun.",ingredients:"Pulled pork, BBQ sauce, coleslaw, onion rings, brioche bun",allergens:["Gluten","Dairy"],upsell:"Great for BBQ fans. Mention the brioche bun — it elevates the sandwich."},
+    {name:"Pepz Cubano",cat:"Sandwiches",price:10.99,desc:"Ham, chicken breast, provolone, mayo, mustard, and pickles. Our spin on the classic Cuban sandwich. Small ($10.99) or Large ($13.99).",ingredients:"Ham, chicken breast, provolone, mayo, mustard, pickles, roll",allergens:["Gluten","Dairy","Eggs"],upsell:"Good for guests who ask what's different — it's our take on a Cuban."},
+    {name:"Nashville Hot Chicken Sandwich",cat:"Sandwiches",price:13.99,desc:"Juicy chicken in a spicy glaze, topped with pickles and coleslaw on a brioche bun.",ingredients:"Chicken, Nashville hot glaze, pickles, coleslaw, brioche bun",allergens:["Gluten","Dairy"],upsell:"Flag the heat level — it's genuinely spicy. Great for guests who love Nashville-style chicken."},
+    {name:"California Club",cat:"Sandwiches",price:12.99,desc:"Cold sandwich on German brown bread with turkey, ham, avocado, provolone, tomato, alfalfa sprouts, mustard, and mayo.",ingredients:"German brown bread, turkey, ham, avocado, provolone, tomato, alfalfa sprouts, mustard, mayo",allergens:["Gluten","Dairy","Eggs"],upsell:"Great for guests who want something cold and fresh. The German brown bread is a nice differentiator."},
+    {name:"Turkey Sub",cat:"Sandwiches",price:9.99,desc:"Sliced turkey breast with provolone, tomato, lettuce, and mayo on a French deli roll. Small ($9.99) or Large ($12.99).",ingredients:"Sliced turkey breast, provolone, tomato, lettuce, mayo, French deli roll",allergens:["Gluten","Dairy","Eggs"],upsell:"Good lighter option. One of our lower price-point sandwiches — upsell to large."},
+    {name:"Vegetarian Sub",cat:"Sandwiches",price:8.99,desc:"Avocado, provolone, green peppers, spinach, mushrooms, olives, tomatoes, fresh garlic, and lettuce with Italian dressing. Small ($8.99) or Large ($12.99).",ingredients:"Avocado, provolone, green peppers, spinach, mushrooms, olives, tomatoes, fresh garlic, lettuce, Italian dressing, roll",allergens:["Gluten","Dairy","Vegetarian"],upsell:"Our lowest-priced sub and a great vegetarian option. Mention the avocado."},
+    // SALADS
+    {name:"Antipasto Salad",cat:"Salads",price:11.99,desc:"Iceberg and romaine blend topped with green peppers, mushrooms, tomatoes, olives, Italian meats, mozzarella, and pepperoncini. Small ($11.99) or Large ($15.99).",ingredients:"Iceberg, romaine, green peppers, mushrooms, tomatoes, black olives, Italian meats, mozzarella, pepperoncini",allergens:["Dairy"],upsell:"Add chicken for $4.99. Good starter or side for any Italian-leaning order."},
+    {name:"Caesar Salad",cat:"Salads",price:11.99,desc:"Romaine with croutons, Parmesan, and Caesar dressing. Classic and reliable. Small ($11.99) or Large ($15.99).",ingredients:"Romaine lettuce, croutons, Parmesan, Caesar dressing",allergens:["Gluten","Dairy","Eggs"],upsell:"Add grilled chicken for $4.99. Good lunch pairing with any sub."},
+    {name:"Pepz Green Salad",cat:"Salads",price:9.99,desc:"Iceberg and romaine with tomatoes, cucumbers, shredded carrots, mozzarella, and croutons. Our lightest and most affordable salad. Small ($9.99) or Large ($12.99).",ingredients:"Iceberg, romaine, tomatoes, cucumbers, shredded carrots, mozzarella, croutons",allergens:["Gluten","Dairy","Vegetarian"],upsell:"Good for guests watching what they eat. Comes with choice of dressing."},
+    {name:"Cobb Salad",cat:"Salads",price:12.99,desc:"Iceberg and romaine topped with chicken, tomatoes, bacon, bleu cheese crumbles, boiled eggs, and avocado. Hearty and filling. Small ($12.99) or Large ($16.99).",ingredients:"Iceberg, romaine, chicken, tomatoes, bacon, bleu cheese crumbles, boiled eggs, avocado",allergens:["Dairy","Eggs"],upsell:"One of the more filling salads — good for guests who want a light but substantial meal."},
+    {name:"Greek Salad",cat:"Salads",price:11.99,desc:"Iceberg and romaine with cucumbers, tomatoes, feta cheese, olives, croutons, and Greek dressing. Small ($11.99) or Large ($15.99).",ingredients:"Iceberg, romaine, cucumbers, tomatoes, feta, olives, croutons, Greek dressing",allergens:["Gluten","Dairy","Vegetarian"],upsell:"Good for guests who want a lighter or Mediterranean-style option."},
+    {name:"BBQ Ranch Chicken Salad",cat:"Salads",price:12.99,desc:"Iceberg and romaine with mozzarella, grilled chicken, red onions, tomatoes, corn, and cilantro tossed in our signature BBQ house dressing. Small ($12.99) or Large ($16.99).",ingredients:"Iceberg, romaine, mozzarella, grilled chicken, red onions, tomatoes, corn, cilantro, BBQ house dressing",allergens:["Dairy"],upsell:"Guests who love BBQ Chicken pizza tend to love this salad too."},
+    // KETO BOWLS
+    {name:"Chicken Alfredo Bowl",cat:"Keto Bowls",price:13.99,desc:"Grilled chicken in creamy Alfredo garlic sauce with spinach, mushrooms, and onions, topped with melted cheese. A low-carb alternative to pasta Alfredo.",ingredients:"Grilled chicken, Alfredo garlic sauce, spinach, mushrooms, onions, melted cheese",allergens:["Dairy"],upsell:"Good for guests watching carbs. Position it as all the flavor of Alfredo pasta without the noodles."},
+    {name:"Italian Meats Bowl",cat:"Keto Bowls",price:13.99,desc:"Housemade marinara with sausage, meatballs, green peppers, onions, tomatoes, mushrooms, and melted cheese, sprinkled with Italian seasoning.",ingredients:"Housemade marinara, sausage, meatballs, green peppers, onions, tomatoes, mushrooms, melted cheese, Italian seasoning",allergens:["Dairy"],upsell:"Good for guests who want all the pasta toppings without the carbs."},
+    {name:"Garden Veggie Bowl",cat:"Keto Bowls",price:11.99,desc:"Spinach, mushrooms, onions, green peppers, and tomatoes with melted cheese and Italian seasoning. Guest chooses housemade marinara or creamy garlic Alfredo.",ingredients:"Spinach, mushrooms, onions, green peppers, tomatoes, melted cheese, Italian seasoning, choice of marinara or Alfredo",allergens:["Dairy","Vegetarian"],upsell:"Good vegetarian keto option. Ask which sauce they prefer."},
+    // DESSERTS
+    {name:"Pepz Cookie",cat:"Desserts",price:8.99,desc:"Fresh baked chocolate chunk cookie topped with two scoops of vanilla bean ice cream. Warm, gooey, and indulgent.",ingredients:"Chocolate chunk cookie dough, vanilla bean ice cream",allergens:["Gluten","Dairy","Eggs"],upsell:"Always mention this at the end of the meal. Best served warm — make sure guests know it's fresh-baked."},
+    {name:"Cinnasquares",cat:"Desserts",price:8.99,desc:"Fresh baked dough brushed with sweet butter, sprinkled with cinnamon and sugar, with a sweet vanilla glaze topping.",ingredients:"Pizza dough, butter, cinnamon, sugar, vanilla glaze",allergens:["Gluten","Dairy","Eggs"],upsell:"Great for guests with a sweet tooth. Easy upsell at the end of any meal."},
+    {name:"Side of Ice Cream",cat:"Desserts",price:3.00,desc:"A side of vanilla bean ice cream.",ingredients:"Vanilla bean ice cream",allergens:["Dairy"],upsell:"Easy low-cost add-on for any dessert or for kids."},
+    {name:"Create Your Own Float",cat:"Desserts",price:6.99,desc:"Build your own float with your choice of soda and ice cream.",ingredients:"Choice of soda, ice cream",allergens:["Dairy"],upsell:"Fun item for kids or anyone feeling nostalgic. Ask what soda they want."},
+    // DRINKS
+    {name:"22oz Soft Drinks",cat:"Drinks",price:3.00,desc:"22oz fountain drink. Options: Pepsi, Diet Pepsi, Pepsi Zero Sugar, Starry, Mug Root Beer, Dr. Pepper, Lemonade, Gatorade, Horchata, Raspberry Iced Tea, Jamaica, Plain Iced Tea, Bottled Water.",ingredients:"Pepsi products, Gatorade, Horchata, Iced Tea varieties, Jamaica, Lemonade, Bottled Water",allergens:["Vegan"],upsell:"Horchata and Jamaica are great talking points for guests unfamiliar with them."},
+    {name:"2 Liter Drinks",cat:"Drinks",price:4.50,desc:"2-liter bottle for the table. Take-out and delivery only. Options: Pepsi, Diet Pepsi, Starry, Mug Root Beer, Crush Orange, Brisk Iced Tea Lemon.",ingredients:"Pepsi, Diet Pepsi, Starry, Mug Root Beer, Crush Orange, Brisk Iced Tea Lemon",allergens:["Vegan"],upsell:"Only for takeout/delivery. Good upsell for families or group orders."},
+    {name:"Energy Drinks (Bucked Up)",cat:"Drinks",price:3.80,desc:"Bucked Up energy drink. Available in can.",ingredients:"Bucked Up energy drink",allergens:["Vegan"],upsell:"Good for guests who want a caffeine boost."}
+  ];
+
+  const CAT_CLASS = {
+    "Pizza":"cat-pizza","Pasta":"cat-pasta","Starters":"cat-starters",
+    "Wings":"cat-wings","Sandwiches":"cat-sandwiches","Salads":"cat-salads",
+    "Keto Bowls":"cat-keto","Desserts":"cat-desserts","Drinks":"cat-drinks"
+  };
+  const ALLERGEN_CLASS = {
+    "Gluten":"a-gluten","Dairy":"a-dairy","Eggs":"a-eggs",
+    "Vegetarian":"a-vegetarian","Vegan":"a-vegan","Nuts":"a-nuts","Shellfish":"a-shellfish"
+  };
+
+  let currentCat = 'all';
+
+  function setCategory(cat) {
+    currentCat = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    filterMenu();
+  }
+
+  function filterMenu() {
+    const q = document.getElementById('menuSearch').value.toLowerCase().trim();
+    const list = document.getElementById('menuList');
+    const countEl = document.getElementById('menuCount');
+
+    const filtered = MENU_ITEMS.filter(item => {
+      const matchCat = currentCat === 'all' || item.cat === currentCat;
+      const matchQ = !q || item.name.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q) || item.ingredients.toLowerCase().includes(q);
+      return matchCat && matchQ;
+    });
+
+    countEl.textContent = filtered.length + ' item' + (filtered.length !== 1 ? 's' : '');
+
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="no-results">No items match your search.</div>';
+      return;
+    }
+
+    list.innerHTML = filtered.map((item, i) => {
+      const allergenHTML = item.allergens.map(a =>
+        `<span class="allergen-pill ${ALLERGEN_CLASS[a] || ''}">${a}</span>`
+      ).join('');
+      return `
+        <div class="menu-item" id="mi-${i}">
+          <div class="menu-item-header" onclick="toggleItem('mi-${i}')">
+            <div class="item-name-row">
+              <div class="item-name">${item.name}</div>
+              <div class="item-meta">
+                <span class="cat-badge ${CAT_CLASS[item.cat] || ''}">${item.cat}</span>
+                <div class="allergen-pills">${allergenHTML}</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+              <div class="item-price">$${item.price.toFixed(2)}</div>
+              <div class="item-expand-icon">▾</div>
+            </div>
+          </div>
+          <div class="menu-item-body">
+            <div class="detail-section">
+              <div class="detail-label">Description</div>
+              <div class="detail-text">${item.desc}</div>
+            </div>
+            <div class="detail-section">
+              <div class="detail-label">Key Ingredients</div>
+              <div class="detail-text">${item.ingredients}</div>
+            </div>
+            <div class="upsell-box">
+              <div class="detail-label">💡 Upsell Opportunity</div>
+              <div class="detail-text">${item.upsell}</div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function showWeek(weekId, btn) {
+    document.querySelectorAll('.week-block').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.week-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(weekId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function toggleItem(id) {
+    document.getElementById(id).classList.toggle('expanded');
+  }
+
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const navLink = document.querySelector(`nav a[data-section="${id}"]`);
+    if (navLink) navLink.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (id === 'menu') filterMenu();
+    return false;
+  }
+
+  function showTraining(tab) {
+    document.querySelectorAll('.training-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.training-nav .cat-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('training-' + tab).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  function toggleModule(card) {
+    card.classList.toggle('expanded');
+  }
+
+  function toggleRole(item) {
+    item.classList.toggle('expanded');
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  QUIZ ENGINE
+  // ═══════════════════════════════════════════════════════
+
+  const MENU_QUESTIONS = [
+    {q:"What type of meat is on the Hawaiian pizza at Stadium Pepz?",a:1,opts:["Regular ham","Canadian bacon","Prosciutto","Turkey bacon"],cat:"Pizzas",exp:"Stadium Pepz uses Canadian bacon on the Hawaiian — not regular ham — which is what sets ours apart from most Hawaiian pizzas."},
+    {q:"What sauce is the base of the BBQ Chicken pizza?",a:2,opts:["Marinara","Ranch","Housemade BBQ sauce","Alfredo"],cat:"Pizzas",exp:"BBQ Chicken uses housemade BBQ sauce as the base, not marinara."},
+    {q:"What fresh herb finishes both the BBQ Chicken and California Delight pizzas after the oven?",a:2,opts:["Basil","Parsley","Cilantro","Oregano"],cat:"Pizzas",exp:"Both BBQ Chicken and California Delight are finished with fresh cilantro after coming out of the oven."},
+    {q:"How many slices does a Large (16\") pizza get cut into?",a:2,opts:["8","12","10","6"],cat:"Pizza Cuts",exp:"A 16\" large pizza is cut into 10 slices."},
+    {q:"How many slices does a Medium (12\") pizza get cut into?",a:1,opts:["6","8","10","12"],cat:"Pizza Cuts",exp:"A 12\" medium pizza is cut into 8 slices."},
+    {q:"How many slices does a Small (8\") pizza get cut into?",a:0,opts:["4","6","8","2"],cat:"Pizza Cuts",exp:"A small 8\" pizza is cut into 4 slices."},
+    {q:"How many slices does an Extra Large (18\") pizza get cut into?",a:3,opts:["10","8","14","12"],cat:"Pizza Cuts",exp:"An 18\" extra large pizza is cut into 12 slices."},
+    {q:"What is the price of the Viral Pepzone?",a:2,opts:["$34.99","$38.99","$43.99","$49.99"],cat:"Pricing",exp:"The Viral Pepzone is our highest-ticket item at $43.99."},
+    {q:"What is stuffed inside the Viral Pepzone's calzone half?",a:1,opts:["Cheese and pepperoni","Chicken fettuccine Alfredo with ricotta, mozzarella, and provolone","Spinach and artichoke","Sausage and meatballs"],cat:"Pizzas",exp:"The Pepzone calzone is stuffed with creamy chicken fettuccine Alfredo, ricotta, mozzarella, and provolone."},
+    {q:"What makes the D Town Sweet Heat different from the standard D Town?",a:2,opts:["It uses spicy dough","It has sausage instead of pepperoni","It's topped with ricotta and Mike's Hot Honey","It adds jalapeños"],cat:"Detroit Style",exp:"D Town Sweet Heat adds ricotta and Mike's Hot Honey on top of the standard double pepperoni Detroit style."},
+    {q:"Detroit-style pizzas must go through the oven how many times?",a:1,opts:["Once","1.5 times","Twice","2.5 times"],cat:"Oven Knowledge",exp:"Detroit style pizzas are deep dish and must go through the oven 1.5 times to ensure a full cook."},
+    {q:"What toppings are added to the BBQ Pulled Pork pizza AFTER it comes out of the oven?",a:1,opts:["Fresh cilantro and avocado","Chopped onion rings and coleslaw","Green onions and sour cream","Sliced jalapeños and ranch"],cat:"Oven Knowledge",exp:"BBQ Pulled Pork gets chopped onion rings and a side of coleslaw added after the oven."},
+    {q:"What allergens are in the Fried Pickles?",a:1,opts:["Dairy and Gluten","Gluten and Eggs","Gluten only","Dairy and Eggs"],cat:"Allergens",exp:"Fried Pickles contain Gluten (from the breading) and Eggs."},
+    {q:"Which pizza uses a refried bean base?",a:0,opts:["Breakfast Pizza","The Pastrami","BBQ Pulled Pork","Vegetarian"],cat:"Pizzas",exp:"The Breakfast Pizza uses refried beans as its base sauce — a unique differentiator."},
+    {q:"What sauce is the base for the Bacon Chicken Ranch pizza?",a:2,opts:["Marinara","Garlic butter","Buttermilk ranch sauce","Alfredo"],cat:"Pizzas",exp:"Bacon Chicken Ranch uses buttermilk ranch as the base — same as California Delight."},
+    {q:"What are the four meats on The Meat pizza?",a:0,opts:["Pepperoni, sausage, ham, and bacon bits","Pepperoni, sausage, salami, and prosciutto","Ham, pepperoni, chicken, and bacon","Sausage, meatballs, ham, and pepperoni"],cat:"Pizzas",exp:"The Meat has four meats: pepperoni, sausage, ham, and bacon bits — no exceptions."},
+    {q:"What sauce is the base of the Roasted Artichoke & Spinach pizza?",a:2,opts:["Marinara","Ranch","Spinach artichoke sauce","Olive oil"],cat:"Pizzas",exp:"Roasted Artichoke & Spinach uses spinach artichoke sauce as the base — it's a white pizza."},
+    {q:"What unique topping is on the California Delight pizza (added after the oven)?",a:1,opts:["Guacamole","Housemade avocado crème","Sliced avocado","Avocado aioli"],cat:"Pizzas",exp:"California Delight is finished with housemade avocado crème — a great talking point with guests."},
+    {q:"What is the base sauce on the California Delight pizza?",a:2,opts:["Marinara","Alfredo","Buttermilk ranch","Garlic oil"],cat:"Pizzas",exp:"California Delight uses buttermilk ranch as the base."},
+    {q:"What sauce is on the Pastrami pizza?",a:2,opts:["Marinara","Ranch","Mustard","House mayo"],cat:"Pizzas",exp:"The Pastrami pizza uses mustard as its sauce, along with pickles and pastrami — deli-inspired flavors."},
+    {q:"What allergens are in the Philly Cheesesteak pizza?",a:2,opts:["Gluten and Dairy","Dairy and Eggs","Gluten, Dairy, and Eggs","Gluten only"],cat:"Allergens",exp:"The Philly Cheesesteak pizza uses house mayo sauce, making it Gluten + Dairy + Eggs."},
+    {q:"What two cheeses make up the Cheese Lovers pizza?",a:1,opts:["Mozzarella and Parmesan","Mozzarella and provolone","Mozzarella and ricotta","Provolone and Parmesan"],cat:"Pizzas",exp:"Cheese Lovers uses an extra-heavy blend of mozzarella and provolone for maximum cheese pull."},
+    {q:"What meat is on the Pepz Italian pizza?",a:2,opts:["Pepperoni","Ham","Sausage","Chicken"],cat:"Pizzas",exp:"Pepz Italian uses sausage along with fresh tomatoes, fresh basil, and garlic — light and fresh."},
+    {q:"What cheese blend is used on the Roasted Artichoke & Spinach pizza?",a:0,opts:["Mozzarella and Parmesan","Mozzarella and provolone","Mozzarella and ricotta","Provolone and Parmesan"],cat:"Pizzas",exp:"Roasted Artichoke & Spinach uses mozzarella and Parmesan — a more elevated cheese combination."},
+    {q:"What is the Alfredo pizza's sauce base?",a:3,opts:["Marinara","Ranch","BBQ sauce","Alfredo sauce"],cat:"Pizzas",exp:"The Alfredo pizza uses creamy Alfredo sauce as its base — a great alternative to red sauce."},
+    {q:"What is sliced on the California Delight pizza added after the oven?",a:3,opts:["Avocado","Green onions only","Cilantro only","The avocado crème is made in-house — no sliced avocado"],cat:"Pizzas",exp:"California Delight uses housemade avocado crème, not sliced avocado. It's a key distinction."},
+    {q:"How many meatballs come in the Spaghetti & Meatballs?",a:1,opts:["One","Two","Three","Four"],cat:"Pasta",exp:"Spaghetti & Meatballs comes with two large house-made meatballs."},
+    {q:"Where is Stadium Pepz's pasta sourced from?",a:2,opts:["California-local farms","Made fresh in-house daily","Italy (organic non-GMO)","The Midwest"],cat:"Pasta",exp:"All pasta at Pepz is organic non-GMO sourced from Italy — a great quality talking point."},
+    {q:"What is the price of the Lasagna?",a:3,opts:["$12.99","$13.99","$14.99","$15.99"],cat:"Pricing",exp:"Lasagna is the highest-priced pasta at $15.99."},
+    {q:"Which pasta dish is listed as vegan?",a:0,opts:["Penne Arrabbiata","Fettuccine Alfredo","Penne Pesto","Cheese Ravioli"],cat:"Allergens",exp:"Penne Arrabbiata (spicy marinara and garlic, no dairy) is listed as vegan."},
+    {q:"What is Penne Vodka's sauce?",a:1,opts:["Vodka-infused cream sauce","Light tomato and garlic cream sauce","Creamy Alfredo with tomato","Spicy tomato basil cream"],cat:"Pasta",exp:"Penne Vodka is in a light tomato and garlic cream sauce — good middle ground between marinara and Alfredo."},
+    {q:"How many wing sauce options does Stadium Pepz offer?",a:2,opts:["10","12","15","18"],cat:"Wings",exp:"Wings come in 15 sauce options — from Original Hot to Kickin' Bourbon to Korean BBQ."},
+    {q:"How many wings are in the large order?",a:1,opts:["15","20","24","30"],cat:"Wings",exp:"The large wing order is 20 pieces at $30.99."},
+    {q:"What comes with every wing order?",a:2,opts:["Ranch only","Blue cheese and carrots","Celery, carrots, and ranch or bleu cheese","Celery and ranch only"],cat:"Wings",exp:"Wings always come with celery, carrots, and a choice of ranch or bleu cheese."},
+    {q:"What is the 6-piece wing order price?",a:2,opts:["$8.99","$9.99","$11.99","$13.99"],cat:"Pricing",exp:"6-piece wings are $11.99."},
+    {q:"The Pepz Potatoes Sauced & Tossed are tossed in what?",a:0,opts:["Garlic butter, Parmesan, and fresh cilantro","Garlic butter, cheddar, and green onions","Ranch sauce and Parmesan","BBQ sauce and bacon bits"],cat:"Starters",exp:"Sauced & Tossed are tossed in garlic butter and finished with grated Parmesan and fresh cilantro — a full pound."},
+    {q:"How much does the Sauced & Tossed Potatoes cost?",a:2,opts:["$8.99","$11.99","$13.99","$12.99"],cat:"Pricing",exp:"Pepz Potatoes Sauced & Tossed is $13.99 — a great upsell over plain potatoes."},
+    {q:"What dipping sauce comes with Fried Pickles?",a:2,opts:["Ranch","Marinara","Chipotle ranch","BBQ sauce"],cat:"Starters",exp:"Fried Pickles come with housemade chipotle ranch — a smoky, unique pairing."},
+    {q:"What allergens are in the Caesar Salad?",a:1,opts:["Gluten and Dairy only","Gluten, Dairy, and Eggs","Dairy and Eggs only","Gluten only"],cat:"Allergens",exp:"Caesar Salad contains Gluten (croutons), Dairy (Parmesan, dressing), and Eggs (Caesar dressing)."},
+    {q:"What unique ingredients are in the Cobb Salad?",a:1,opts:["Feta cheese and olives","Avocado and bleu cheese crumbles","Croutons and shredded carrots","Corn and cilantro"],cat:"Salads",exp:"The Cobb Salad features avocado, bleu cheese crumbles, bacon, chicken, and boiled eggs."},
+    {q:"What dressing does the BBQ Ranch Chicken Salad use?",a:2,opts:["Ranch dressing","Honey mustard","BBQ house dressing","Italian dressing"],cat:"Salads",exp:"The BBQ Ranch Chicken Salad uses Stadium Pepz's signature BBQ house dressing."},
+    {q:"What type of bread is the California Club served on?",a:3,opts:["French deli roll","Brioche bun","Sourdough","German brown bread"],cat:"Sandwiches",exp:"The California Club comes on German brown bread — a great differentiator from our other subs."},
+    {q:"Which sandwiches come on a brioche bun?",a:1,opts:["Philly Cheesesteak Sub and Meatball Sub","Southern Pulled Pork Sandwich and Nashville Hot Chicken Sandwich","Pastrami Sub and Italian Sub","Pepz Cubano and Turkey Sub"],cat:"Sandwiches",exp:"Both the Southern Pulled Pork and Nashville Hot Chicken Sandwich are on brioche buns."},
+    {q:"What is the most expensive sub on the menu?",a:2,opts:["Philly Cheesesteak Sub","Nashville Hot Chicken Sandwich","Pastrami Sub","Southern Pulled Pork Sandwich"],cat:"Pricing",exp:"The Pastrami Sub is the highest-priced sub at $12.99 small / $16.99 large."},
+    {q:"What allergens are in the Pepz Cubano?",a:1,opts:["Gluten and Dairy","Gluten, Dairy, and Eggs","Gluten only","Dairy and Eggs"],cat:"Allergens",exp:"The Pepz Cubano contains Gluten (bread), Dairy (provolone), and Eggs (mayo)."},
+    {q:"Which Keto Bowl lets guests choose between marinara or Alfredo sauce?",a:2,opts:["Chicken Alfredo Bowl","Italian Meats Bowl","Garden Veggie Bowl","All keto bowls"],cat:"Keto Bowls",exp:"The Garden Veggie Bowl gives guests a choice of housemade marinara or creamy garlic Alfredo."},
+    {q:"What dessert is served warm with two scoops of vanilla bean ice cream?",a:1,opts:["Cinnasquares","Pepz Cookie","Create Your Own Float","Side of Ice Cream"],cat:"Desserts",exp:"The Pepz Cookie is a fresh-baked chocolate chunk cookie topped with two scoops of vanilla bean ice cream."},
+    {q:"Which drinks are available in 2-liter bottles?",a:1,opts:["All fountain drinks","Pepsi, Diet Pepsi, Starry, Mug Root Beer, Crush Orange, Brisk Iced Tea","Pepsi, Diet Pepsi, Gatorade, and Horchata","Only Pepsi and Diet Pepsi"],cat:"Drinks",exp:"2-liter options are: Pepsi, Diet Pepsi, Starry, Mug Root Beer, Crush Orange, and Brisk Iced Tea."},
+    {q:"2-liter drinks are available for which order types?",a:2,opts:["Dine-in only","Dine-in and takeout","Takeout and delivery only","All order types"],cat:"Drinks",exp:"2-liters are for takeout and delivery only — not dine-in."},
+    {q:"What allergen is in the Garden Veggie Bowl?",a:1,opts:["Gluten","Dairy","Eggs","Nuts"],cat:"Allergens",exp:"The Garden Veggie Bowl's primary allergen is Dairy (melted cheese and optional Alfredo sauce)."},
+    {q:"What sauce does the Philly Cheesesteak pizza use as a base?",a:3,opts:["Marinara","Ranch","Alfredo","House mayo sauce"],cat:"Pizzas",exp:"The Philly Cheesesteak pizza uses house mayo sauce as the base — like the sandwich version."},
+    {q:"Which pizza uses a mustard sauce base?",a:2,opts:["Breakfast Pizza","Pepz Italian","The Pastrami","The Alfredo"],cat:"Pizzas",exp:"The Pastrami pizza uses mustard as the sauce — a deli-inspired flavor profile with pickles and pastrami."},
+    {q:"What should you warn a takeout guest ordering the D Town Sweet Heat?",a:1,opts:["It takes extra time to make","The ricotta may melt and spread during transport","The hot honey is on the side","It requires a minimum order"],cat:"Upsell Tips",exp:"Always warn takeout guests that the ricotta may melt and spread during transport — but it still tastes amazing."},
+    {q:"What brand of hot honey is used on the D Town Sweet Heat?",a:2,opts:["Bee Local","Bees Knees","Mike's Hot Honey","Savannah Bee"],cat:"Pizzas",exp:"D Town Sweet Heat is drizzled with Mike's Hot Honey — a well-known craft brand that guests recognize."},
+    {q:"What is the main difference between the Chicken Philly Sub and the Philly Cheesesteak Sub?",a:2,opts:["Different cheese","Different vegetables","Chicken vs. beef steak","Different bread"],cat:"Sandwiches",exp:"Chicken Philly uses chicken breast; Philly Cheesesteak uses beef steak. Both have the same veggies, mayo, and provolone."},
+    {q:"Which starter item is listed as vegan?",a:0,opts:["Pepz Potatoes (plain)","Garlic Knots","Breadsticks","Zucchini"],cat:"Allergens",exp:"Plain Pepz Potatoes are vegan. Garlic Knots, Breadsticks, and Zucchini all contain dairy or eggs."},
+    {q:"What are the three pasta shape choices in the Create Your Own Pasta?",a:1,opts:["Spaghetti, penne, and linguine","Penne, spaghetti, and fettuccine","Penne, rigatoni, and spaghetti","Spaghetti, fettuccine, and ravioli"],cat:"Pasta",exp:"Create Your Own Pasta offers penne, spaghetti, or fettuccine."},
+    {q:"How much does it cost to add Alfredo sauce to the Create Your Own Pasta?",a:3,opts:["Free","$2.99","$3.99","$4.99"],cat:"Pricing",exp:"Alfredo sauce is a premium option on the Create Your Own Pasta, adding $4.99."},
+    {q:"A guest says they're vegetarian. Which pizza should you NOT recommend?",a:2,opts:["Vegetarian Pizza","Cheese Lovers","Hawaiian","Roasted Artichoke & Spinach"],cat:"Allergens",exp:"Hawaiian contains Canadian bacon — not vegetarian. Vegetarian, Cheese Lovers, and Roasted Artichoke & Spinach are better options."},
+    {q:"What is on the standard Calzone (not the Pepzone)?",a:0,opts:["Ricotta, mozzarella, herbs, garlic spread, Parmesan — served with marinara","Mozzarella, pepperoni, and marinara","Sausage, ricotta, and mozzarella","Alfredo, chicken, and provolone"],cat:"Pizzas",exp:"The Calzone is ricotta, herbs, and mozzarella inside, brushed with garlic spread and Parmesan, served with marinara."},
+    {q:"How many toppings come with a Personal Calzone?",a:1,opts:["1 topping","2 toppings","3 toppings","No toppings included"],cat:"Pizzas",exp:"A Personal Calzone includes 2 toppings. Small and Large come with 3 toppings."},
+    {q:"What vegetables are on the Pepz House Special pizza?",a:1,opts:["Green peppers, mushrooms, spinach, and tomatoes","Green peppers, black olives, onions, and mushrooms","Onions, peppers, artichokes, and spinach","Black olives, green peppers, jalapeños, and mushrooms"],cat:"Pizzas",exp:"The Pepz House Special is loaded with green peppers, black olives, onions, and mushrooms — plus three meats and extra cheese."},
+    {q:"Which salad has pepperoncini in it?",a:1,opts:["Greek Salad","Antipasto Salad","Caesar Salad","BBQ Ranch Chicken Salad"],cat:"Salads",exp:"The Antipasto Salad includes pepperoncini along with Italian meats, mozzarella, and vegetables."},
+    {q:"What allergens are in the Pepz Cookie?",a:1,opts:["Dairy and Eggs only","Gluten, Dairy, and Eggs","Gluten and Dairy only","Gluten only"],cat:"Allergens",exp:"The Pepz Cookie contains Gluten (dough), Dairy (ice cream), and Eggs (cookie dough)."},
+    {q:"What size is the D Town and D Town Sweet Heat only available in?",a:2,opts:["Large (16\")","Extra Large (18\")","Detroit size only","Medium (12\") and Large (16\")"],cat:"Detroit Style",exp:"D Town and D Town Sweet Heat are only available in Detroit size — a square pan pizza with crispy cheese-crusted edges."},
+    {q:"What gluten-free crust upgrade costs guests?",a:2,opts:["Free","$2.00","$3.00","$5.00"],cat:"Pricing",exp:"Guests can request a gluten-free crust for an additional $3."},
+    {q:"What does the Breakfast Pizza include that makes it distinctly spicy?",a:0,opts:["Chorizo and jalapeño","Hot sauce and cotija","Green chile and salsa","Chipotle and sour cream"],cat:"Pizzas",exp:"The Breakfast Pizza includes chorizo and jalapeño — those are the heat elements on top of the refried bean base."},
+    {q:"The Vegetarian pizza — does it contain any meat?",a:0,opts:["No meat — fully vegetarian","It has optional chicken","It comes standard with anchovies","It has a small amount of ham"],cat:"Allergens",exp:"The Vegetarian pizza is fully meat-free: green peppers, mushrooms, olives, onions, spinach, fresh tomatoes, garlic, and extra cheese."}
+  ];
+
+  const OPS_QUESTIONS = [
+    {q:"What is the correct scripted phone greeting at Stadium Pepz?",a:1,opts:["Stadium Pepz, how can I help you?","Thank you for calling Stadium Pepz on State College! My name is ___, will this be for takeout or delivery?","Thank you for calling, what would you like to order?","Hi, this is Stadium Pepz. Takeout or delivery?"],cat:"Phone & Communication",exp:"The exact scripted greeting must include the location (State College) and your name before asking about the order type."},
+    {q:"What is the full address of Stadium Pepz?",a:2,opts:["726 S State College Blvd, Fullerton, CA","726 N State College Blvd, Anaheim, CA","726 S State College Blvd, Anaheim, CA 92806","762 S State College Blvd, Anaheim, CA"],cat:"Store Info",exp:"The full address is 726 S State College Blvd, Anaheim, CA 92806."},
+    {q:"What is Stadium Pepz's main phone number?",a:0,opts:["(714) 991-9900","(714) 909-9191","(707) 978-8072","(714) 991-0099"],cat:"Store Info",exp:"The restaurant's main phone number is (714) 991-9900. Note: (707) 978-8072 is Ryan's direct line."},
+    {q:"What time does Stadium Pepz open on Sundays?",a:2,opts:["10:00 AM","11:00 AM","12:00 PM","1:00 PM"],cat:"Store Hours",exp:"Stadium Pepz opens at noon on Sundays — one hour later than every other day."},
+    {q:"What time does Stadium Pepz close on weekdays (Monday–Thursday)?",a:1,opts:["8:00 PM","9:00 PM","10:00 PM","11:00 PM"],cat:"Store Hours",exp:"Monday through Thursday close at 9:00 PM. Friday and Saturday close at 10:00 PM."},
+    {q:"What time do Friday and Saturday close?",a:1,opts:["9:00 PM","10:00 PM","11:00 PM","12:00 AM"],cat:"Store Hours",exp:"Friday and Saturday are the latest nights, closing at 10:00 PM."},
+    {q:"How long has Stadium Pepz been serving Anaheim?",a:2,opts:["Since 1990","Since 1995","Since 2001","Since 2005"],cat:"Store Info",exp:"Stadium Pepz has been a family-owned restaurant in Anaheim since 2001."},
+    {q:"What is Stadium Pepz's Instagram handle?",a:1,opts:["@stadium_pepz","@stadiumpepz","@pepzpizza","@stadiumpepzpizza"],cat:"Store Info",exp:"The Instagram handle is @stadiumpepz. Note: TikTok is @stadiumpepzpizza — they're different."},
+    {q:"What is Stadium Pepz's TikTok handle?",a:2,opts:["@stadiumpepz","@pepzpizza","@stadiumpepzpizza","@stadium.pepz"],cat:"Store Info",exp:"TikTok is @stadiumpepzpizza — different from the Instagram handle @stadiumpepz."},
+    {q:"How does the Stadium Pepz Rewards program work?",a:1,opts:["1 point per $10 spent, $5 off every 50 points","1 point per $1 spent, $7 off every 100 points","1 point per $2 spent, $5 off every 100 points","2 points per $1 spent, $10 off every 100 points"],cat:"Store Info",exp:"The rewards program gives 1 point per $1 spent, with $7 off for every 100 points earned."},
+    {q:"Which certification is required for ALL staff including BOH?",a:1,opts:["RBS Certificate","Food Handler Card","ServSafe Manager","California Food Safety License"],cat:"Certifications",exp:"Every person who works with food — FOH and BOH — must have a valid Food Handler Card. It's California law."},
+    {q:"Which certification is ONLY required for FOH staff?",a:2,opts:["Food Handler Card","I-9 Form","RBS Certificate","W-4 Form"],cat:"Certifications",exp:"The RBS (Responsible Beverage Service) Certificate is required only for FOH staff who serve or handle alcohol, not BOH."},
+    {q:"How long is a Food Handler Card valid?",a:2,opts:["1 year","2 years","3 years","5 years"],cat:"Certifications",exp:"A Food Handler Card is valid for 3 years from the issue date."},
+    {q:"Where should staff email their certifications?",a:2,opts:["info@stadiumpepz.com","manager@stadiumpepz.com","ryan@stadiumpepz.com","hr@stadiumpepz.com"],cat:"Certifications",exp:"All certifications go to ryan@stadiumpepz.com — same address for Food Handler Card and RBS Certificate."},
+    {q:"What is the pay schedule at Stadium Pepz?",a:1,opts:["Bi-weekly on Fridays","Weekly on Fridays — hours from Mon–Sun paid the following Friday","Monthly on the 15th","Weekly on Mondays"],cat:"HR & Pay",exp:"Stadium Pepz pays every Friday. Hours worked Monday through Sunday are paid out the following Friday."},
+    {q:"What app do staff use to receive paychecks?",a:2,opts:["7Shifts","Toast","QuickBooks","PayPal"],cat:"HR & Pay",exp:"QuickBooks handles payroll. Staff must accept the QuickBooks invitation to receive their paychecks."},
+    {q:"What app do staff use for scheduling?",a:2,opts:["QuickBooks","Toast","7Shifts","Deputy"],cat:"HR & Pay",exp:"7Shifts is the scheduling app — staff set availability and check their schedule there."},
+    {q:"For a dine-in order on Toast POS, what customer information is required?",a:1,opts:["Name and phone number","Table number","Name, table number, and phone","No information needed"],cat:"Toast POS",exp:"For dine-in, only the table number is needed — entered as the tab name."},
+    {q:"For a delivery order on Toast POS, what must be collected?",a:2,opts:["Name and phone only","Name, phone, and credit card","Name, phone, and full address","Phone and address only"],cat:"Toast POS",exp:"Delivery requires name, phone number, and full address — all must be read back to the customer to confirm."},
+    {q:"When is it required to always print and hand a receipt to the guest?",a:2,opts:["For all orders","For orders over $50","For alcohol orders","For delivery orders only"],cat:"Cashier SOP",exp:"For alcohol orders, always print the receipt and hand it to the guest to present at the bar."},
+    {q:"A guest picks up a takeout order. How do you verify it's the right person?",a:1,opts:["Ask for their name only","Ask for last name or phone number","Ask to see their ID","Just match the ticket name"],cat:"Takeout SOP",exp:"Always verify by last name or phone number — duplicate first names are common and cause handoff errors."},
+    {q:"A takeout order shows a red 'NOT PAID' banner. What do you do?",a:1,opts:["Ignore it — the system is often wrong","Collect payment before handing over the order","Give the order and follow up later","Notify the shift lead and hand over anyway"],cat:"Takeout SOP",exp:"Collect payment before handing over the order. Use the handheld for card, POS for cash — never hand off an unpaid order."},
+    {q:"When handing off a 3rd-party delivery order (DoorDash, Uber Eats), what must happen first?",a:1,opts:["You can hand it over anytime after it's bagged","The driver must confirm pickup in their app","You must verify the driver's badge number","The shift lead must approve the handoff"],cat:"Takeout SOP",exp:"Never hand an order to a 3rd party driver who hasn't confirmed in their app — the driver must confirm pickup first."},
+    {q:"How many times should a food runner check on a table during their meal?",a:1,opts:["Once, when food is delivered","At least twice","Three times minimum","Only when called"],cat:"Food Runner SOP",exp:"Check in at least twice per table — once when food arrives and at least once during the meal."},
+    {q:"What should you do toward the end of a guest's meal (pre-bussing)?",a:1,opts:["Ask if they want to see a dessert menu","Ask about boxes and clear empty dishes","Ask if everything was perfect","Offer to process their payment"],cat:"Food Runner SOP",exp:"Pre-bussing ('pruning') means asking about boxes and clearing empty dishes before guests leave. Fully bus the table as soon as they go."},
+    {q:"What is the scripted approach for asking guests for a Google review?",a:2,opts:["'Please leave us a 5-star review on Google!'","'If you enjoyed your meal, we'd love a review.'","'Thank you for coming in — any feedback you leave, good or bad, really helps us grow.'","'We'd appreciate a review if you have time.'"],cat:"Food Runner SOP",exp:"The script is: 'Thank you for coming in. We're trying to get more feedback from our community — the good, the bad, the ugly. Any feedback you leave really helps us grow.'"},
+    {q:"Where do you get your review card lanyard at the start of a shift?",a:2,opts:["It stays at your station","From the host stand","From your shift lead at the start of your shift","You bring your own"],cat:"Food Runner SOP",exp:"Get the lanyard from your shift lead at shift start — return it before clocking out. It doesn't leave the building."},
+    {q:"At the Wings Station, who handles putting most desserts and appetizers in the oven?",a:2,opts:["The food runner","The cashier","The cooks","The wings station person"],cat:"Wings Station SOP",exp:"Cooks handle putting most desserts and appetizers in the oven for the wings station. Wings station puts wings in themselves."},
+    {q:"When bagging a completed order, where does the ticket go?",a:1,opts:["Inside the bag with the food","Attached to the outside of the bag","Handed to the cashier","Attached to the drink"],cat:"Wings Station SOP",exp:"The ticket is attached to the outside of the bag after all items are inside and verified."},
+    {q:"What is the head spec for a 16oz beer?",a:1,opts:["¼ inch","½ inch","¾ inch","1 inch"],cat:"Bar SOP",exp:"16oz beers should have approximately ½ inch of head — glass tilted to minimize foam while pouring."},
+    {q:"What is the head spec for a 34oz beer?",a:2,opts:["½ inch","¾ inch","1 inch","1.5 inches"],cat:"Bar SOP",exp:"34oz beers should have approximately 1 inch of head."},
+    {q:"A beer bucket contains how many beers?",a:1,opts:["4","5","6","Varies by beer"],cat:"Bar SOP",exp:"A beer bucket is 5 beers plus a scoop of ice — always the same."},
+    {q:"What should you always ask when handing over a beer bucket?",a:1,opts:["'Would you like your beers cold?'","'Do you need a bottle opener?'","'Can I get you any food with that?'","'Would you like napkins?'"],cat:"Bar SOP",exp:"Always ask 'Do you need a bottle opener?' when handing over a beer bucket, and provide a bar key if needed."},
+    {q:"What certification is required before working the bar station?",a:2,opts:["Food Handler Card","ServSafe Manager","RBS Certificate","California Alcohol Handler License"],cat:"Bar SOP",exp:"You must have a valid RBS certificate on file before working the bar. Email it to ryan@stadiumpepz.com first."},
+    {q:"Which station is described as a 'flex position' in the role guides?",a:3,opts:["Cashier","Wings","Oven","Bar"],cat:"Role Guides",exp:"The bar is explicitly described as a flex position — when slow, bar staff should help run food or assist with takeout."},
+    {q:"If you're unsure what to do when your station is slow, where do you check?",a:1,opts:["Ask the cashier","The 7Shifts downtime checklist","Wait for your shift lead to assign something","Start cleaning the bathrooms"],cat:"Best Practices",exp:"The 7Shifts downtime checklist is the go-to resource when you're unsure what to do during a slow period."},
+    {q:"If a pizza doesn't match the ticket at the oven, what do you do?",a:2,opts:["Send it out and note it on the ticket","Remake it without telling anyone","Notify the kitchen and report to your shift lead so waste is tracked","Ask the cashier to update the order"],cat:"Oven SOP",exp:"If a pizza doesn't match — notify the kitchen, report to the shift lead for waste tracking. Never send out a pizza you're unsure about."},
+    {q:"For dine-in, how are cut pizzas placed for service?",a:1,opts:["Placed in boxes for the runner","Cut on trays and placed with ready orders","Held at the oven until called","Placed in bags with a ticket"],cat:"Oven SOP",exp:"Dine-in pizzas are cut on trays and placed in the ready orders area. Takeout pizzas are stacked in boxes."},
+    {q:"For takeout pizza orders, when is the ticket attached?",a:1,opts:["To the first pizza box in the stack","With the last pizza in the order","To the outside of the bag","Handed separately to the customer"],cat:"Oven SOP",exp:"For takeout, stack the pizzas and attach the ticket with the last pizza in the order."},
+    {q:"What must the oven station supply with every pizza order?",a:1,opts:["Plates and napkins","Cheese/pepper packets, marinara, and pizza toppers","Ranch and napkins","Garlic knots and sauce"],cat:"Oven SOP",exp:"Every pizza order goes out with cheese/pepper packets, marinara sauce, and pizza toppers."},
+    {q:"A guest at a table seems unhappy with their meal. What do you do?",a:2,opts:["Offer them a coupon","Try to fix it yourself","Notify your shift lead immediately","Ask them to fill out a comment card"],cat:"Guest Scenarios",exp:"If a guest seems unhappy, notify your shift lead immediately — don't try to handle it solo."},
+    {q:"What upsells should the cashier proactively suggest?",a:1,opts:["Extra toppings and larger pizza sizes","Drinks, desserts (Pepz Cookie or Cinnasquares), and Sauced & Tossed Potatoes","Salads and appetizers","Beer buckets and wine"],cat:"Cashier SOP",exp:"The cashier role specifically calls for suggesting drinks, desserts, and upgrading potatoes to Sauced & Tossed."},
+    {q:"What should automatically be included with every large takeout order?",a:1,opts:["Extra napkins only","Plates, napkins, and utensils","Ranch and napkins","Extra sauces only"],cat:"Takeout SOP",exp:"Large orders automatically get plates, napkins, and utensils — don't wait to be asked."},
+    {q:"When handing off a takeout order, what should you confirm one final time?",a:2,opts:["The order total","The payment method","The customer's name","The estimated delivery time"],cat:"Takeout SOP",exp:"Confirm the customer's name one more time before handoff, then say 'Everything should be in the bag, including sauces and sides.'"},
+    {q:"What are the five core values of Stadium Pepz?",a:1,opts:["Speed, accuracy, cleanliness, teamwork, and service","Guest first, fresh quality food, teamwork, community, and ownership","Hospitality, respect, integrity, quality, and speed","Family, food, fun, community, and loyalty"],cat:"Core Values",exp:"The five core values: Guest first always, Fresh quality food, We're a team, Community matters, and Own it."},
+    {q:"What is the correct step order when opening a new dine-in order on Toast?",a:1,opts:["Enter items, then tap New Order, then collect table number","Tap New Order → select order type → collect info → enter items → review → tap Pay","Collect payment first, then enter the order","Select order type, enter items, then collect customer info"],cat:"Toast POS",exp:"The correct Toast flow is: New Order → order type → customer info → items → review → Pay. Always in that sequence."},
+    {q:"A guest pays with cash. What's most important before handing over change?",a:1,opts:["Print the receipt","Double-check the change before handing it over","Ask if they want a bag","Notify the shift lead"],cat:"Cashier SOP",exp:"Always double-check change before handing it over — accuracy prevents disputes and builds trust."},
+    {q:"If your cash drawer is low on change, what should you do?",a:0,opts:["Notify your shift lead immediately — before guests are affected","Wait until you completely run out","Ask a guest to break a bill","Borrow change from another register"],cat:"Cashier SOP",exp:"Notify your shift lead immediately if you need change — don't wait until guests are standing there waiting."},
+    {q:"What paperwork is completed with HR on or before Day 1?",a:1,opts:["Food Handler Card and RBS Certificate","I-9, W-4/DE-4, LWTA Wage Notice, Employee Handbook Acknowledgment","QuickBooks setup and 7Shifts enrollment","Background check authorization and direct deposit form"],cat:"HR & Pay",exp:"HR paperwork includes I-9 verification, CA DE-4/W-4, LWTA Wage Notice, and the Employee Handbook Acknowledgment."},
+    {q:"What should you do before clocking out?",a:1,opts:["Just clock out when your shift ends","Check in with your shift lead for any outstanding tasks","Take a final break and then clock out","Submit your tasks in 7Shifts"],cat:"Best Practices",exp:"Always check in with your shift lead before clocking out to make sure nothing is left undone."},
+    {q:"Guest scenario: You're restocking napkins when a guest approaches the counter. What do you do first?",a:1,opts:["Finish restocking, then greet the guest","Greet the guest before touching anything else","Make eye contact and hold up one finger","Call a coworker to help the guest"],cat:"Guest Scenarios",exp:"Greet the guest before anything else. The Cashier guide says: greet before touching the POS — same principle applies to any task."},
+    {q:"Guest scenario: A table's food has been sitting on the pass for a few minutes. What do you do?",a:1,opts:["Wait for the oven station to call it out","Run it immediately after verifying items match the table number","Ask the shift lead to handle it","Ask the cashier to notify the table"],cat:"Guest Scenarios",exp:"Don't wait — verify items, match to table number, and run the food out promptly."},
+    {q:"What should you do when the Wings Station ticket volume is low?",a:2,opts:["Take a break","Deep-clean the station","Check in and see how you can help another station","Stock up on sauces for later"],cat:"Wings Station SOP",exp:"When slow, check in with other stations. Supporting teammates is a core expectation at Stadium Pepz."},
+    {q:"What party services does Stadium Pepz offer?",a:1,opts:["Corporate event catering only","Team parties and birthday party packages","Wedding receptions and rehearsal dinners","Food truck events"],cat:"Store Info",exp:"Stadium Pepz offers team parties and birthday party packages, plus an arcade and gaming area."},
+    {q:"Does Stadium Pepz offer gift cards?",a:3,opts:["No gift cards","Physical gift cards only","Digital gift cards only","Yes, both physical and digital gift cards"],cat:"Store Info",exp:"Stadium Pepz offers both physical and digital gift cards."},
+    {q:"Guest scenario: A guest tells you their pizza has toppings they didn't order. What's your first move?",a:2,opts:["Apologize and offer a discount","Take the pizza back and remake it yourself","Notify your shift lead immediately","Ask the kitchen to fix it without telling anyone"],cat:"Guest Scenarios",exp:"Order errors and unhappy guests should always be escalated to the shift lead right away — don't handle alone."},
+    {q:"What is Ryan's direct phone number for staff to reach him?",a:2,opts:["(714) 991-9900","(714) 909-9191","(707) 978-8072","(714) 978-8072"],cat:"Store Info",exp:"Ryan's direct line is (707) 978-8072. The restaurant main line is (714) 991-9900."},
+    {q:"The RBS certificate is obtained through which platform?",a:1,opts:["Any food safety provider online","The California ABC-approved portal at abcbiz.abc.ca.gov","ServSafe.com","StateFoodSafety.com"],cat:"Certifications",exp:"California RBS training is through the ABC-approved portal at abcbiz.abc.ca.gov — available online."},
+    {q:"Which websites are accepted for completing the Food Handler Card?",a:1,opts:["abc.ca.gov or foodhandler.com","StateFoodSafety.com or ServSafe.com","abcbiz.abc.ca.gov or CDCfood.gov","FoodSafety.gov or healthdept.ca.gov"],cat:"Certifications",exp:"Both StateFoodSafety.com and ServSafe.com are ANSI-accredited providers accepted by Stadium Pepz."},
+    {q:"What does 'pruning' mean in the context of Stadium Pepz operations?",a:1,opts:["Trimming herbs for garnishes","Pre-bussing tables — clearing empty dishes and asking about boxes","Reorganizing the prep area","Reviewing tickets for accuracy"],cat:"Food Runner SOP",exp:"Your shift lead may call pre-bussing 'pruning' — it means clearing empty dishes and asking about boxes toward the end of the meal."},
+    {q:"Guest scenario: Saturday night, your wings station is backing up with tickets. What do you do?",a:1,opts:["Work faster and don't say anything","Ask your shift lead or another team member for help before it affects guests","Start running tickets in a different order","Ask the cashier to stop taking orders"],cat:"Guest Scenarios",exp:"If your station is falling behind, ask for help before it affects guests. Speak up early — don't wait."},
+    {q:"What is Stadium Pepz's official website?",a:2,opts:["pepzpizza.com","stadiumpepz.net","stadiumpepz.com","pepzanaheim.com"],cat:"Store Info",exp:"The official website is stadiumpepz.com."},
+    {q:"Which day of the week is Stadium Pepz open with the shortest hours?",a:0,opts:["Sunday (12:00 PM – 9:00 PM)","Monday (11:00 AM – 9:00 PM)","Saturday (11:00 AM – 10:00 PM)","Friday (11:00 AM – 10:00 PM)"],cat:"Store Hours",exp:"Sunday has the shortest day — opening at noon instead of 11 AM and closing at 9 PM."},
+    {q:"What community service does Stadium Pepz participate in?",a:1,opts:["Food bank donations","Community fundraiser nights","Youth sports sponsorships","Free meals for seniors"],cat:"Core Values",exp:"Stadium Pepz hosts community fundraiser nights as part of their involvement in the Anaheim community."},
+    {q:"Stadium Pepz offers what kind of entertainment beyond food?",a:1,opts:["Live music on weekends","Arcade and gaming area","Trivia nights","Mini-golf"],cat:"Store Info",exp:"Stadium Pepz has an arcade and gaming area as part of the guest experience — great to mention to guests with kids."}
+  ];
+
+  // ─── Quiz state ───
+  let activeQuizBank = null;
+  let activeQuizName = '';
+  let sessionQuestions = [];
+  let currentQIndex = 0;
+  let correctCount = 0;
+  let sessionResults = [];
+
+  function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function startQuiz(type) {
+    activeQuizBank = type === 'menu' ? MENU_QUESTIONS : OPS_QUESTIONS;
+    activeQuizName = type === 'menu' ? 'Menu Knowledge' : 'Operations Knowledge';
+    sessionQuestions = shuffleArray(activeQuizBank).slice(0, 15);
+    currentQIndex = 0;
+    correctCount = 0;
+    sessionResults = [];
+
+    document.getElementById('quizListWrap').classList.add('hidden');
+    document.getElementById('quizActive').classList.add('visible');
+    document.getElementById('quizResults').classList.remove('visible');
+    document.getElementById('quizQuestionView').style.display = 'block';
+
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const q = sessionQuestions[currentQIndex];
+    const total = sessionQuestions.length;
+    const pct = (currentQIndex / total) * 100;
+
+    document.getElementById('qzCounter').textContent = `Question ${currentQIndex + 1} of ${total}`;
+    document.getElementById('qzScoreLive').textContent = `✓ ${correctCount} correct`;
+    document.getElementById('qzProgressBar').style.width = pct + '%';
+    document.getElementById('qzCategory').textContent = q.cat;
+    document.getElementById('qzQuestion').textContent = q.q;
+    document.getElementById('qzExplanation').classList.remove('visible');
+    document.getElementById('qzNextBtn').classList.remove('visible');
+    document.getElementById('qzNextBtn').textContent = currentQIndex + 1 < total ? 'Next Question →' : 'See Results →';
+
+    const optWrap = document.getElementById('qzOptions');
+    optWrap.innerHTML = '';
+    q.opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'qz-option';
+      btn.textContent = opt;
+      btn.onclick = () => selectAnswer(i);
+      optWrap.appendChild(btn);
+    });
+  }
+
+  function selectAnswer(selected) {
+    const q = sessionQuestions[currentQIndex];
+    const buttons = document.querySelectorAll('.qz-option');
+    const isCorrect = selected === q.a;
+
+    if (isCorrect) correctCount++;
+
+    buttons.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.a) btn.classList.add(isCorrect && i === selected ? 'correct' : 'reveal-correct');
+      if (i === selected && !isCorrect) btn.classList.add('wrong');
+    });
+
+    const expEl = document.getElementById('qzExplanation');
+    expEl.textContent = q.exp;
+    expEl.classList.add('visible');
+
+    document.getElementById('qzNextBtn').classList.add('visible');
+    document.getElementById('qzScoreLive').textContent = `✓ ${correctCount} correct`;
+
+    sessionResults.push({ q: q.q, correct: isCorrect });
+  }
+
+  function nextQuestion() {
+    currentQIndex++;
+    if (currentQIndex >= sessionQuestions.length) {
+      showResults();
+    } else {
+      renderQuestion();
+    }
+  }
+
+  function showResults() {
+    document.getElementById('quizQuestionView').style.display = 'none';
+    document.getElementById('qzProgressBar').style.width = '100%';
+
+    const total = sessionQuestions.length;
+    const pct = Math.round((correctCount / total) * 100);
+
+    document.getElementById('qzFinalScore').textContent = correctCount;
+    document.getElementById('qzFinalDenom').textContent = '/ ' + total;
+
+    let msg, sub;
+    if (pct === 100)      { msg = '🏆 Perfect Score!';     sub = 'Flawless — you know this cold.'; }
+    else if (pct >= 80)   { msg = '🌟 Great Work!';         sub = 'Strong score. Review any misses and you\'ll have this nailed.'; }
+    else if (pct >= 60)   { msg = '👍 Good Effort';         sub = 'Solid foundation. Check the questions you missed and retake when ready.'; }
+    else                  { msg = '📖 Keep Studying';        sub = 'Review the training materials and give it another shot — you\'ve got this.'; }
+
+    document.getElementById('qzResultMsg').textContent = msg;
+    document.getElementById('qzResultSub').textContent = sub;
+
+    const breakdown = document.getElementById('qzBreakdown');
+    breakdown.innerHTML = sessionResults.map(r =>
+      `<div class="qz-breakdown-row">
+        <div class="brow-q">${r.q}</div>
+        <div class="brow-icon">${r.correct ? '✅' : '❌'}</div>
+      </div>`
+    ).join('');
+
+    document.getElementById('quizResults').classList.add('visible');
+  }
+
+  function retakeQuiz() {
+    const type = activeQuizBank === MENU_QUESTIONS ? 'menu' : 'ops';
+    startQuiz(type);
+  }
+
+  function backToQuizList() {
+    document.getElementById('quizActive').classList.remove('visible');
+    document.getElementById('quizListWrap').classList.remove('hidden');
+    document.getElementById('quizResults').classList.remove('visible');
+  }
+  </script>
+
+</body>
+</html>
