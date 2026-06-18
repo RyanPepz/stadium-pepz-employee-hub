@@ -1632,7 +1632,8 @@
       title: "⚠️ Mandatory FOH Staff Meeting — July 1st",
       body: "All FOH staff are required to attend a staff meeting on:\n\n📅 Wednesday, July 1st\n🕘 9:30 PM\n\nThis meeting is mandatory. No exceptions. If you have a conflict, reach out to Ryan directly before the date.",
       tag: "Schedule",
-      pinned: true
+      pinned: true,
+      meetingDate: "2026-07-01"
     },
     {
       date: "2026-06-18",
@@ -2135,23 +2136,49 @@
     return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   }
 
+  function autoUnpinExpiredMeetings() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    ANNOUNCEMENTS.forEach(ann => {
+      if (ann.meetingDate) {
+        const meetingDay = new Date(ann.meetingDate + 'T23:59:59');
+        if (today > meetingDay) ann.pinned = false;
+      }
+    });
+  }
+
   function renderLatestAnnouncement() {
+    autoUnpinExpiredMeetings();
     const el = document.getElementById('latestAnnouncement');
     if (!el || !ANNOUNCEMENTS.length) return;
-    const ann = ANNOUNCEMENTS.find(a => a.pinned) || ANNOUNCEMENTS[0];
-    el.innerHTML = `
+
+    // Most recent non-meeting pinned announcement
+    const regular = [...ANNOUNCEMENTS]
+      .filter(a => a.pinned && !a.meetingDate)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+    // Active pinned staff meeting announcement (not yet expired)
+    const meeting = [...ANNOUNCEMENTS]
+      .filter(a => a.pinned && a.meetingDate)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+    const items = [meeting, regular].filter(Boolean);
+    if (!items.length) { el.innerHTML = ''; return; }
+
+    el.innerHTML = items.map(ann => `
       <div class="ann-banner" onclick="showSection('board');return false;">
-        <div class="ann-banner-icon">📣</div>
+        <div class="ann-banner-icon">${ann.meetingDate ? '🗓️' : '📣'}</div>
         <div class="ann-banner-content">
-          <div class="ann-banner-label">Latest Announcement · ${formatAnnDate(ann.date)}</div>
+          <div class="ann-banner-label">${ann.meetingDate ? 'Staff Meeting' : 'Latest Announcement'} · ${formatAnnDate(ann.date)}</div>
           <div class="ann-banner-title">${ann.title}</div>
           <div class="ann-banner-preview">${ann.body}</div>
         </div>
         <div class="ann-banner-arrow">›</div>
-      </div>`;
+      </div>`).join('');
   }
 
   function renderAnnouncements() {
+    autoUnpinExpiredMeetings();
     const el = document.getElementById('annList');
     if (!el) return;
     if (!ANNOUNCEMENTS.length) {
