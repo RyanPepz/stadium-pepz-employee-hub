@@ -604,29 +604,75 @@
   function removeItem(idx) { orderItems.splice(idx, 1); renderOrder(); }
   function clearOrder()    { orderItems = []; renderOrder(); toast('Order cleared'); }
 
-  // ── GENERIC TOPPINGS MODIFIER ──────────────────────────────────
+  // ── MODIFIER STATE ─────────────────────────────────────────────
   let _topItem = null, _topType = null, _topSel = [];
+  let _wingItem = null, _selectedSauce = null;
+  let _coneStep = 'type', _selectedToppings = [], _selectedPasta = null;
 
+  // ── EVENT DELEGATION — single listener handles all modifier clicks
+  document.getElementById('modifierPanel').addEventListener('click', function(e) {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    const val    = btn.dataset.val || '';
+
+    if (action === 'close')        { closeMod(); }
+    else if (action === 'confirm-wings')    { confirmWings(); }
+    else if (action === 'confirm-toppings') { confirmToppings(); }
+    else if (action === 'confirm-cone-top') { confirmConeTopping(); }
+    else if (action === 'confirm-cone-pasta'){ confirmConePasta(); }
+    else if (action === 'pick-sauce') {
+      document.querySelectorAll('#modifierPanel .mod-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      _selectedSauce = val;
+    }
+    else if (action === 'toggle-top') {
+      const maxSel = _topType === 'pizza' ? 5 : 99;
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected');
+        _topSel = _topSel.filter(t => t !== val);
+      } else {
+        if (_topSel.length >= maxSel) { toast('⚠️ Max ' + maxSel + ' toppings', 'err'); return; }
+        btn.classList.add('selected');
+        _topSel.push(val);
+      }
+    }
+    else if (action === 'pick-cone-type') { _coneStep = val; renderConeStep(); }
+    else if (action === 'toggle-cone-top') {
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected');
+        _selectedToppings = _selectedToppings.filter(x => x !== val);
+      } else {
+        if (_selectedToppings.length >= 2) { toast('⚠️ Max 2 toppings', 'err'); return; }
+        btn.classList.add('selected');
+        _selectedToppings.push(val);
+      }
+    }
+    else if (action === 'pick-cone-pasta') {
+      document.querySelectorAll('#modifierPanel .mod-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      _selectedPasta = val;
+    }
+  });
+
+  // ── TOPPINGS MODIFIER ──────────────────────────────────────────
   function showToppingsMod(item, type) {
     _topItem = item; _topType = type; _topSel = [];
     const toppings = type === 'pasta' ? PASTA_TOPPINGS :
                      type === 'sandwich' ? SANDWICH_TOPPINGS : PIZZA_TOPPINGS;
-    const title    = type === 'pasta' ? 'ADD-INS' :
-                     type === 'sandwich' ? 'MODIFICATIONS' : 'TOPPINGS';
+    const title    = type === 'pasta' ? 'ADD-INS' : type === 'sandwich' ? 'MODIFICATIONS' : 'TOPPINGS';
     const subtitle = type === 'pasta' ? 'Select any add-ins (optional)' :
                      type === 'sandwich' ? 'Select any modifications (optional)' :
                      'Select toppings (optional — up to 5)';
-
-    document.getElementById('modifierPanel').innerHTML = `
+    const panel = document.getElementById('modifierPanel');
+    panel.innerHTML = `
       <div class="mod-header">
         <div class="qty-control">
-          <button class="qty-btn">−</button>
-          <div class="qty-display">1</div>
-          <button class="qty-btn">+</button>
+          <button class="qty-btn">−</button><div class="qty-display">1</div><button class="qty-btn">+</button>
         </div>
         <div class="mod-actions">
-          <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
-          <button class="mod-action-btn btn-done" onclick="confirmToppings()">✓ Done</button>
+          <button class="mod-action-btn btn-cancel" data-action="close">✕ Cancel</button>
+          <button class="mod-action-btn btn-done"   data-action="confirm-toppings">✓ Done</button>
         </div>
       </div>
       <div class="mod-title">${item.name}</div>
@@ -637,23 +683,10 @@
         <button class="mod-tab">Seat Number</button>
         <button class="mod-tab">Dining Option</button>
       </div>
-      <div class="mod-options" id="topOpts">
-        ${toppings.map(t => `<button class="mod-option" onclick="toggleTop(this,'${t.replace(/'/g,"\\'")}'">${t}</button>`).join('')}
-      </div>
-    `;
+      <div class="mod-options">
+        ${toppings.map(t => `<button class="mod-option" data-action="toggle-top" data-val="${t.replace(/"/g,'&quot;')}">${t}</button>`).join('')}
+      </div>`;
     openMod();
-  }
-
-  function toggleTop(btn, topping) {
-    const maxSel = _topType === 'pizza' ? 5 : 99;
-    if (btn.classList.contains('selected')) {
-      btn.classList.remove('selected');
-      _topSel = _topSel.filter(t => t !== topping);
-    } else {
-      if (_topSel.length >= maxSel) { toast(`⚠️ Max ${maxSel} toppings`, 'err'); return; }
-      btn.classList.add('selected');
-      _topSel.push(topping);
-    }
   }
 
   function confirmToppings() {
@@ -665,20 +698,16 @@
   }
 
   // ── WINGS MODIFIER ─────────────────────────────────────────────
-  let _wingItem = null, _selectedSauce = null;
-
   function showWingsMod(item) {
     _wingItem = item; _selectedSauce = null;
     document.getElementById('modifierPanel').innerHTML = `
       <div class="mod-header">
         <div class="qty-control">
-          <button class="qty-btn">−</button>
-          <div class="qty-display">1</div>
-          <button class="qty-btn">+</button>
+          <button class="qty-btn">−</button><div class="qty-display">1</div><button class="qty-btn">+</button>
         </div>
         <div class="mod-actions">
-          <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
-          <button class="mod-action-btn btn-done" onclick="confirmWings()">✓ Done</button>
+          <button class="mod-action-btn btn-cancel" data-action="close">✕ Cancel</button>
+          <button class="mod-action-btn btn-done"   data-action="confirm-wings">✓ Done</button>
         </div>
       </div>
       <div class="mod-title">${item.name}</div>
@@ -689,110 +718,90 @@
         <button class="mod-tab">WING PREP</button>
         <button class="mod-tab">Special Request</button>
       </div>
-      <div class="mod-options" id="sauceOpts">
-        ${WING_SAUCES.map(s => `<button class="mod-option" onclick="pickSauce(this,'${s.replace(/'/g,"\\'")}'">${s}</button>`).join('')}
-      </div>
-    `;
+      <div class="mod-options">
+        ${WING_SAUCES.map(s => `<button class="mod-option" data-action="pick-sauce" data-val="${s.replace(/"/g,'&quot;')}">${s}</button>`).join('')}
+      </div>`;
     openMod();
-  }
-
-  function pickSauce(btn, sauce) {
-    document.querySelectorAll('#sauceOpts .mod-option').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected'); _selectedSauce = sauce;
   }
 
   function confirmWings() {
     if (!_selectedSauce) { toast('⚠️ Select a wing sauce first', 'err'); return; }
     orderItems.push({ name: _wingItem.name, price: _wingItem.price, modifier: _selectedSauce });
     renderOrder(); closeMod();
-    toast(`Added: ${_wingItem.name} — ${_selectedSauce}`);
+    toast('Added: ' + _wingItem.name + ' — ' + _selectedSauce);
   }
 
   // ── PIZZA CONE MODIFIER ────────────────────────────────────────
-  let _coneStep = 'type', _selectedToppings = [], _selectedPasta = null;
-
   function showConeMod() {
     _coneStep = 'type'; _selectedToppings = []; _selectedPasta = null;
     renderConeStep(); openMod();
   }
 
   function renderConeStep() {
-    const p = document.getElementById('modifierPanel');
+    const panel = document.getElementById('modifierPanel');
     if (_coneStep === 'type') {
-      p.innerHTML = `
+      panel.innerHTML = `
         <div class="mod-header">
           <div class="qty-control">
             <button class="qty-btn">−</button><div class="qty-display">1</div><button class="qty-btn">+</button>
           </div>
           <div class="mod-actions">
-            <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
+            <button class="mod-action-btn btn-cancel" data-action="close">✕ Cancel</button>
             <button class="mod-action-btn btn-done" style="background:#444;cursor:default;">✓ Done</button>
           </div>
         </div>
         <div class="mod-title">PIZZA CONE</div>
-        <div class="mod-subtitle">Select at least 2 from PIZZA CONE — choose your filling</div>
+        <div class="mod-subtitle">Choose your filling</div>
         <div class="mod-tabs"><button class="mod-tab active">PIZZA CONE</button><button class="mod-tab">Seat Number</button><button class="mod-tab">Dining Option</button><button class="mod-tab">Special Request</button></div>
         <div class="mod-options">
-          <button class="mod-option" onclick="pickConeType('pizza')">PIZZA</button>
-          <button class="mod-option" onclick="pickConeType('pasta')">PASTA</button>
+          <button class="mod-option" data-action="pick-cone-type" data-val="pizza">PIZZA</button>
+          <button class="mod-option" data-action="pick-cone-type" data-val="pasta">PASTA</button>
         </div>`;
     } else if (_coneStep === 'pizza') {
-      p.innerHTML = `
+      panel.innerHTML = `
         <div class="mod-header">
           <div style="font-size:12px;color:#7b9cbf;">PIZZA CONE → PIZZA</div>
           <div class="mod-actions">
-            <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
-            <button class="mod-action-btn btn-done" onclick="confirmConeTopping()">✓ Done</button>
+            <button class="mod-action-btn btn-cancel" data-action="close">✕ Cancel</button>
+            <button class="mod-action-btn btn-done"   data-action="confirm-cone-top">✓ Done</button>
           </div>
         </div>
         <div class="mod-title">PIZZA</div>
         <div class="mod-subtitle">Select up to 2 toppings</div>
         <div class="mod-tabs"><button class="mod-tab active">TOPPINGS</button><button class="mod-tab">Special Request</button></div>
-        <div class="mod-options" id="coneTopOpts">
-          ${CONE_TOPPINGS.map(t => `<button class="mod-option" onclick="toggleConeTop(this,'${t}')">${t}</button>`).join('')}
+        <div class="mod-options">
+          ${CONE_TOPPINGS.map(t => `<button class="mod-option" data-action="toggle-cone-top" data-val="${t.replace(/"/g,'&quot;')}">${t}</button>`).join('')}
         </div>`;
     } else if (_coneStep === 'pasta') {
-      p.innerHTML = `
+      panel.innerHTML = `
         <div class="mod-header">
           <div style="font-size:12px;color:#7b9cbf;">PIZZA CONE → PASTA</div>
           <div class="mod-actions">
-            <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
-            <button class="mod-action-btn btn-done" onclick="confirmConePasta()">✓ Done</button>
+            <button class="mod-action-btn btn-cancel" data-action="close">✕ Cancel</button>
+            <button class="mod-action-btn btn-done"   data-action="confirm-cone-pasta">✓ Done</button>
           </div>
         </div>
         <div class="mod-title">PASTA</div>
-        <div class="mod-subtitle">PIZZA CONE > PASTA — select a pasta type</div>
+        <div class="mod-subtitle">Select a pasta type</div>
         <div class="mod-tabs"><button class="mod-tab active">PASTA TYPE</button><button class="mod-tab">ADD MEAT</button><button class="mod-tab">Special Request</button></div>
-        <div class="mod-options" id="conePastaOpts">
-          ${CONE_PASTAS.map(p => `<button class="mod-option" onclick="pickConePasta(this,'${p}')">${p}</button>`).join('')}
+        <div class="mod-options">
+          ${CONE_PASTAS.map(p => `<button class="mod-option" data-action="pick-cone-pasta" data-val="${p}">${p}</button>`).join('')}
         </div>`;
     }
-  }
-
-  function pickConeType(type) { _coneStep = type; renderConeStep(); }
-
-  function toggleConeTop(btn, t) {
-    if (btn.classList.contains('selected')) { btn.classList.remove('selected'); _selectedToppings = _selectedToppings.filter(x=>x!==t); }
-    else { if (_selectedToppings.length >= 2) { toast('⚠️ Max 2 toppings', 'err'); return; } btn.classList.add('selected'); _selectedToppings.push(t); }
   }
 
   function confirmConeTopping() {
     if (!_selectedToppings.length) { toast('⚠️ Select at least one topping', 'err'); return; }
     orderItems.push({ name:'PIZZA CONE', price:32.99, modifier:'Pizza: ' + _selectedToppings.join(', ') });
     renderOrder(); closeMod();
-    toast('Added: PIZZA CONE — Pizza (' + _selectedToppings.join(', ') + ')');
-  }
-
-  function pickConePasta(btn, pasta) {
-    document.querySelectorAll('#conePastaOpts .mod-option').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected'); _selectedPasta = pasta;
+    toast('Added: PIZZA CONE — ' + _selectedToppings.join(', '));
   }
 
   function confirmConePasta() {
     if (!_selectedPasta) { toast('⚠️ Select a pasta type', 'err'); return; }
     orderItems.push({ name:'PIZZA CONE', price:32.99, modifier:'Pasta: ' + _selectedPasta });
     renderOrder(); closeMod();
-    toast('Added: PIZZA CONE — Pasta (' + _selectedPasta + ')');
+    toast('Added: PIZZA CONE — ' + _selectedPasta);
   }
 
   // ── UTILITIES ──────────────────────────────────────────────────
