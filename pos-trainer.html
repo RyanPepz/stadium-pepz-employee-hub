@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pepz POS Trainer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0d1520; color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    /* HEADER */
+    .trainer-header {
+      background: #1a2744; padding: 8px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 2px solid #c8972a; flex-shrink: 0;
+    }
+    .trainer-header h2 { color: #c8972a; font-size: 14px; font-weight: 700; }
+    .trainer-header .sub { font-size: 11px; color: #7b9cbf; margin-top: 2px; }
+    .mode-badge {
+      background: #c8972a; color: #1a2744;
+      font-size: 10px; font-weight: 800;
+      padding: 3px 10px; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* LAYOUT */
+    .pos-container { display: flex; flex: 1; overflow: hidden; }
+
+    /* LEFT PANEL */
+    .order-panel {
+      width: 290px; min-width: 290px; background: #112030;
+      border-right: 1px solid #1e3050;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .check-header {
+      background: #1a2f4a; padding: 10px 14px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+      border-bottom: 1px solid #1e3050;
+    }
+    .check-num { color: #7b9cbf; }
+    .tab-name { background: #243a55; border-radius: 4px; padding: 2px 8px; font-size: 12px; color: #adc4e0; }
+    .check-meta { padding: 8px 14px; border-bottom: 1px solid #1e3050; font-size: 12px; }
+    .dine-type { color: #7b9cbf; margin-bottom: 6px; }
+    .server-row { display: flex; align-items: center; gap: 6px; }
+    .server-name { color: #adc4e0; font-weight: 600; }
+    .meta-btn { background: #243a55; border: none; color: #adc4e0; font-size: 11px; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
+    .share-bar { padding: 6px 14px; background: #182840; border-bottom: 1px solid #1e3050; font-size: 12px; color: #adc4e0; font-weight: 600; }
+    .order-items { flex: 1; overflow-y: auto; padding: 4px 0; }
+    .empty-order { padding: 28px 14px; color: #3a5a7a; font-size: 12px; text-align: center; line-height: 1.6; }
+    .order-item { padding: 6px 14px; border-bottom: 1px solid #182840; font-size: 12px; }
+    .order-item:hover { background: #182840; }
+    .order-item-row { display: flex; align-items: flex-start; gap: 6px; }
+    .item-qty { color: #7b9cbf; min-width: 14px; }
+    .item-name { flex: 1; color: #e8e8e8; line-height: 1.4; }
+    .item-price { color: #e8e8e8; font-weight: 600; white-space: nowrap; }
+    .remove-btn { background: none; border: none; color: #4a6a8a; cursor: pointer; font-size: 15px; padding: 0 2px; line-height: 1; }
+    .remove-btn:hover { color: #e05050; }
+    .item-modifier { color: #7b9cbf; font-size: 11px; padding-left: 20px; margin-top: 2px; }
+    .send-stay-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 14px; border-top: 1px solid #1e3050; }
+    .btn-stay, .btn-send { padding: 8px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; background: #243a55; color: #adc4e0; }
+    .btn-send:hover { background: #2a5a8a; color: white; }
+    .totals-section { padding: 6px 14px; border-top: 1px solid #1e3050; font-size: 13px; }
+    .total-row { display: flex; justify-content: space-between; padding: 2px 0; color: #adc4e0; }
+    .action-buttons { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 6px; padding: 8px 14px 12px; }
+    .btn-no-sale, .btn-print { background: #243a55; border: none; color: #adc4e0; padding: 10px 6px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-pay { background: #1e5a99; border: none; color: white; padding: 10px 6px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .btn-pay:hover { background: #2a6aaa; }
+
+    /* RIGHT PANEL */
+    .menu-panel { flex: 1; background: #0d1824; display: flex; flex-direction: column; overflow: hidden; }
+    .menu-top-bar { display: flex; align-items: center; padding: 8px 14px; gap: 10px; border-bottom: 1px solid #1e2e48; flex-shrink: 0; }
+    .menu-search { flex: 1; background: #1a2c44; border: 1px solid #243a55; border-radius: 20px; padding: 7px 14px; display: flex; align-items: center; gap: 8px; }
+    .menu-search input { background: none; border: none; outline: none; color: #adc4e0; font-size: 13px; width: 100%; }
+    .menu-search input::placeholder { color: #3a5a7a; }
+    .menu-grid { flex: 1; overflow-y: auto; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+    .category-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+    .cat-button { padding: 11px 5px; border: none; border-radius: 6px; font-size: 10.5px; font-weight: 700; cursor: pointer; text-align: center; line-height: 1.25; text-transform: uppercase; color: white; min-height: 46px; transition: filter 0.1s, transform 0.1s; }
+    .cat-button:hover { filter: brightness(1.2); }
+    .cat-button:active { transform: scale(0.96); }
+    .cat-button.active { outline: 2px solid white; outline-offset: 1px; }
+    .cat-starters { background: #b56878; } .cat-wings { background: #9a5878; }
+    .cat-chicken  { background: #b86820; } .cat-pizza   { background: #7a2018; }
+    .cat-cone     { background: #6a1808; } .cat-calzones{ background: #7a1808; }
+    .cat-salads   { background: #3a7a20; } .cat-dressings{ background: #1e2e48; }
+    .cat-pasta    { background: #a890a0; color:#1a1a2a; } .cat-sauces { background: #1e2e48; }
+    .cat-keto     { background: #8a2010; } .cat-cold-sw  { background: #5a5a28; }
+    .cat-hot-sw   { background: #b86818; } .cat-desserts { background: #2a3a55; }
+    .cat-soda     { background: #2a3a55; } .cat-alcohol  { background: #8a5a10; }
+    .cat-catering { background: #3a3a4a; } .cat-merch    { background: #2a2a3a; }
+    .cat-misc     { background: #1e2e48; font-size:10px; } .cat-daily { background: #7a1808; }
+    .cat-event    { background: #1a58a8; } .cat-rewards  { background: #3a4a6a; font-size:10px; }
+    .cat-gift     { background: #3a4a6a; font-size:10px; } .cat-house { background: #2a3a5a; font-size:10px; }
+    .section-divider { height: 1px; background: #1e2e48; }
+    .items-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+    .item-button { background: #1a2c44; border: 1px solid #243a55; border-radius: 6px; padding: 9px 7px; color: #e8e8e8; font-size: 11px; font-weight: 600; cursor: pointer; text-align: left; line-height: 1.3; min-height: 46px; transition: background 0.1s, transform 0.1s; }
+    .item-button:hover { background: #243a55; }
+    .item-button:active { transform: scale(0.96); }
+    .item-price-tag { color: #7b9cbf; font-size: 10px; margin-top: 3px; display: block; }
+    .sub-cat-button { background: #1a2c44; border: 2px solid #243a55; border-radius: 6px; padding: 9px 7px; color: #e8e8e8; font-size: 10.5px; font-weight: 700; cursor: pointer; text-align: center; min-height: 46px; text-transform: uppercase; transition: background 0.1s; line-height: 1.3; }
+    .sub-cat-button:hover { background: #243a55; }
+    .sub-cat-button.active { border-color: white; background: #243a55; }
+    .no-items { color: #3a5a7a; font-size: 12px; padding: 12px 4px; }
+
+    /* MODIFIER OVERLAY */
+    .modifier-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; display: none; align-items: center; justify-content: center; }
+    .modifier-overlay.active { display: flex; }
+    .modifier-panel { background: #0e1c2e; border: 1px solid #243a55; border-radius: 12px; width: 92%; max-width: 680px; max-height: 88vh; overflow-y: auto; padding: 18px 20px; }
+    .mod-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .qty-control { display: flex; align-items: center; gap: 12px; }
+    .qty-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #3a5a7a; background: none; color: #adc4e0; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .qty-display { font-size: 18px; font-weight: 700; min-width: 24px; text-align: center; }
+    .mod-actions { display: flex; gap: 8px; }
+    .mod-action-btn { padding: 8px 16px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-cancel { background: #243a55; color: #adc4e0; }
+    .btn-done { background: #1e5a99; color: white; }
+    .btn-done:hover { background: #2a6aaa; }
+    .mod-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .mod-subtitle { font-size: 12px; color: #7b9cbf; margin-bottom: 14px; }
+    .mod-tabs { display: flex; gap: 5px; margin-bottom: 12px; flex-wrap: wrap; }
+    .mod-tab { padding: 7px 13px; border: 1px solid #243a55; border-radius: 6px; font-size: 11.5px; font-weight: 600; cursor: pointer; background: #1a2c44; color: #adc4e0; }
+    .mod-tab.active { background: #243a55; border-color: white; color: white; }
+    .mod-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+    .mod-option { padding: 9px 6px; border: 1px solid #243a55; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; background: #1a2c44; color: #e8e8e8; text-align: center; line-height: 1.3; min-height: 42px; display: flex; align-items: center; justify-content: center; transition: background 0.1s; }
+    .mod-option:hover { background: #243a55; }
+    .mod-option.selected { background: #1e4a7a; border-color: #4a8aca; }
+
+    /* TOAST */
+    .feedback-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; z-index: 200; opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; }
+    .feedback-toast.show { opacity: 1; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #243a55; border-radius: 2px; }
+    @media (max-width: 680px) {
+      .order-panel { width: 230px; min-width: 230px; }
+      .category-grid, .items-grid, .mod-options { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="trainer-header">
+  <div>
+    <h2>🖥️ Pepz POS Trainer</h2>
+    <div class="sub">Practice entering orders — no real transactions</div>
+  </div>
+  <div class="mode-badge">Training Mode</div>
+</div>
+
+<div class="pos-container">
+  <div class="order-panel">
+    <div class="check-header">
+      <span style="color:#5a7a9a;">←</span>
+      <span class="check-num">#281</span>
+      <span class="tab-name">Tab name</span>
+    </div>
+    <div class="check-meta">
+      <div class="dine-type">🍽 Dine In</div>
+      <div class="server-row">
+        <span class="server-name">Ryan P</span>
+        <button class="meta-btn">Svc charge</button>
+        <button class="meta-btn">Split</button>
+        <button class="meta-btn">Discount</button>
+      </div>
+    </div>
+    <div class="share-bar">Share</div>
+    <div class="order-items" id="orderItems">
+      <div class="empty-order">No items yet.<br>Tap a category to start.</div>
+    </div>
+    <div class="send-stay-row">
+      <button class="btn-stay">⊙ Stay</button>
+      <button class="btn-send" id="sendBtn">⊙ Send</button>
+    </div>
+    <div class="totals-section">
+      <div class="total-row"><span>Subtotal:</span><span id="subtotal">$0.00</span></div>
+      <div class="total-row"><span>Tax (7.75%):</span><span id="tax">$0.00</span></div>
+    </div>
+    <div class="action-buttons">
+      <button class="btn-no-sale" onclick="clearOrder()">No sale</button>
+      <button class="btn-print">Print</button>
+      <button class="btn-pay" id="payBtn">Pay $0.00</button>
+    </div>
+  </div>
+
+  <div class="menu-panel">
+    <div class="menu-top-bar">
+      <div class="menu-search">
+        <span style="color:#3a5a7a;font-size:13px;">🔍</span>
+        <input type="text" placeholder="Search" id="searchInput" oninput="handleSearch(this.value)">
+      </div>
+    </div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+</div>
+
+<div class="modifier-overlay" id="modifierOverlay">
+  <div class="modifier-panel" id="modifierPanel"></div>
+</div>
+
+<div class="feedback-toast" id="feedbackToast"></div>
+
+<script>
+  const TAX = 0.0775;
+
+  // ── TOPPINGS LISTS ─────────────────────────────────────────────
+  const PIZZA_TOPPINGS = [
+    'Bacon Bits','Canadian Bacon','Chicken','Ham','Pepperoni',
+    'Sausage','Black Olives','Corn','Fresh Basil','Fresh Cilantro',
+    'Fresh Tomatoes','Garlic','Green Onions','Green Peppers','Jalapeños',
+    'Mushrooms','Onions','Pineapples','Red Onions','Spinach',
+  ];
+
+  const PASTA_TOPPINGS = [
+    'Side Meatball','Side Sausage','Grilled Chicken','Bacon','Extra Sauce',
+    'Extra Cheese','Red Pepper Flakes','Fresh Basil','Garlic','Spinach',
+  ];
+
+  const SANDWICH_TOPPINGS = [
+    'Extra Cheese','Avocado','Jalapeños','Extra Meat','Bacon',
+    'Onions','Peppers','Mushrooms','Spinach','No Onions',
+    'No Sauce','Lettuce','Tomato','Light Mayo','Extra Mayo',
+  ];
+
+  const WING_SAUCES = [
+    'Franks Original Hot Buffalo Sauce','Honey Garlic','Sweet Chili','Seasoned / Plain',
+    'Mango Habanero','Teriyaki','Fire','Garlic Parmesan','Lemon Pepper','House BBQ',
+    'Korean BBQ',"Kickin' Bourbon",'Honey Hot','Spicy Tourn Sauce (NEW)',
+  ];
+
+  const CONE_TOPPINGS = [...PIZZA_TOPPINGS];
+  const CONE_PASTAS = ['Spaghetti','Penne Vodka','Penne Arrabiata','Penne Pesto','Fettuccini Alfredo'];
+
+  // ── MENU DATA ──────────────────────────────────────────────────
+  const CATEGORIES = [
+    { id:'starters',  label:'STARTERS & SIDES',   cls:'cat-starters'  },
+    { id:'wings',     label:'WINGS',               cls:'cat-wings'     },
+    { id:'chicken',   label:'BROASTED CHICKEN',    cls:'cat-chicken'   },
+    { id:'pizza',     label:'PIZZA',               cls:'cat-pizza'     },
+    { id:'cone',      label:'PIZZA CONE',          cls:'cat-cone'      },
+    { id:'calzones',  label:'CALZONES',            cls:'cat-calzones'  },
+    { id:'salads',    label:'SALADS',              cls:'cat-salads'    },
+    { id:'dressings', label:'SIDE DRESSINGS',      cls:'cat-dressings' },
+    { id:'pasta',     label:'PASTA',               cls:'cat-pasta'     },
+    { id:'sauces',    label:'SIDE SAUCES',         cls:'cat-sauces'    },
+    { id:'keto',      label:'PEPZ KETO BOWLS',     cls:'cat-keto'      },
+    { id:'cold-sw',   label:'COLD SANDWICHES',     cls:'cat-cold-sw'   },
+    { id:'hot-sw',    label:'HOT SANDWICHES',      cls:'cat-hot-sw'    },
+    { id:'desserts',  label:'DESSERTS',            cls:'cat-desserts'  },
+    { id:'soda',      label:'SODA',                cls:'cat-soda'      },
+    { id:'alcohol',   label:'ALCOHOL',             cls:'cat-alcohol'   },
+    { id:'catering',  label:'CATERING',            cls:'cat-catering'  },
+    { id:'merch',     label:'MERCH',               cls:'cat-merch'     },
+    { id:'jakes',     label:'Jakes Sandos',        cls:'cat-misc'      },
+    { id:'jwi',       label:'Just Wing It.',       cls:'cat-misc'      },
+    { id:'daily',     label:'DAILY SPECIALS',      cls:'cat-daily'     },
+    { id:'event',     label:'Event Deposit',       cls:'cat-event'     },
+    { id:'rewards',   label:'Rewards',             cls:'cat-rewards'   },
+    { id:'gift',      label:'Gift Cards',          cls:'cat-gift'      },
+    { id:'house',     label:'House Accounts',      cls:'cat-house'     },
+  ];
+
+  const MENU = {
+    starters: [
+      { name:'PEPZ POTATOES *',       price:8.99  },
+      { name:'PP SAUCED & TOSSED',    price:9.99  },
+      { name:'FRIED PICKLES',         price:7.99  },
+      { name:'PIZZA ROLL',            price:5.99  },
+      { name:'GARLIC KNOTS',          price:6.99  },
+      { name:'BREAD STICKS',          price:7.99  },
+      { name:'GARLIC BREAD',          price:5.99  },
+      { name:'CHEESY GARLIC BREAD',   price:6.99  },
+      { name:'ZUCCHINI',              price:7.99  },
+      { name:'MOZZARELLA STICKS',     price:8.99  },
+      { name:'CHICKEN TENDERS',       price:10.99 },
+      { name:'CHILI CHEESE POTATOES', price:9.99  },
+      { name:'PEPZ POTATOE NACHOS',   price:10.99 },
+    ],
+    wings: [
+      { name:'6pc Wings**',                 price:10.99, mod:'wings' },
+      { name:'10pc Wings**',                price:16.99, mod:'wings' },
+      { name:'20pc Wings**',                price:28.99, mod:'wings' },
+      { name:'Extra Side Carrots',          price:1.99  },
+      { name:'Extra Side Celery',           price:1.99  },
+      { name:'Extra Side Carrots & Celery', price:2.99  },
+    ],
+    chicken: [
+      { name:'2pc Broasted Chicken',  price:8.99  },
+      { name:'4pc Broasted Chicken',  price:14.99 },
+      { name:'8pc Broasted Chicken',  price:26.99 },
+      { name:'12pc Broasted Chicken', price:38.99 },
+    ],
+    pizza: {
+      subs: [
+        { id:'pepzone',     label:'PEPZONE'              },
+        { id:'cyo',         label:'CREATE YOUR OWN PIZZA' },
+        { id:'specialty',   label:'SPECIALTY PIZZAS'     },
+        { id:'detroit',     label:'DETROIT STYLE PIZZAS' },
+        { id:'dough',       label:'PIZZA DOUGH'          },
+        { id:'gf',          label:'GLUTEN FREE PIZZA'    },
+        { id:'pepzone-dlx', label:'Pepzone Deluxe'       },
+      ],
+      items: {
+        pepzone:    [{ name:'Pepzone',        price:16.99 }],
+        'pepzone-dlx': [{ name:'Pepzone Deluxe', price:20.99 }],
+        dough:      [{ name:'Pizza Dough',    price:3.99  }],
+        cyo: [
+          { name:'8" CYO Cheese Pizza',          price:10.99, mod:'pizza-toppings' },
+          { name:'12" CYO Cheese Pizza',         price:14.99, mod:'pizza-toppings' },
+          { name:'16" CYO Cheese Pizza',         price:18.99, mod:'pizza-toppings' },
+          { name:'18" CYO Cheese Pizza',         price:22.99, mod:'pizza-toppings' },
+          { name:'Gluten Free CYO Cheese Pizza', price:15.99, mod:'pizza-toppings' },
+          { name:'Detroit Pizza - CYO Cheese',   price:17.99, mod:'pizza-toppings' },
+        ],
+        specialty: [
+          { name:'Pizza - Pepz House Special',          price:19.99 },
+          { name:'Pizza - The "Happiest Pizza on Earth"',price:19.99 },
+          { name:'Pizza - Cheese Lovers',               price:17.99 },
+          { name:'Pizza - BBQ Chicken',                 price:19.99 },
+          { name:'Pizza - Hawaiian',                    price:18.99 },
+          { name:'Pizza - Roasted Artichoke & Spinach', price:19.99 },
+          { name:'Pizza - The Meat',                    price:20.99 },
+          { name:'Pizza - Vegetarian',                  price:17.99 },
+          { name:'Pizza - The Alfredo',                 price:18.99 },
+          { name:'Pizza - Pepz Italian',                price:19.99 },
+          { name:'Pizza - The Pastrami',                price:20.99 },
+          { name:'Pizza - Philly Cheesesteak',          price:20.99 },
+          { name:'Pizza - BBQ Pulled Pork',             price:20.99 },
+          { name:'Pizza - Bacon Chicken Ranch',         price:20.99 },
+          { name:'Pizza - Breakfast Pizza',             price:17.99 },
+          { name:'Pizza - California Delight',          price:19.99 },
+        ],
+        detroit: [
+          { name:'Detroit Pizza - CYO Cheese',          price:17.99, mod:'pizza-toppings' },
+          { name:'Detroit Pizza - D Town Sweet Heat',   price:20.99 },
+          { name:'Detroit Pizza - D Town',              price:20.99 },
+          { name:'Detroit Pizza - Pepz House Special',  price:20.99 },
+          { name:'Detroit Pizza - BBQ Chicken',         price:20.99 },
+          { name:'Detroit Pizza - The Meat',            price:21.99 },
+          { name:'Detroit Pizza - Vegetarian',          price:18.99 },
+          { name:'Detroit Pizza - Hawaiian',            price:19.99 },
+          { name:'Detroit Pizza - Breakfast Pizza',     price:18.99 },
+          { name:'Detroit Pizza - The Alfredo',         price:19.99 },
+          { name:'Detroit Pizza - Pepz Italian',        price:20.99 },
+          { name:'Detroit Pizza - Pulled Pork',         price:21.99 },
+          { name:'Detroit Pizza - Bacon Chicken Ranch', price:21.99 },
+        ],
+        gf: [
+          { name:'Gluten Free Create Your Own 12"',       price:15.99, mod:'pizza-toppings' },
+          { name:'Gluten Free Pepz House Special 12"',    price:20.99 },
+          { name:'Gluten Free Doggy Style Pizza 12"',     price:19.99 },
+          { name:'Gluten Free BBQ Chicken 12"',           price:20.99 },
+          { name:'Gluten Free The Meats 12"',             price:21.99 },
+          { name:'Gluten Free Pepz Italian 12"',          price:20.99 },
+          { name:'Gluten Free Philly Cheesesteak 12"',    price:21.99 },
+          { name:'Gluten Free California Delight 12"',    price:20.99 },
+          { name:'Gluten Free Hawaiian 12"',              price:19.99 },
+          { name:'Gluten Free Pastrami 12"',              price:21.99 },
+          { name:'Gluten Free Vegetarian 12"',            price:18.99 },
+          { name:'Gluten Free BBQ Pulled Pork 12"',       price:21.99 },
+          { name:'Gluten Free Bacon Chicken Ranch 12"',   price:21.99 },
+          { name:'Gluten Free Breakfast Pizza',           price:18.99 },
+        ],
+      }
+    },
+    cone: [{ name:'PIZZA CONE', price:32.99, mod:'cone' }],
+    calzones: [
+      { name:'Personal Calzone', price:10.99, mod:'pizza-toppings' },
+      { name:'Small Calzone',    price:14.99, mod:'pizza-toppings' },
+      { name:'Large Calzone',    price:18.99, mod:'pizza-toppings' },
+    ],
+    salads: [
+      { name:'Antipasto Salad',         price:12.99 },
+      { name:'Caesar Salad',            price:10.99 },
+      { name:'Pepz Green Salad',        price:10.99 },
+      { name:'Greek Salad',             price:11.99 },
+      { name:'BBQ Ranch Chicken Salad', price:13.99 },
+      { name:'Cobb Salad',              price:13.99 },
+    ],
+    dressings: [
+      { name:'Ranch',          price:0.99 }, { name:'Blue Cheese',    price:0.99 },
+      { name:'Italian',        price:0.99 }, { name:'BBQ Ranch',      price:0.99 },
+      { name:'Chipotle Ranch', price:0.99 }, { name:'Honey Mustard',  price:0.99 },
+      { name:'1000 Island',    price:0.99 }, { name:'Caesar',         price:0.99 },
+      { name:'Greek',          price:0.99 },
+    ],
+    pasta: [
+      { name:'Spaghetti',              price:12.99, mod:'pasta-toppings' },
+      { name:'Spaghetti & Meatballs',  price:14.99, mod:'pasta-toppings' },
+      { name:'Spaghetti & Sausage',    price:14.99, mod:'pasta-toppings' },
+      { name:'Lasagna',                price:14.99, mod:'pasta-toppings' },
+      { name:'Penne Vodka',            price:13.99, mod:'pasta-toppings' },
+      { name:'Penne Arrabbiata',       price:12.99, mod:'pasta-toppings' },
+      { name:'Penne Pesto',            price:12.99, mod:'pasta-toppings' },
+      { name:'Fettuccine Alfredo',     price:12.99, mod:'pasta-toppings' },
+      { name:'Cheese Ravioli',         price:13.99, mod:'pasta-toppings' },
+      { name:'Create Your Own Pasta',  price:12.99, mod:'pasta-toppings' },
+      { name:'Side Meatball',          price:3.99  },
+      { name:'Side Sausage',           price:3.99  },
+    ],
+    sauces: [
+      { name:'Marinara Sauce', price:1.99 },
+      { name:'Alfredo Sauce',  price:1.99 },
+      { name:'Pesto Sauce',    price:1.99 },
+    ],
+    keto: [
+      { name:'Chicken Alfredo Bowl', price:13.99 },
+      { name:'Italian Meats Bowl',   price:13.99 },
+      { name:'Garden Veggie Bowl',   price:12.99 },
+    ],
+    'cold-sw': [
+      { name:'California Club', price:11.99, mod:'sandwich-toppings' },
+      { name:'Turkey Sub',      price:10.99, mod:'sandwich-toppings' },
+    ],
+    'hot-sw': [
+      { name:'Pesto Chicken Panini',             price:12.99, mod:'sandwich-toppings' },
+      { name:'Chicken Spinach Artichoke Panini', price:13.99, mod:'sandwich-toppings' },
+      { name:'Italian Sub',                      price:12.99, mod:'sandwich-toppings' },
+      { name:'Pastrami Sub',                     price:13.99, mod:'sandwich-toppings' },
+      { name:'Meatball Sub',                     price:12.99, mod:'sandwich-toppings' },
+      { name:'Sausage Sub',                      price:11.99, mod:'sandwich-toppings' },
+      { name:'Vegetarian Sub',                   price:10.99, mod:'sandwich-toppings' },
+      { name:'Chicken Philly Sub',               price:13.99, mod:'sandwich-toppings' },
+      { name:'Philly Cheesesteak Sub',           price:13.99, mod:'sandwich-toppings' },
+      { name:'BBQ Pulled Pork Sandwich',         price:13.99, mod:'sandwich-toppings' },
+      { name:'Pepz Cubano',                      price:13.99, mod:'sandwich-toppings' },
+      { name:'Nashville Hot Chicken Sandwich',   price:13.99, mod:'sandwich-toppings' },
+    ],
+    desserts: [
+      { name:'Pepz Cookie',           price:5.99 },
+      { name:'Cinnasquares',          price:6.99 },
+      { name:'Ice Cream',             price:4.99 },
+      { name:'Create Your Own Float', price:5.99 },
+    ],
+    soda: {
+      subs: [
+        { id:'fountain', label:'22oz FOUNTAIN DRINK W/ FREE REFILLS' },
+        { id:'2liter',   label:'2 LITER DRINKS'  },
+        { id:'energy',   label:'ENERGY DRINKS'   },
+      ],
+      items: {
+        fountain: [
+          { name:'Pepsi', price:3.49 }, { name:'Diet Pepsi', price:3.49 },
+          { name:'Starry', price:3.49 }, { name:'Mug Root Beer', price:3.49 },
+          { name:'Dr. Pepper', price:3.49 }, { name:'Lemonade', price:3.49 },
+          { name:'Gatorade', price:3.99 }, { name:'Raspberry Iced Tea', price:3.49 },
+          { name:'Viva Sol Horchata - Fountain', price:3.99 },
+          { name:'Viva Sol Jamaica - Fountain',  price:3.99 },
+          { name:'Plain Iced Tea', price:3.49 }, { name:'Bottle Water', price:2.99 },
+          { name:'Pepsi Zero Sugar', price:3.49 },
+        ],
+        '2liter': [
+          { name:'Pepsi - 2L Bottle', price:7.99 }, { name:'Diet Pepsi - 2L Bottle', price:7.99 },
+          { name:'Starry - 2L Bottle', price:7.99 }, { name:'Mug Root Beer - 2L Bottle', price:7.99 },
+          { name:'Brisk Iced Tea Lemon - 2L', price:7.99 }, { name:'Crush Orange - 2L Bottle', price:7.99 },
+        ],
+        energy: [{ name:'Red Bull', price:5.99 }, { name:'Monster', price:4.99 }],
+      }
+    },
+    alcohol: [
+      { name:'Draft Beer - 16oz',        price:6.99  },
+      { name:'Draft Beer - 34oz',        price:10.99 },
+      { name:'Draft Beer - 60oz Pitcher',price:18.99 },
+      { name:'Beer Bucket (5)',           price:28.99 },
+      { name:'Glass of Wine',            price:8.99  },
+      { name:'Cocktail',                 price:10.99 },
+    ],
+    catering: [
+      { name:'Catering Wing / Chicken Tray', price:89.99 },
+      { name:'Catering Pasta Tray',          price:69.99 },
+      { name:'Catering Salad Tray',          price:59.99 },
+      { name:'Catering Sandwich Tray',       price:79.99 },
+      { name:'Catering Side Tray',           price:49.99 },
+    ],
+    merch:   [{ name:'Merch Item',        price:24.99 }],
+    jakes:   [{ name:'Jakes Sandos Item', price:12.99 }],
+    jwi:     [{ name:'Just Wing It Item', price:14.99 }],
+    daily:   [{ name:'Daily Special',     price:12.99 }],
+    event:   [{ name:'Event Deposit',     price:100.00 }],
+    rewards: [], gift: [{ name:'Gift Card', price:25.00 }], house: [],
+  };
+
+  // ── STATE ──────────────────────────────────────────────────────
+  let activeCat = null, activeSub = null, orderItems = [];
+
+  // ── RENDER MENU ────────────────────────────────────────────────
+  function renderMenu() {
+    const grid = document.getElementById('menuGrid');
+    grid.innerHTML = '';
+    const catGrid = document.createElement('div');
+    catGrid.className = 'category-grid';
+    CATEGORIES.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = `cat-button ${c.cls}${activeCat===c.id?' active':''}`;
+      btn.textContent = c.label;
+      btn.onclick = () => { activeCat = c.id; activeSub = null; renderMenu(); };
+      catGrid.appendChild(btn);
+    });
+    grid.appendChild(catGrid);
+    if (!activeCat) return;
+    grid.appendChild(mkDivider());
+    const data = MENU[activeCat];
+    if (!data) return;
+    if (Array.isArray(data)) {
+      data.length ? grid.appendChild(mkItemGrid(data)) : grid.appendChild(mkNoItems());
+      return;
+    }
+    const subGrid = document.createElement('div');
+    subGrid.className = 'items-grid';
+    data.subs.forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = `sub-cat-button${activeSub===s.id?' active':''}`;
+      btn.textContent = s.label;
+      btn.onclick = () => { activeSub = s.id; renderMenu(); };
+      subGrid.appendChild(btn);
+    });
+    grid.appendChild(subGrid);
+    if (activeSub && data.items[activeSub]) {
+      grid.appendChild(mkDivider());
+      grid.appendChild(mkItemGrid(data.items[activeSub]));
+    }
+  }
+
+  function mkDivider() { const d = document.createElement('div'); d.className = 'section-divider'; return d; }
+  function mkNoItems() { const d = document.createElement('div'); d.className = 'no-items'; d.textContent = 'No items for this category.'; return d; }
+
+  function mkItemGrid(items) {
+    const g = document.createElement('div');
+    g.className = 'items-grid';
+    items.forEach(item => {
+      const btn = document.createElement('button');
+      btn.className = 'item-button';
+      btn.innerHTML = `${item.name}<span class="item-price-tag">$${item.price.toFixed(2)}</span>`;
+      btn.onclick = () => addItem(item);
+      g.appendChild(btn);
+    });
+    return g;
+  }
+
+  // ── RENDER ORDER ───────────────────────────────────────────────
+  function renderOrder() {
+    const container = document.getElementById('orderItems');
+    if (!orderItems.length) {
+      container.innerHTML = '<div class="empty-order">No items yet.<br>Tap a category to start.</div>';
+      updateTotals(0); return;
+    }
+    let sub = 0;
+    container.innerHTML = '';
+    orderItems.forEach((item, idx) => {
+      sub += item.price;
+      const div = document.createElement('div');
+      div.className = 'order-item';
+      div.innerHTML = `
+        <div class="order-item-row">
+          <span class="item-qty">1</span>
+          <span class="item-name">${item.name}</span>
+          <span class="item-price">$${item.price.toFixed(2)}</span>
+          <button class="remove-btn" onclick="removeItem(${idx})">×</button>
+        </div>
+        ${item.modifier ? `<div class="item-modifier">${item.modifier}</div>` : ''}
+      `;
+      container.appendChild(div);
+    });
+    updateTotals(sub);
+  }
+
+  function updateTotals(sub) {
+    const tax = sub * TAX;
+    document.getElementById('subtotal').textContent = '$' + sub.toFixed(2);
+    document.getElementById('tax').textContent = '$' + tax.toFixed(2);
+    document.getElementById('payBtn').textContent = 'Pay $' + (sub + tax).toFixed(2);
+  }
+
+  function addItem(item) {
+    if (item.mod === 'wings')            { showWingsMod(item);          return; }
+    if (item.mod === 'cone')             { showConeMod();                return; }
+    if (item.mod === 'pizza-toppings')   { showToppingsMod(item, 'pizza');    return; }
+    if (item.mod === 'pasta-toppings')   { showToppingsMod(item, 'pasta');    return; }
+    if (item.mod === 'sandwich-toppings'){ showToppingsMod(item, 'sandwich'); return; }
+    orderItems.push({ name: item.name, price: item.price });
+    renderOrder();
+    toast('Added: ' + item.name);
+  }
+
+  function removeItem(idx) { orderItems.splice(idx, 1); renderOrder(); }
+  function clearOrder()    { orderItems = []; renderOrder(); toast('Order cleared'); }
+
+  // ── GENERIC TOPPINGS MODIFIER ──────────────────────────────────
+  let _topItem = null, _topType = null, _topSel = [];
+
+  function showToppingsMod(item, type) {
+    _topItem = item; _topType = type; _topSel = [];
+    const toppings = type === 'pasta' ? PASTA_TOPPINGS :
+                     type === 'sandwich' ? SANDWICH_TOPPINGS : PIZZA_TOPPINGS;
+    const title    = type === 'pasta' ? 'ADD-INS' :
+                     type === 'sandwich' ? 'MODIFICATIONS' : 'TOPPINGS';
+    const subtitle = type === 'pasta' ? 'Select any add-ins (optional)' :
+                     type === 'sandwich' ? 'Select any modifications (optional)' :
+                     'Select toppings (optional — up to 5)';
+
+    document.getElementById('modifierPanel').innerHTML = `
+      <div class="mod-header">
+        <div class="qty-control">
+          <button class="qty-btn">−</button>
+          <div class="qty-display">1</div>
+          <button class="qty-btn">+</button>
+        </div>
+        <div class="mod-actions">
+          <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
+          <button class="mod-action-btn btn-done" onclick="confirmToppings()">✓ Done</button>
+        </div>
+      </div>
+      <div class="mod-title">${item.name}</div>
+      <div class="mod-subtitle">${subtitle}</div>
+      <div class="mod-tabs">
+        <button class="mod-tab active">${title}</button>
+        <button class="mod-tab">Special Request</button>
+        <button class="mod-tab">Seat Number</button>
+        <button class="mod-tab">Dining Option</button>
+      </div>
+      <div class="mod-options" id="topOpts">
+        ${toppings.map(t => `<button class="mod-option" onclick="toggleTop(this,'${t.replace(/'/g,"\\'")}'">${t}</button>`).join('')}
+      </div>
+    `;
+    openMod();
+  }
+
+  function toggleTop(btn, topping) {
+    const maxSel = _topType === 'pizza' ? 5 : 99;
+    if (btn.classList.contains('selected')) {
+      btn.classList.remove('selected');
+      _topSel = _topSel.filter(t => t !== topping);
+    } else {
+      if (_topSel.length >= maxSel) { toast(`⚠️ Max ${maxSel} toppings`, 'err'); return; }
+      btn.classList.add('selected');
+      _topSel.push(topping);
+    }
+  }
+
+  function confirmToppings() {
+    const modifier = _topSel.length ? _topSel.join(', ') : null;
+    orderItems.push({ name: _topItem.name, price: _topItem.price, modifier });
+    renderOrder(); closeMod();
+    toast('Added: ' + _topItem.name + (_topSel.length ? ' — ' + _topSel.join(', ') : ''));
+  }
+
+  // ── WINGS MODIFIER ─────────────────────────────────────────────
+  let _wingItem = null, _selectedSauce = null;
+
+  function showWingsMod(item) {
+    _wingItem = item; _selectedSauce = null;
+    document.getElementById('modifierPanel').innerHTML = `
+      <div class="mod-header">
+        <div class="qty-control">
+          <button class="qty-btn">−</button>
+          <div class="qty-display">1</div>
+          <button class="qty-btn">+</button>
+        </div>
+        <div class="mod-actions">
+          <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
+          <button class="mod-action-btn btn-done" onclick="confirmWings()">✓ Done</button>
+        </div>
+      </div>
+      <div class="mod-title">${item.name}</div>
+      <div class="mod-subtitle">Select at least 1 from WING SAUCE</div>
+      <div class="mod-tabs">
+        <button class="mod-tab active">WING SAUCE</button>
+        <button class="mod-tab">DIPPING SAUCE</button>
+        <button class="mod-tab">WING PREP</button>
+        <button class="mod-tab">Special Request</button>
+      </div>
+      <div class="mod-options" id="sauceOpts">
+        ${WING_SAUCES.map(s => `<button class="mod-option" onclick="pickSauce(this,'${s.replace(/'/g,"\\'")}'">${s}</button>`).join('')}
+      </div>
+    `;
+    openMod();
+  }
+
+  function pickSauce(btn, sauce) {
+    document.querySelectorAll('#sauceOpts .mod-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected'); _selectedSauce = sauce;
+  }
+
+  function confirmWings() {
+    if (!_selectedSauce) { toast('⚠️ Select a wing sauce first', 'err'); return; }
+    orderItems.push({ name: _wingItem.name, price: _wingItem.price, modifier: _selectedSauce });
+    renderOrder(); closeMod();
+    toast(`Added: ${_wingItem.name} — ${_selectedSauce}`);
+  }
+
+  // ── PIZZA CONE MODIFIER ────────────────────────────────────────
+  let _coneStep = 'type', _selectedToppings = [], _selectedPasta = null;
+
+  function showConeMod() {
+    _coneStep = 'type'; _selectedToppings = []; _selectedPasta = null;
+    renderConeStep(); openMod();
+  }
+
+  function renderConeStep() {
+    const p = document.getElementById('modifierPanel');
+    if (_coneStep === 'type') {
+      p.innerHTML = `
+        <div class="mod-header">
+          <div class="qty-control">
+            <button class="qty-btn">−</button><div class="qty-display">1</div><button class="qty-btn">+</button>
+          </div>
+          <div class="mod-actions">
+            <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
+            <button class="mod-action-btn btn-done" style="background:#444;cursor:default;">✓ Done</button>
+          </div>
+        </div>
+        <div class="mod-title">PIZZA CONE</div>
+        <div class="mod-subtitle">Select at least 2 from PIZZA CONE — choose your filling</div>
+        <div class="mod-tabs"><button class="mod-tab active">PIZZA CONE</button><button class="mod-tab">Seat Number</button><button class="mod-tab">Dining Option</button><button class="mod-tab">Special Request</button></div>
+        <div class="mod-options">
+          <button class="mod-option" onclick="pickConeType('pizza')">PIZZA</button>
+          <button class="mod-option" onclick="pickConeType('pasta')">PASTA</button>
+        </div>`;
+    } else if (_coneStep === 'pizza') {
+      p.innerHTML = `
+        <div class="mod-header">
+          <div style="font-size:12px;color:#7b9cbf;">PIZZA CONE → PIZZA</div>
+          <div class="mod-actions">
+            <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
+            <button class="mod-action-btn btn-done" onclick="confirmConeTopping()">✓ Done</button>
+          </div>
+        </div>
+        <div class="mod-title">PIZZA</div>
+        <div class="mod-subtitle">Select up to 2 toppings</div>
+        <div class="mod-tabs"><button class="mod-tab active">TOPPINGS</button><button class="mod-tab">Special Request</button></div>
+        <div class="mod-options" id="coneTopOpts">
+          ${CONE_TOPPINGS.map(t => `<button class="mod-option" onclick="toggleConeTop(this,'${t}')">${t}</button>`).join('')}
+        </div>`;
+    } else if (_coneStep === 'pasta') {
+      p.innerHTML = `
+        <div class="mod-header">
+          <div style="font-size:12px;color:#7b9cbf;">PIZZA CONE → PASTA</div>
+          <div class="mod-actions">
+            <button class="mod-action-btn btn-cancel" onclick="closeMod()">✕ Cancel</button>
+            <button class="mod-action-btn btn-done" onclick="confirmConePasta()">✓ Done</button>
+          </div>
+        </div>
+        <div class="mod-title">PASTA</div>
+        <div class="mod-subtitle">PIZZA CONE > PASTA — select a pasta type</div>
+        <div class="mod-tabs"><button class="mod-tab active">PASTA TYPE</button><button class="mod-tab">ADD MEAT</button><button class="mod-tab">Special Request</button></div>
+        <div class="mod-options" id="conePastaOpts">
+          ${CONE_PASTAS.map(p => `<button class="mod-option" onclick="pickConePasta(this,'${p}')">${p}</button>`).join('')}
+        </div>`;
+    }
+  }
+
+  function pickConeType(type) { _coneStep = type; renderConeStep(); }
+
+  function toggleConeTop(btn, t) {
+    if (btn.classList.contains('selected')) { btn.classList.remove('selected'); _selectedToppings = _selectedToppings.filter(x=>x!==t); }
+    else { if (_selectedToppings.length >= 2) { toast('⚠️ Max 2 toppings', 'err'); return; } btn.classList.add('selected'); _selectedToppings.push(t); }
+  }
+
+  function confirmConeTopping() {
+    if (!_selectedToppings.length) { toast('⚠️ Select at least one topping', 'err'); return; }
+    orderItems.push({ name:'PIZZA CONE', price:32.99, modifier:'Pizza: ' + _selectedToppings.join(', ') });
+    renderOrder(); closeMod();
+    toast('Added: PIZZA CONE — Pizza (' + _selectedToppings.join(', ') + ')');
+  }
+
+  function pickConePasta(btn, pasta) {
+    document.querySelectorAll('#conePastaOpts .mod-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected'); _selectedPasta = pasta;
+  }
+
+  function confirmConePasta() {
+    if (!_selectedPasta) { toast('⚠️ Select a pasta type', 'err'); return; }
+    orderItems.push({ name:'PIZZA CONE', price:32.99, modifier:'Pasta: ' + _selectedPasta });
+    renderOrder(); closeMod();
+    toast('Added: PIZZA CONE — Pasta (' + _selectedPasta + ')');
+  }
+
+  // ── UTILITIES ──────────────────────────────────────────────────
+  function openMod()  { document.getElementById('modifierOverlay').classList.add('active'); }
+  function closeMod() { document.getElementById('modifierOverlay').classList.remove('active'); }
+
+  let _toastTimer;
+  function toast(msg, type) {
+    const el = document.getElementById('feedbackToast');
+    el.textContent = msg; el.style.background = type === 'err' ? '#7a2020' : '#1a5a2a';
+    el.classList.add('show'); clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  function handleSearch(val) {
+    if (!val.trim()) { renderMenu(); return; }
+    const q = val.toLowerCase(), grid = document.getElementById('menuGrid'), results = [];
+    grid.innerHTML = '';
+    Object.values(MENU).forEach(data => {
+      if (!data) return;
+      const items = Array.isArray(data) ? data : (data.items ? Object.values(data.items).flat() : []);
+      items.forEach(item => { if (item.name && item.name.toLowerCase().includes(q)) results.push(item); });
+    });
+    const label = document.createElement('div');
+    label.style.cssText = 'color:#7b9cbf;font-size:12px;padding:2px 0 8px;';
+    label.textContent = results.length ? `${results.length} result${results.length>1?'s':''} for "${val}"` : `No results for "${val}"`;
+    grid.appendChild(label);
+    if (results.length) grid.appendChild(mkItemGrid(results.slice(0, 25)));
+  }
+
+  document.getElementById('sendBtn').onclick = () => {
+    if (!orderItems.length) { toast('⚠️ No items to send', 'err'); return; }
+    toast(`✓ Sent to kitchen — ${orderItems.length} item${orderItems.length>1?'s':''}!`);
+  };
+
+  document.getElementById('payBtn').onclick = () => {
+    if (!orderItems.length) { toast('⚠️ No items to pay for', 'err'); return; }
+    const sub = orderItems.reduce((s, i) => s + i.price, 0);
+    toast(`✓ $${(sub*(1+TAX)).toFixed(2)} processed! (Training mode)`);
+    setTimeout(clearOrder, 1600);
+  };
+
+  renderMenu(); renderOrder();
+</script>
+</body>
+</html>
