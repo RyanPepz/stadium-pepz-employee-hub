@@ -60,7 +60,10 @@
     .item-price { color: #e8e8e8; font-weight: 600; white-space: nowrap; }
     .remove-btn { background: none; border: none; color: #4a6a8a; cursor: pointer; font-size: 15px; padding: 0 2px; line-height: 1; }
     .remove-btn:hover { color: #e05050; }
-    .item-modifier { color: #7b9cbf; font-size: 11px; padding-left: 20px; margin-top: 2px; }
+    .item-modifier { padding-left: 20px; margin-top: 4px; }
+    .mod-label { font-size: 10px; color: #4a6a8a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .mod-tag { display: inline-block; background: #1a2c44; border: 1px solid #2a4060; color: #adc4e0; font-size: 10.5px; padding: 1px 7px; border-radius: 10px; margin: 1px 2px 1px 0; line-height: 1.6; }
+    .mod-plain { color: #4a6a8a; font-size: 11px; font-style: italic; }
     .send-stay-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 14px; border-top: 1px solid #1e3050; }
     .btn-stay, .btn-send { padding: 8px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; background: #243a55; color: #adc4e0; }
     .btn-send:hover { background: #2a5a8a; color: white; }
@@ -148,7 +151,10 @@
     <h2>🖥️ Pepz POS Trainer</h2>
     <div class="sub">Practice entering orders — no real transactions</div>
   </div>
-  <div class="mode-badge">Training Mode</div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="mode-badge">Training Mode</div>
+    <a href="index.html" style="font-size:11px;color:#7b9cbf;text-decoration:none;border:1px solid #3a5a7a;border-radius:4px;padding:3px 10px;white-space:nowrap;">← Back to Hub</a>
+  </div>
 </div>
 
 <div class="pos-container">
@@ -560,7 +566,7 @@
           <span class="item-price">$${item.price.toFixed(2)}</span>
           <button class="remove-btn" onclick="removeItem(${idx})">×</button>
         </div>
-        ${item.modifier ? `<div class="item-modifier">${item.modifier}</div>` : ''}
+        ${item.modifier ? renderModifier(item.modifier) : ''}
       `;
       container.appendChild(div);
     });
@@ -583,6 +589,16 @@
     orderItems.push({ name: item.name, price: item.price });
     renderOrder();
     toast('Added: ' + item.name);
+  }
+
+  function renderModifier(mod) {
+    if (!mod) return '';
+    // Detect label prefix like "Pizza: ..." or "Pasta: ..."
+    const labelMatch = mod.match(/^([^:]+):\s*(.+)$/);
+    const label = labelMatch ? labelMatch[1] : null;
+    const items = (labelMatch ? labelMatch[2] : mod).split(',').map(s => s.trim()).filter(Boolean);
+    const tags = items.map(t => `<span class="mod-tag">${t}</span>`).join('');
+    return `<div class="item-modifier">${label ? `<div class="mod-label">${label}</div>` : ''}${tags}</div>`;
   }
 
   function removeItem(idx) { orderItems.splice(idx, 1); renderOrder(); }
@@ -641,10 +657,11 @@
   }
 
   function confirmToppings() {
-    const modifier = _topSel.length ? _topSel.join(', ') : null;
+    const label = _topType === 'pasta' ? 'Add-ins' : _topType === 'sandwich' ? 'Modifications' : 'Toppings';
+    const modifier = _topSel.length ? `${label}: ${_topSel.join(', ')}` : `${label}: Cheese only`;
     orderItems.push({ name: _topItem.name, price: _topItem.price, modifier });
     renderOrder(); closeMod();
-    toast('Added: ' + _topItem.name + (_topSel.length ? ' — ' + _topSel.join(', ') : ''));
+    toast('Added: ' + _topItem.name);
   }
 
   // ── WINGS MODIFIER ─────────────────────────────────────────────
