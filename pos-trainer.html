@@ -381,12 +381,12 @@
       { name:'Large Calzone',    price:23.99, mod:'pizza-toppings' },
     ],
     salads: [
-      { name:'Antipasto Salad',         price:11.99 },
-      { name:'Caesar Salad',            price:11.99 },
-      { name:'Pepz Green Salad',        price:9.99  },
-      { name:'Greek Salad',             price:11.99 },
-      { name:'BBQ Ranch Chicken Salad', price:12.99 },
-      { name:'Cobb Salad',              price:12.99 },
+      { name:'Antipasto Salad',         price:11.99, mod:'salad-dressing' },
+      { name:'Caesar Salad',            price:11.99, mod:'salad-dressing' },
+      { name:'Pepz Green Salad',        price:9.99,  mod:'salad-dressing' },
+      { name:'Greek Salad',             price:11.99, mod:'salad-dressing' },
+      { name:'BBQ Ranch Chicken Salad', price:12.99, mod:'salad-dressing' },
+      { name:'Cobb Salad',              price:12.99, mod:'salad-dressing' },
     ],
     dressings: [
       { name:'Ranch',          price:1.50 }, { name:'Blue Cheese',    price:1.50 },
@@ -421,22 +421,22 @@
       { name:'Garden Veggie Bowl',   price:11.99 },
     ],
     'cold-sw': [
-      { name:'California Club', price:12.99, mod:'sandwich-toppings' },
-      { name:'Turkey Sub',      price:9.99,  mod:'sandwich-toppings' },
+      { name:'California Club', price:12.99, mod:'pizza-toppings' },
+      { name:'Turkey Sub',      price:9.99,  mod:'pizza-toppings' },
     ],
     'hot-sw': [
-      { name:'Pesto Chicken Panini',             price:10.99, mod:'sandwich-toppings' },
-      { name:'Chicken Spinach Artichoke Panini', price:10.99, mod:'sandwich-toppings' },
-      { name:'Italian Sub',                      price:10.99, mod:'sandwich-toppings' },
-      { name:'Pastrami Sub',                     price:12.99, mod:'sandwich-toppings' },
-      { name:'Meatball Sub',                     price:10.99, mod:'sandwich-toppings' },
-      { name:'Sausage Sub',                      price:10.99, mod:'sandwich-toppings' },
-      { name:'Vegetarian Sub',                   price:8.99,  mod:'sandwich-toppings' },
-      { name:'Chicken Philly Sub',               price:10.99, mod:'sandwich-toppings' },
-      { name:'Philly Cheesesteak Sub',           price:11.99, mod:'sandwich-toppings' },
-      { name:'BBQ Pulled Pork Sandwich',         price:13.99, mod:'sandwich-toppings' },
-      { name:'Pepz Cubano',                      price:10.99, mod:'sandwich-toppings' },
-      { name:'Nashville Hot Chicken Sandwich',   price:13.99, mod:'sandwich-toppings' },
+      { name:'Pesto Chicken Panini',             price:10.99, mod:'pizza-toppings' },
+      { name:'Chicken Spinach Artichoke Panini', price:10.99, mod:'pizza-toppings' },
+      { name:'Italian Sub',                      price:10.99, mod:'pizza-toppings' },
+      { name:'Pastrami Sub',                     price:12.99, mod:'pizza-toppings' },
+      { name:'Meatball Sub',                     price:10.99, mod:'pizza-toppings' },
+      { name:'Sausage Sub',                      price:10.99, mod:'pizza-toppings' },
+      { name:'Vegetarian Sub',                   price:8.99,  mod:'pizza-toppings' },
+      { name:'Chicken Philly Sub',               price:10.99, mod:'pizza-toppings' },
+      { name:'Philly Cheesesteak Sub',           price:11.99, mod:'pizza-toppings' },
+      { name:'BBQ Pulled Pork Sandwich',         price:13.99, mod:'pizza-toppings' },
+      { name:'Pepz Cubano',                      price:10.99, mod:'pizza-toppings' },
+      { name:'Nashville Hot Chicken Sandwich',   price:13.99, mod:'pizza-toppings' },
     ],
     desserts: [
       { name:'Pepz Cookie',           price:8.99 },
@@ -584,11 +584,11 @@
   }
 
   function addItem(item) {
-    if (item.mod === 'wings')            { showWingsMod(item);          return; }
-    if (item.mod === 'cone')             { showConeMod();                return; }
-    if (item.mod === 'pizza-toppings')   { showToppingsMod(item, 'pizza');    return; }
-    if (item.mod === 'pasta-toppings')   { showToppingsMod(item, 'pasta');    return; }
-    if (item.mod === 'sandwich-toppings'){ showToppingsMod(item, 'sandwich'); return; }
+    if (item.mod === 'wings')          { showWingsMod(item);             return; }
+    if (item.mod === 'cone')           { showConeMod();                   return; }
+    if (item.mod === 'pizza-toppings') { showToppingsMod(item, 'pizza'); return; }
+    if (item.mod === 'pasta-toppings') { showToppingsMod(item, 'pasta'); return; }
+    if (item.mod === 'salad-dressing') { showDressingMod(item);          return; }
     orderItems.push({ name: item.name, price: item.price });
     renderOrder();
     toast('Added: ' + item.name);
@@ -611,6 +611,7 @@
   let _topItem = null, _topType = null, _topSel = [];
   let _wingItem = null, _selectedSauce = null;
   let _coneStep = 'type', _selectedToppings = [], _selectedPasta = null;
+  let _dressingItem = null, _selectedDressing = null;
 
   // ── EVENT DELEGATION — single listener handles all modifier clicks
   document.getElementById('modifierPanel').addEventListener('click', function(e) {
@@ -622,8 +623,14 @@
     if (action === 'close')        { closeMod(); }
     else if (action === 'confirm-wings')    { confirmWings(); }
     else if (action === 'confirm-toppings') { confirmToppings(); }
+    else if (action === 'confirm-dressing') { confirmDressing(); }
     else if (action === 'confirm-cone-top') { confirmConeTopping(); }
     else if (action === 'confirm-cone-pasta'){ confirmConePasta(); }
+    else if (action === 'pick-dressing') {
+      document.querySelectorAll('#modifierPanel .mod-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      _selectedDressing = val;
+    }
     else if (action === 'pick-sauce') {
       document.querySelectorAll('#modifierPanel .mod-option').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
@@ -732,6 +739,41 @@
     orderItems.push({ name: _wingItem.name, price: _wingItem.price, modifier: _selectedSauce });
     renderOrder(); closeMod();
     toast('Added: ' + _wingItem.name + ' — ' + _selectedSauce);
+  }
+
+  // ── SALAD DRESSING MODIFIER ────────────────────────────────────
+  function showDressingMod(item) {
+    _dressingItem = item; _selectedDressing = null;
+    const dressings = MENU.dressings.map(d => d.name);
+    document.getElementById('modifierPanel').innerHTML = `
+      <div class="mod-header">
+        <div class="qty-control">
+          <button class="qty-btn">−</button><div class="qty-display">1</div><button class="qty-btn">+</button>
+        </div>
+        <div class="mod-actions">
+          <button class="mod-action-btn btn-cancel" data-action="close">✕ Cancel</button>
+          <button class="mod-action-btn btn-done"   data-action="confirm-dressing">✓ Done</button>
+        </div>
+      </div>
+      <div class="mod-title">${item.name}</div>
+      <div class="mod-subtitle">Select a dressing (optional)</div>
+      <div class="mod-tabs">
+        <button class="mod-tab active">DRESSING</button>
+        <button class="mod-tab">Special Request</button>
+        <button class="mod-tab">Seat Number</button>
+        <button class="mod-tab">Dining Option</button>
+      </div>
+      <div class="mod-options">
+        ${dressings.map(d => `<button class="mod-option" data-action="pick-dressing" data-val="${d.replace(/"/g,'&quot;')}">${d}</button>`).join('')}
+      </div>`;
+    openMod();
+  }
+
+  function confirmDressing() {
+    const modifier = _selectedDressing ? `Dressing: ${_selectedDressing}` : null;
+    orderItems.push({ name: _dressingItem.name, price: _dressingItem.price, modifier });
+    renderOrder(); closeMod();
+    toast('Added: ' + _dressingItem.name);
   }
 
   // ── PIZZA CONE MODIFIER ────────────────────────────────────────
