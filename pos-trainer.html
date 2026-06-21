@@ -240,6 +240,29 @@
   const CONE_TOPPINGS = [...PIZZA_TOPPINGS];
   const CONE_PASTAS = ['Spaghetti','Penne Vodka','Penne Arrabiata','Penne Pesto','Fettuccini Alfredo'];
 
+  // Size tiers: A=$14.99 start, B=$13.99 start, C=$12.99 start
+  const SZ_A = [{l:'8"',p:14.99},{l:'12"',p:21.99},{l:'16"',p:28.99},{l:'18"',p:33.99}];
+  const SZ_B = [{l:'8"',p:13.99},{l:'12"',p:19.99},{l:'16"',p:27.99},{l:'18"',p:33.99}];
+  const SZ_C = [{l:'8"',p:12.99},{l:'12"',p:18.99},{l:'16"',p:26.99},{l:'18"',p:32.99}];
+
+  const SPECIALTY_DATA = {
+    'Pizza - Pepz House Special':          { sizes:SZ_A, ing:['Green Peppers','Olives','Onions','Mushrooms','Ham','Pepperoni','Sausage','Extra Cheese'] },
+    'Pizza - Cheese Lovers':               { sizes:SZ_B, ing:['Mozzarella','Provolone','Extra Cheese'] },
+    'Pizza - BBQ Chicken':                 { sizes:SZ_B, ing:['Chicken','BBQ Sauce','Red Onions','Green Onions','Cilantro'] },
+    'Pizza - Hawaiian':                    { sizes:SZ_B, ing:['Canadian Bacon','Pineapple'] },
+    'Pizza - Roasted Artichoke & Spinach': { sizes:SZ_A, ing:['Artichoke Hearts','Sautéed Spinach','Garlic','Chicken Breast','Mozzarella','Parmesan','Spinach Artichoke Sauce'] },
+    'Pizza - The Meat':                    { sizes:SZ_A, ing:['Pepperoni','Sausage','Ham','Bacon Bits'] },
+    'Pizza - Vegetarian':                  { sizes:SZ_A, ing:['Green Peppers','Mushrooms','Olives','Onions','Spinach','Tomatoes','Fresh Garlic','Extra Cheese'] },
+    'Pizza - The Alfredo':                 { sizes:SZ_B, ing:['Alfredo Sauce','Pepperoni','Chicken','Basil','Onions'] },
+    'Pizza - Pepz Italian':                { sizes:SZ_B, ing:['Fresh Tomatoes','Fresh Basil','Fresh Garlic','Sausage'] },
+    'Pizza - The Pastrami':                { sizes:SZ_C, ing:['Mustard','Pickles','Pastrami'] },
+    'Pizza - Philly Cheesesteak':          { sizes:SZ_A, ing:['Beef Steak','Green Peppers','Onions','Mushrooms','House Mayo'] },
+    'Pizza - BBQ Pulled Pork':             { sizes:SZ_A, ing:['Pulled Pork','BBQ Sauce','Onion Rings','Coleslaw Drizzle'] },
+    'Pizza - Bacon Chicken Ranch':         { sizes:SZ_B, ing:['Chicken','Bacon','Red Onion','Ranch Sauce'] },
+    'Pizza - Breakfast Pizza':             { sizes:SZ_A, ing:['Refried Beans','Egg','Ham','Sausage','Bacon Bits','Chorizo','Jalapeño','Cheese'] },
+    'Pizza - California Delight':          { sizes:SZ_B, ing:['Chicken Breast','Green Onions','Cilantro','Tomatoes','Avocado','Ranch Sauce'] },
+  };
+
   // ── MENU DATA ──────────────────────────────────────────────────
   const CATEGORIES = [
     { id:'starters',  label:'STARTERS & SIDES',   cls:'cat-starters'  },
@@ -322,22 +345,22 @@
           { name:'Detroit Pizza - CYO Cheese',   price:20.99, mod:'pizza-toppings' },
         ],
         specialty: [
-          { name:'Pizza - Pepz House Special',           price:14.99 },
+          { name:'Pizza - Pepz House Special',            price:14.99, mod:'specialty-pizza' },
           { name:'Pizza - The "Happiest Pizza on Earth"', price:49.99 },
-          { name:'Pizza - Cheese Lovers',                price:13.99 },
-          { name:'Pizza - BBQ Chicken',                  price:13.99 },
-          { name:'Pizza - Hawaiian',                     price:13.99 },
-          { name:'Pizza - Roasted Artichoke & Spinach',  price:14.99 },
-          { name:'Pizza - The Meat',                     price:14.99 },
-          { name:'Pizza - Vegetarian',                   price:14.99 },
-          { name:'Pizza - The Alfredo',                  price:13.99 },
-          { name:'Pizza - Pepz Italian',                 price:13.99 },
-          { name:'Pizza - The Pastrami',                 price:12.99 },
-          { name:'Pizza - Philly Cheesesteak',           price:14.99 },
-          { name:'Pizza - BBQ Pulled Pork',              price:14.99 },
-          { name:'Pizza - Bacon Chicken Ranch',          price:13.99 },
-          { name:'Pizza - Breakfast Pizza',              price:14.99 },
-          { name:'Pizza - California Delight',           price:13.99 },
+          { name:'Pizza - Cheese Lovers',                 price:13.99, mod:'specialty-pizza' },
+          { name:'Pizza - BBQ Chicken',                   price:13.99, mod:'specialty-pizza' },
+          { name:'Pizza - Hawaiian',                      price:13.99, mod:'specialty-pizza' },
+          { name:'Pizza - Roasted Artichoke & Spinach',   price:14.99, mod:'specialty-pizza' },
+          { name:'Pizza - The Meat',                      price:14.99, mod:'specialty-pizza' },
+          { name:'Pizza - Vegetarian',                    price:14.99, mod:'specialty-pizza' },
+          { name:'Pizza - The Alfredo',                   price:13.99, mod:'specialty-pizza' },
+          { name:'Pizza - Pepz Italian',                  price:13.99, mod:'specialty-pizza' },
+          { name:'Pizza - The Pastrami',                  price:12.99, mod:'specialty-pizza' },
+          { name:'Pizza - Philly Cheesesteak',            price:14.99, mod:'specialty-pizza' },
+          { name:'Pizza - BBQ Pulled Pork',               price:14.99, mod:'specialty-pizza' },
+          { name:'Pizza - Bacon Chicken Ranch',           price:13.99, mod:'specialty-pizza' },
+          { name:'Pizza - Breakfast Pizza',               price:14.99, mod:'specialty-pizza' },
+          { name:'Pizza - California Delight',            price:13.99, mod:'specialty-pizza' },
         ],
         detroit: [
           { name:'Detroit Pizza - CYO Cheese',               price:20.99, mod:'pizza-toppings' },
@@ -584,11 +607,12 @@
   }
 
   function addItem(item) {
-    if (item.mod === 'wings')          { showWingsMod(item);             return; }
-    if (item.mod === 'cone')           { showConeMod();                   return; }
-    if (item.mod === 'pizza-toppings') { showToppingsMod(item, 'pizza'); return; }
-    if (item.mod === 'pasta-toppings') { showToppingsMod(item, 'pasta'); return; }
-    if (item.mod === 'salad-dressing') { showDressingMod(item);          return; }
+    if (item.mod === 'wings')           { showWingsMod(item);              return; }
+    if (item.mod === 'cone')            { showConeMod();                    return; }
+    if (item.mod === 'pizza-toppings')  { showToppingsMod(item, 'pizza');  return; }
+    if (item.mod === 'pasta-toppings')  { showToppingsMod(item, 'pasta');  return; }
+    if (item.mod === 'salad-dressing')  { showDressingMod(item);           return; }
+    if (item.mod === 'specialty-pizza') { showSpecialtyMod(item);          return; }
     orderItems.push({ name: item.name, price: item.price });
     renderOrder();
     toast('Added: ' + item.name);
@@ -612,6 +636,7 @@
   let _wingItem = null, _selectedSauce = null;
   let _coneStep = 'type', _selectedToppings = [], _selectedPasta = null;
   let _dressingItem = null, _selectedDressing = null;
+  let _specItem = null, _specSize = null, _specRemovals = [];
 
   // ── EVENT DELEGATION — single listener handles all modifier clicks
   document.getElementById('modifierPanel').addEventListener('click', function(e) {
@@ -624,6 +649,23 @@
     else if (action === 'confirm-wings')    { confirmWings(); }
     else if (action === 'confirm-toppings') { confirmToppings(); }
     else if (action === 'confirm-dressing') { confirmDressing(); }
+    else if (action === 'confirm-specialty') { confirmSpecialty(); }
+    else if (action === 'pick-spec-size') {
+      document.querySelectorAll('#modifierPanel .spec-size-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      _specSize = { label: val, price: parseFloat(btn.dataset.price) };
+      const doneBtn = document.querySelector('#modifierPanel .btn-done');
+      if (doneBtn) doneBtn.textContent = '✓ Done  $' + _specSize.price.toFixed(2);
+    }
+    else if (action === 'toggle-spec-remove') {
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected');
+        _specRemovals = _specRemovals.filter(r => r !== val);
+      } else {
+        btn.classList.add('selected');
+        _specRemovals.push(val);
+      }
+    }
     else if (action === 'confirm-cone-top') { confirmConeTopping(); }
     else if (action === 'confirm-cone-pasta'){ confirmConePasta(); }
     else if (action === 'pick-dressing') {
@@ -739,6 +781,47 @@
     orderItems.push({ name: _wingItem.name, price: _wingItem.price, modifier: _selectedSauce });
     renderOrder(); closeMod();
     toast('Added: ' + _wingItem.name + ' — ' + _selectedSauce);
+  }
+
+  // ── SPECIALTY PIZZA MODIFIER ───────────────────────────────────
+  function showSpecialtyMod(item) {
+    _specItem = item; _specSize = null; _specRemovals = [];
+    const data = SPECIALTY_DATA[item.name] || { sizes: SZ_A, ing: [] };
+    document.getElementById('modifierPanel').innerHTML = `
+      <div class="mod-header">
+        <div class="qty-control">
+          <button class="qty-btn">−</button><div class="qty-display">1</div><button class="qty-btn">+</button>
+        </div>
+        <div class="mod-actions">
+          <button class="mod-action-btn btn-cancel" data-action="close">✕ Cancel</button>
+          <button class="mod-action-btn btn-done" data-action="confirm-specialty">✓ Done</button>
+        </div>
+      </div>
+      <div class="mod-title">${item.name}</div>
+      <div class="mod-subtitle">Select a size (required), then remove any ingredients</div>
+      <div class="mod-tabs">
+        <button class="mod-tab active">SIZE</button>
+        <button class="mod-tab">REMOVE INGREDIENTS</button>
+        <button class="mod-tab">Special Request</button>
+        <button class="mod-tab">Dining Option</button>
+      </div>
+      <div class="mod-options" style="overflow-y:auto;max-height:340px;">
+        <div style="font-size:11px;font-weight:700;color:#7b9cbf;text-transform:uppercase;letter-spacing:.07em;padding:4px 0 6px;">Size — Required</div>
+        ${data.sizes.map(s => `<button class="mod-option spec-size-btn" data-action="pick-spec-size" data-val="${s.l}" data-price="${s.p}">${s.l} &nbsp; <span style="color:#f9c84a;font-weight:700">$${s.p.toFixed(2)}</span></button>`).join('')}
+        ${data.ing.length ? `
+        <div style="font-size:11px;font-weight:700;color:#7b9cbf;text-transform:uppercase;letter-spacing:.07em;padding:12px 0 6px;">Remove Ingredients</div>
+        ${data.ing.map(i => `<button class="mod-option" data-action="toggle-spec-remove" data-val="${i.replace(/"/g,'&quot;')}" style="border-color:#c0392b55;">No ${i}</button>`).join('')}` : ''}
+      </div>`;
+    openMod();
+  }
+
+  function confirmSpecialty() {
+    if (!_specSize) { toast('⚠️ Select a size first', 'err'); return; }
+    let modifier = `Size: ${_specSize.label}`;
+    if (_specRemovals.length) modifier += ` | No: ${_specRemovals.join(', ')}`;
+    orderItems.push({ name: _specItem.name, price: _specSize.price, modifier });
+    renderOrder(); closeMod();
+    toast('Added: ' + _specItem.name + ' ' + _specSize.label);
   }
 
   // ── SALAD DRESSING MODIFIER ────────────────────────────────────
