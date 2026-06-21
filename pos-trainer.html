@@ -265,6 +265,7 @@
 
   // ── MENU DATA ──────────────────────────────────────────────────
   const CATEGORIES = [
+    { id:'lunch',     label:'LUNCH SPECIALS',      cls:'cat-daily'     },
     { id:'starters',  label:'STARTERS & SIDES',   cls:'cat-starters'  },
     { id:'wings',     label:'WINGS',               cls:'cat-wings'     },
     { id:'chicken',   label:'BROASTED CHICKEN',    cls:'cat-chicken'   },
@@ -293,6 +294,15 @@
   ];
 
   const MENU = {
+    lunch: [
+      { name:'6" Sandwich (Your Choice)',    price:11.99 },
+      { name:'Bowl of Spaghetti',            price:10.99 },
+      { name:'Fried Chicken',                price:10.99 },
+      { name:'Lunch Calzone',                price:13.99 },
+      { name:'Lunch Pizza Slice',            price:4.00  },
+      { name:'Lunch Salad',                  price:4.99  },
+      { name:'Two(2) Slices of Pizza',       price:10.99 },
+    ],
     starters: [
       { name:'PEPZ POTATOES *',       price:8.99  },
       { name:'PP SAUCED & TOSSED',    price:13.99 },
@@ -333,7 +343,7 @@
         { id:'pepzone-dlx', label:'Pepzone Deluxe'       },
       ],
       items: {
-        pepzone:       [{ name:'Pepzone',        price:16.99 }],
+        pepzone:       [{ name:'Pepzone Deluxe', price:43.99 }],
         'pepzone-dlx': [{ name:'Pepzone Deluxe', price:43.99 }],
         dough:         [{ name:'Pizza Dough',    price:3.99  }],
         cyo: [
@@ -399,9 +409,9 @@
     },
     cone: [{ name:'PIZZA CONE', price:32.99, mod:'cone' }],
     calzones: [
-      { name:'Personal Calzone', price:12.99, mod:'pizza-toppings' },
-      { name:'Small Calzone',    price:18.99, mod:'pizza-toppings' },
-      { name:'Large Calzone',    price:23.99, mod:'pizza-toppings' },
+      { name:'Personal Calzone', price:12.99, mod:'pizza-toppings', maxTop:2 },
+      { name:'Small Calzone',    price:18.99, mod:'pizza-toppings', maxTop:3 },
+      { name:'Large Calzone',    price:23.99, mod:'pizza-toppings', maxTop:3 },
     ],
     salads: [
       { name:'Antipasto Salad',         price:11.99, mod:'salad-dressing' },
@@ -500,13 +510,53 @@
       { name:'Glass of Wine',            price:8.99  },
       { name:'Cocktail',                 price:10.99 },
     ],
-    catering: [
-      { name:'Catering Wing / Chicken Tray', price:74.99 },
-      { name:'Catering Pasta Tray',          price:47.99 },
-      { name:'Catering Salad Tray',          price:33.99 },
-      { name:'Catering Sandwich Tray',       price:74.99 },
-      { name:'Catering Side Tray',           price:28.99 },
-    ],
+    catering: {
+      subs: [
+        { id:'cat-wings',     label:'WING / CHICKEN TRAYS' },
+        { id:'cat-pasta',     label:'PASTA TRAYS'          },
+        { id:'cat-salad',     label:'SALAD TRAYS'          },
+        { id:'cat-sandwich',  label:'SANDWICH TRAYS'       },
+        { id:'cat-side',      label:'SIDE TRAYS'           },
+      ],
+      items: {
+        'cat-wings': [
+          { name:'Party Wings 50 pcs',       price:74.99 },
+          { name:'32pc Chicken Strip Tray',  price:64.99 },
+          { name:'16pc Broasted (4B 4W 4T 4L)', price:39.00 },
+          { name:'32pc Broasted (8B 8W 8T 8L)', price:58.98 },
+        ],
+        'cat-pasta': [
+          { name:'Catering Fettuccine Tray',           price:59.99 },
+          { name:'Catering Spaghetti Tray',            price:47.99 },
+          { name:'Catering Spaghetti & Meatball Tray', price:59.99 },
+          { name:'Catering Spaghetti & Sausage Tray',  price:59.99 },
+          { name:'Catering Penne Arrabiata Tray',      price:49.99 },
+          { name:'Catering Lasagna Tray',              price:89.99 },
+        ],
+        'cat-salad': [
+          { name:'Caesar Tray',               price:33.99 },
+          { name:'Antipasto Tray',            price:39.99 },
+          { name:'Greek Salad Tray',          price:35.99 },
+          { name:'Cobb Salad Tray',           price:38.99 },
+          { name:'Green Salad Tray',          price:28.99 },
+          { name:'BBQ Ranch Chicken Salad Tray', price:35.99 },
+          { name:'Add Chicken to Salad Tray', price:16.99 },
+        ],
+        'cat-sandwich': [
+          { name:'Turkey Sandwich Tray', price:74.99 },
+          { name:'Italian Sub Tray',     price:89.99 },
+        ],
+        'cat-side': [
+          { name:'Bread Sticks Tray',      price:28.99 },
+          { name:'Mozzarella Sticks Tray', price:59.99 },
+          { name:'Pepz Potatoes Tray',     price:33.99 },
+          { name:'Zucchini Tray',          price:34.98 },
+          { name:'CinnaStix Tray',         price:24.99 },
+          { name:'Veggie Tray',            price:36.00 },
+          { name:'Fried Pickle Tray',      price:64.99 },
+        ],
+      }
+    },
     merch:   [{ name:'Merch Item',        price:24.99 }],
     jakes:   [{ name:'Jakes Sandos Item', price:12.99 }],
     jwi:     [{ name:'Just Wing It Item', price:14.99 }],
@@ -609,7 +659,7 @@
   function addItem(item) {
     if (item.mod === 'wings')           { showWingsMod(item);              return; }
     if (item.mod === 'cone')            { showConeMod();                    return; }
-    if (item.mod === 'pizza-toppings')  { showToppingsMod(item, 'pizza');  return; }
+    if (item.mod === 'pizza-toppings')  { showToppingsMod(item, 'pizza', item.maxTop); return; }
     if (item.mod === 'pasta-toppings')  { showToppingsMod(item, 'pasta');  return; }
     if (item.mod === 'salad-dressing')  { showDressingMod(item);           return; }
     if (item.mod === 'specialty-pizza') { showSpecialtyMod(item);          return; }
@@ -632,7 +682,7 @@
   function clearOrder()    { orderItems = []; renderOrder(); toast('Order cleared'); }
 
   // ── MODIFIER STATE ─────────────────────────────────────────────
-  let _topItem = null, _topType = null, _topSel = [];
+  let _topItem = null, _topType = null, _topSel = [], _topMax = 5;
   let _wingItem = null, _selectedSauce = null;
   let _coneStep = 'type', _selectedToppings = [], _selectedPasta = null;
   let _dressingItem = null, _selectedDressing = null;
@@ -679,12 +729,11 @@
       _selectedSauce = val;
     }
     else if (action === 'toggle-top') {
-      const maxSel = _topType === 'pizza' ? 5 : 99;
       if (btn.classList.contains('selected')) {
         btn.classList.remove('selected');
         _topSel = _topSel.filter(t => t !== val);
       } else {
-        if (_topSel.length >= maxSel) { toast('⚠️ Max ' + maxSel + ' toppings', 'err'); return; }
+        if (_topSel.length >= _topMax) { toast('⚠️ Max ' + _topMax + ' toppings', 'err'); return; }
         btn.classList.add('selected');
         _topSel.push(val);
       }
@@ -708,14 +757,16 @@
   });
 
   // ── TOPPINGS MODIFIER ──────────────────────────────────────────
-  function showToppingsMod(item, type) {
+  function showToppingsMod(item, type, maxTop) {
     _topItem = item; _topType = type; _topSel = [];
+    _topMax = (maxTop !== undefined && maxTop !== null) ? maxTop : (type === 'pizza' ? 5 : 99);
     const toppings = type === 'pasta' ? PASTA_TOPPINGS :
                      type === 'sandwich' ? SANDWICH_TOPPINGS : PIZZA_TOPPINGS;
     const title    = type === 'pasta' ? 'ADD-INS' : type === 'sandwich' ? 'MODIFICATIONS' : 'TOPPINGS';
+    const limitTxt = _topMax < 99 ? ` — up to ${_topMax}` : '';
     const subtitle = type === 'pasta' ? 'Select any add-ins (optional)' :
                      type === 'sandwich' ? 'Select any modifications (optional)' :
-                     'Select toppings (optional — up to 5)';
+                     `Select toppings (optional${limitTxt})`;
     const panel = document.getElementById('modifierPanel');
     panel.innerHTML = `
       <div class="mod-header">
@@ -743,7 +794,8 @@
 
   function confirmToppings() {
     const label = _topType === 'pasta' ? 'Add-ins' : _topType === 'sandwich' ? 'Modifications' : 'Toppings';
-    const modifier = _topSel.length ? `${label}: ${_topSel.join(', ')}` : `${label}: Cheese only`;
+    const emptyLabel = _topMax < 99 ? 'None' : 'Cheese only';
+    const modifier = _topSel.length ? `${label}: ${_topSel.join(', ')}` : `${label}: ${emptyLabel}`;
     orderItems.push({ name: _topItem.name, price: _topItem.price, modifier });
     renderOrder(); closeMod();
     toast('Added: ' + _topItem.name);
