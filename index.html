@@ -304,6 +304,54 @@
     .qz-retake-btn:hover { background: var(--gold-light); }
     .qz-back-btn { background: white; color: var(--navy); border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 24px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; transition: border-color 0.15s; }
     .qz-back-btn:hover { border-color: var(--navy); }
+    .qz-submit-status { font-size: 12px; color: var(--gray); margin: -12px 0 20px; }
+    .qz-submit-status.ok { color: #15803d; }
+    .qz-submit-status.warn { color: #b45309; }
+    .qz-pass-badge { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+    .qz-pass-badge.pass { background: #dcfce7; color: #14532d; }
+    .qz-pass-badge.fail { background: #fee2e2; color: #7f1d1d; }
+
+    /* Staff sign-in + role quiz tracking */
+    .staff-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: white; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; color: var(--navy); }
+    .staff-bar button { background: none; border: none; color: var(--gold); font-weight: 700; font-size: 12px; cursor: pointer; }
+    .quiz-group-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); margin: 8px 0 12px; }
+    .role-quiz-list { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 24px; }
+    .role-quiz-card { display: flex; align-items: center; gap: 12px; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 14px; cursor: pointer; text-align: left; font: inherit; color: inherit; transition: box-shadow 0.15s; }
+    .role-quiz-card:hover { box-shadow: var(--shadow); }
+    .role-quiz-card .rq-icon { font-size: 24px; }
+    .role-quiz-card .rq-info { flex: 1; min-width: 0; }
+    .role-quiz-card .rq-name { font-size: 14px; font-weight: 700; color: var(--navy-dark); }
+    .role-quiz-card .rq-status { font-size: 11px; color: var(--gray); margin-top: 2px; }
+    .role-quiz-card.passed { border-color: #86efac; background: #f0fdf4; }
+    .role-quiz-card.passed .rq-status { color: #15803d; font-weight: 600; }
+    .role-quiz { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .role-quiz-btn { background: var(--navy); color: white; border: none; border-radius: 10px; padding: 11px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .role-quiz-btn:hover { background: var(--navy-dark); }
+    .role-quiz-status { font-size: 12px; color: var(--gray); }
+    .role-quiz-status.passed { color: #15803d; font-weight: 700; }
+    .role-progress { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+    .role-progress-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+    .role-progress-head h4 { font-size: 13px; font-weight: 700; color: var(--navy-dark); }
+    .role-progress-head span { font-size: 12px; color: var(--gray); font-weight: 600; }
+    .role-progress .qz-progress-bar-wrap { margin-bottom: 10px; }
+    .role-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .role-chip { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; background: var(--off-white); color: var(--gray); border: 1px solid var(--border); }
+    .role-chip.passed { background: #dcfce7; color: #14532d; border-color: #86efac; }
+
+    .name-modal { position: fixed; inset: 0; background: rgba(40, 8, 18, 0.55); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 200; }
+    .name-modal.visible { display: flex; }
+    .name-modal-card { background: white; border-radius: 14px; padding: 24px; width: 100%; max-width: 380px; }
+    .name-modal-card h3 { font-size: 18px; font-weight: 800; color: var(--navy-dark); margin-bottom: 6px; }
+    .name-modal-card p { font-size: 13px; color: var(--gray); line-height: 1.5; margin-bottom: 16px; }
+    .name-modal-card label { display: block; font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .name-modal-card input { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 12px; font-size: 16px; color: var(--navy-dark); margin-bottom: 12px; font-family: inherit; }
+    .name-modal-card input:focus { outline: none; border-color: var(--gold); }
+    .name-modal-error { font-size: 12px; color: #b91c1c; margin: -4px 0 10px; display: none; }
+    .name-modal-actions { display: flex; gap: 10px; margin-top: 4px; }
+    .name-modal-actions button { flex: 1; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .name-modal-actions .nm-cancel { background: white; border: 1.5px solid var(--border); color: var(--navy); }
+    .name-modal-actions .nm-save { background: var(--navy); border: none; color: white; }
+    @media (max-width: 600px) { .role-quiz-list { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -628,11 +676,13 @@
       <div id="training-roles" class="training-tab">
         <div class="tr-hero">
           <h3>📖 Role Guides & SOPs</h3>
-          <p>Tap a role to see your full responsibilities. Read yours before your first shift in that position.</p>
+          <p>Tap a role to see your full responsibilities. Read yours before your first shift in that position, then pass its quiz.</p>
         </div>
 
+        <div class="role-progress" id="roleProgress"></div>
+
         <!-- Cashier -->
-        <div class="role-item" onclick="toggleRole(this)">
+        <div class="role-item" onclick="toggleRole(this, event)">
           <div class="role-header">
             <div class="role-icon">💳</div>
             <div class="role-info">
@@ -665,11 +715,12 @@
             <h5>Cash Drawer</h5>
             <p>Keep it organized. Double-check change before handing it over. If you need change in the till, notify your shift lead immediately — don't wait until guests are waiting.</p>
             <div class="key-note">Accuracy over speed, every time.</div>
+            <div class="role-quiz" data-role="cashier"></div>
           </div>
         </div>
 
         <!-- Food Runner -->
-        <div class="role-item" onclick="toggleRole(this)">
+        <div class="role-item" onclick="toggleRole(this, event)">
           <div class="role-header">
             <div class="role-icon">🏃</div>
             <div class="role-info">
@@ -692,11 +743,12 @@
             <p>This is part of your role. Get your review card lanyard from your shift lead at the start of your shift. Return it before clocking out — it doesn't leave the building.</p>
             <div class="script-box">"Thank you so much for coming in today. We're trying to get more feedback from our community — the good, the bad, the ugly. Any feedback you leave really helps us grow."</div>
             <div class="key-note">You are the face of the guest experience. Every table interaction is a chance to earn a 5-star review.</div>
+            <div class="role-quiz" data-role="runner"></div>
           </div>
         </div>
 
         <!-- Wings -->
-        <div class="role-item" onclick="toggleRole(this)">
+        <div class="role-item" onclick="toggleRole(this, event)">
           <div class="role-header">
             <div class="role-icon">🍗</div>
             <div class="role-info">
@@ -722,11 +774,12 @@
             <h5>Station Cleanliness</h5>
             <p>Tossing wings gets messy. Wipe down your prep surface consistently throughout the shift.</p>
             <div class="key-note">Fill orders completely, include every sauce, and keep the station clean. When your ticket volume is low, see how you can help another station.</div>
+            <div class="role-quiz" data-role="wings"></div>
           </div>
         </div>
 
         <!-- Oven -->
-        <div class="role-item" onclick="toggleRole(this)">
+        <div class="role-item" onclick="toggleRole(this, event)">
           <div class="role-header">
             <div class="role-icon">🍕</div>
             <div class="role-info">
@@ -764,11 +817,12 @@
             <h5>Quality Control</h5>
             <p>If a pizza doesn't match the ticket: notify the kitchen, report to your shift lead so waste is tracked. Never send out a pizza you're not sure about.</p>
             <div class="key-note">You are the last line of defense before food hits the table. Catch it here — not at the table.</div>
+            <div class="role-quiz" data-role="oven"></div>
           </div>
         </div>
 
         <!-- Bar -->
-        <div class="role-item" onclick="toggleRole(this)">
+        <div class="role-item" onclick="toggleRole(this, event)">
           <div class="role-header">
             <div class="role-icon">🍺</div>
             <div class="role-info">
@@ -798,11 +852,12 @@
             <h5>When the Bar Is Slow</h5>
             <p>The bar is a flex position — help run food or assist with takeout. Check in with your shift lead for anything else.</p>
             <div class="key-note">Pour right, keep glasses clean, and be a resource to the floor when traffic is light.</div>
+            <div class="role-quiz" data-role="bar"></div>
           </div>
         </div>
 
         <!-- Takeout -->
-        <div class="role-item" onclick="toggleRole(this)">
+        <div class="role-item" onclick="toggleRole(this, event)">
           <div class="role-header">
             <div class="role-icon">📦</div>
             <div class="role-info">
@@ -826,11 +881,12 @@
             <h5>3rd Party Drivers (DoorDash, Uber Eats, etc.)</h5>
             <p>The driver must confirm pickup in their app before you hand over the order. Never hand off to a driver who hasn't confirmed in their system.</p>
             <div class="key-note">Zero missing items, zero unprocessed payments, every time. When in doubt, re-check the receipt.</div>
+            <div class="role-quiz" data-role="takeout"></div>
           </div>
         </div>
 
         <!-- Toast POS -->
-        <div class="role-item" onclick="toggleRole(this)">
+        <div class="role-item" onclick="toggleRole(this, event)">
           <div class="role-header">
             <div class="role-icon">🖥️</div>
             <div class="role-info">
@@ -864,11 +920,12 @@
               <li>Alcohol orders: always print and hand to guest to present at the bar</li>
             </ul>
             <div class="key-note">Accuracy prevents remakes. Never skip required customer info.</div>
+            <div class="role-quiz" data-role="pos"></div>
           </div>
         </div>
 
         <!-- Best Practices -->
-        <div class="role-item" onclick="toggleRole(this)">
+        <div class="role-item" onclick="toggleRole(this, event)">
           <div class="role-header">
             <div class="role-icon">⭐</div>
             <div class="role-info">
@@ -897,6 +954,7 @@
               <li>Or reach Ryan at <strong>(707) 978-8072</strong></li>
             </ul>
             <div class="key-note">We're a team. When one of us helps another, shifts run smoother for everyone — including the guests.</div>
+            <div class="role-quiz" data-role="best"></div>
           </div>
         </div>
       </div>
@@ -1811,6 +1869,8 @@
         <p>Test your knowledge or practice on the POS trainer</p>
       </div>
 
+      <div class="staff-bar" id="staffBar"></div>
+
       <!-- Quiz list (landing) -->
       <div class="quiz-list-wrap" id="quizListWrap">
         <div class="quiz-list">
@@ -1845,6 +1905,9 @@
             <div class="qc-start">Open Trainer →</div>
           </a>
         </div>
+
+        <h3 class="quiz-group-title">📖 Role Quizzes</h3>
+        <div class="role-quiz-list" id="roleQuizList"></div>
       </div>
 
       <!-- Active quiz UI -->
@@ -1862,9 +1925,11 @@
           <button class="qz-next-btn" id="qzNextBtn" onclick="nextQuestion()">Next Question →</button>
         </div>
         <div class="qz-results" id="quizResults">
+          <div class="qz-pass-badge" id="qzPassBadge" hidden></div>
           <div class="qz-score-circle"><div class="score-num" id="qzFinalScore">0</div><div class="score-denom" id="qzFinalDenom">/ 15</div></div>
           <div class="qz-result-msg" id="qzResultMsg"></div>
           <div class="qz-result-sub" id="qzResultSub"></div>
+          <div class="qz-submit-status" id="qzSubmitStatus"></div>
           <div class="qz-result-breakdown">
             <h4>Question Breakdown</h4>
             <div id="qzBreakdown"></div>
@@ -1876,6 +1941,37 @@
     </section>
 
   </main>
+
+  <!-- Staff name prompt (shown before a quiz if no name is saved on this device) -->
+  <div class="name-modal" id="nameModal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
+    <form class="name-modal-card" onsubmit="saveStaffName(event)">
+      <h3 id="nameModalTitle">Who's taking the quiz?</h3>
+      <p>Your name is sent with your score so Ryan can see who's completed training. It's saved on this device — tap "Change" on the Quizzes page if someone else uses it.</p>
+      <label for="nmFirst">First name</label>
+      <input id="nmFirst" autocomplete="given-name" required>
+      <label for="nmLast">Last name</label>
+      <input id="nmLast" autocomplete="family-name" required>
+      <div class="name-modal-error" id="nmError">Please enter your first and last name.</div>
+      <div class="name-modal-actions">
+        <button type="button" class="nm-cancel" onclick="closeNameModal()">Cancel</button>
+        <button type="submit" class="nm-save">Start Quiz</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Netlify Forms: this static copy lets Netlify detect the form at deploy time.
+       Results are submitted by JavaScript (see QUIZ RESULT TRACKING). -->
+  <form name="quiz-results" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input name="bot-field">
+    <input name="name">
+    <input name="quiz">
+    <input name="quiz_type">
+    <input name="score">
+    <input name="percent">
+    <input name="result">
+    <input name="missed">
+    <input name="completed_at">
+  </form>
 
   <footer>
     <strong>Stadium Pepz Pizza & Eatery</strong> &nbsp;·&nbsp; 726 S State College Blvd, Anaheim, CA &nbsp;·&nbsp; (714) 991-9900
@@ -2112,7 +2208,9 @@
     card.classList.toggle('expanded');
   }
 
-  function toggleRole(item) {
+  function toggleRole(item, e) {
+    // Only the header toggles — taps inside the guide (or its quiz button) shouldn't collapse it
+    if (e && e.target.closest('.role-body')) return;
     item.classList.toggle('expanded');
   }
 
@@ -2254,14 +2352,88 @@
     {q:"What does 'pruning' mean in the context of Stadium Pepz operations?",a:1,opts:["Trimming herbs for garnishes","Pre-bussing tables — clearing empty dishes and asking about boxes","Reorganizing the prep area","Reviewing tickets for accuracy"],cat:"Food Runner SOP",exp:"Your shift lead may call pre-bussing 'pruning' — it means clearing empty dishes and asking about boxes toward the end of the meal."},
     {q:"Guest scenario: Saturday night, your wings station is backing up with tickets. What do you do?",a:1,opts:["Work faster and don't say anything","Ask your shift lead or another team member for help before it affects guests","Start running tickets in a different order","Ask the cashier to stop taking orders"],cat:"Guest Scenarios",exp:"If your station is falling behind, ask for help before it affects guests. Speak up early — don't wait."},
     {q:"What is Stadium Pepz's official website?",a:2,opts:["pepzpizza.com","stadiumpepz.net","stadiumpepz.com","pepzanaheim.com"],cat:"Store Info",exp:"The official website is stadiumpepz.com."},
-    {q:"Which day of the week is Stadium Pepz open with the shortest hours?",a:0,opts:["Sunday (12:00 PM – 9:00 PM)","Monday (11:00 AM – 9:00 PM)","Saturday (11:00 AM – 10:00 PM)","Friday (11:00 AM – 10:00 PM)"],cat:"Store Hours",exp:"Sunday has the shortest day — opening at noon instead of 11 AM and closing at 9 PM."},
+    {q:"Which day of the week is Stadium Pepz open with the shortest hours?",a:0,opts:["Sunday (12:00 PM – 10:00 PM)","Monday (11:00 AM – 10:00 PM)","Saturday (11:00 AM – 11:00 PM)","Friday (11:00 AM – 11:00 PM)"],cat:"Store Hours",exp:"Sunday has the shortest day — opening at noon instead of 11 AM and closing at 10 PM."},
     {q:"What community service does Stadium Pepz participate in?",a:1,opts:["Food bank donations","Community fundraiser nights","Youth sports sponsorships","Free meals for seniors"],cat:"Core Values",exp:"Stadium Pepz hosts community fundraiser nights as part of their involvement in the Anaheim community."},
     {q:"Stadium Pepz offers what kind of entertainment beyond food?",a:1,opts:["Live music on weekends","Arcade and gaming area","Trivia nights","Mini-golf"],cat:"Store Info",exp:"Stadium Pepz has an arcade and gaming area as part of the guest experience — great to mention to guests with kids."}
   ];
 
+  // ═══════════════════════════════════════════════════════
+  //  ROLE QUIZZES — one per Role Guide in Training → Role Guides
+  //  Keys must match data-role="..." on each guide's .role-quiz slot.
+  //  Every question is shown (order shuffled). Pass mark: ROLE_PASS_PCT.
+  // ═══════════════════════════════════════════════════════
+  const ROLE_PASS_PCT = 80;
+  const ROLE_QUIZZES = {
+    cashier: { name: 'Cashier', icon: '💳', questions: [
+      {q:"A guest walks up to the register. What do you do before touching the POS?",a:0,opts:["Greet the guest","Tap New Order","Ask for their phone number","Ask how they're paying"],cat:"Cashier",exp:"Greet the guest first, every time — then start the order."},
+      {q:"What info is required for a takeout order?",a:1,opts:["Table number","Name + phone number","Name, phone, and full address","No info needed"],cat:"Cashier",exp:"Takeout needs name + phone. Dine-in needs a table number; delivery needs name, phone, and full address."},
+      {q:"A guest orders a beer at the register. What do you do with the receipt?",a:2,opts:["Only print it if they ask","Keep it at the register","Always print it and hand it to the guest to present at the bar","Give it to the bartender yourself"],cat:"Cashier",exp:"For alcohol orders, always print the receipt and hand it to the guest — the bar pours against it."},
+      {q:"Which of these is one of our standard upsells?",a:3,opts:["\"Want to make it a large?\"","\"Would you like to join our email list?\"","\"Do you want extra cheese on everything?\"","\"Would you like to upgrade your potatoes to Sauced & Tossed?\""],cat:"Cashier",exp:"Standard upsells: drinks, a Pepz Cookie or Cinnasquares, Sauced & Tossed potatoes, and ranch."},
+      {q:"Your till is running low on change. What should you do?",a:1,opts:["Wait until a guest needs change","Notify your shift lead immediately","Ask a guest to pay by card","Borrow from the bar register"],cat:"Cashier",exp:"Tell your shift lead right away — don't wait until guests are standing there."},
+      {q:"The register is slow. What should you be doing?",a:0,opts:["Help run food or takeout while keeping an eye on the door","Take your break","Stay behind the register until someone walks in","Start closing duties"],cat:"Cashier",exp:"Help run food or takeout — but always keep one eye on the door for incoming guests."}
+    ]},
+    runner: { name: 'Food Runner / Floor', icon: '🏃', questions: [
+      {q:"One ticket covers several dishes. What do you do before walking out?",a:2,opts:["Take whatever is ready first","Call out the table number and let guests claim it","Confirm the right items are going to the right table","Ask the kitchen to split the ticket"],cat:"Food Runner",exp:"Always confirm the right items go to the right table before you walk out."},
+      {q:"At minimum, how many times should you check on each table during their meal?",a:1,opts:["Once","Twice","Only when they wave you down","Every 2 minutes"],cat:"Food Runner",exp:"Check in at least twice per table — ask how the food is and offer extra sauces."},
+      {q:"A guest seems unhappy with their meal. What do you do?",a:3,opts:["Offer a free dessert on your own","Avoid the table so you don't make it worse","Wait until they leave a review","Notify your shift lead immediately"],cat:"Food Runner",exp:"If a guest seems unhappy, tell your shift lead immediately so it can be fixed while they're still here."},
+      {q:"What is \"pruning\" (pre-bussing)?",a:0,opts:["Asking about boxes and clearing empty dishes near the end of the meal","Trimming herbs for garnishes","Removing old tickets from the printer","Wiping tables before guests sit down"],cat:"Food Runner",exp:"Toward the end of the meal, ask about boxes and clear empty dishes. Fully bus the table as soon as guests leave."},
+      {q:"What happens with the Google review card lanyard?",a:2,opts:["You keep it in your car","It stays at the host stand all day","Get it from your shift lead at the start of shift and return it before clocking out","Only managers can use it"],cat:"Food Runner",exp:"Pick it up from your shift lead at the start of your shift and return it before clocking out — it doesn't leave the building."},
+      {q:"You notice a trash can is full. What do you do?",a:1,opts:["Tell the closer","Replace the bag right away","Wait until it overflows","Push the trash down to make room"],cat:"Food Runner",exp:"Check trash cans throughout your shift and replace the bag as soon as one is full."}
+    ]},
+    wings: { name: 'Wings Station', icon: '🍗', questions: [
+      {q:"What is one of the most common mistakes at the wings station?",a:0,opts:["Missing a sauce","Overcooking the wings","Using the wrong bag size","Printing duplicate tickets"],cat:"Wings Station",exp:"Most dishes come with sides of sauce — always include them. Missing a sauce is one of the most common mistakes."},
+      {q:"Where does the ticket go on a bagged order?",a:2,opts:["In the bag with the food","Back on the printer","Attached to the outside of the bag","Given to the cashier"],cat:"Wings Station",exp:"Bag items securely and attach the ticket to the outside of the bag."},
+      {q:"Where do finished, bagged orders go?",a:1,opts:["Under the heat lamp at the oven","On the counter in the ready orders area","Straight to the guest's table","Behind the bar"],cat:"Wings Station",exp:"Place finished orders on the counter in the ready orders area."},
+      {q:"Besides wings, which of these does the wings station prepare?",a:3,opts:["Salads and keto bowls","Pastas","Draft beer","Pizza rolls, breadsticks, cinnasquares, and Pepz cookies"],cat:"Wings Station",exp:"You also prepare pizza rolls, breadsticks, cinnasquares, Pepz cookies, and seasonal items."},
+      {q:"When are wings tossed in sauce?",a:1,opts:["In big batches before the rush","To order, when the ticket comes in","Before they go in the oven","Only when a guest asks"],cat:"Wings Station",exp:"Receive the ticket, put wings in the oven, and toss them to order."},
+      {q:"Your ticket volume is low. What should you do?",a:0,opts:["Wipe down your station and see how you can help another station","Go on break","Pre-toss wings for later","Leave the station empty"],cat:"Wings Station",exp:"Keep your surface clean, and when tickets are low, see how you can help another station."}
+    ]},
+    oven: { name: 'Oven / Pizza', icon: '🍕', questions: [
+      {q:"How many slices is a Large (16\") pizza cut into?",a:2,opts:["8","12","10","6"],cat:"Oven / Pizza",exp:"Small 8\" = 4, Medium 12\" = 8, Large 16\" = 10, Extra Large 18\" = 12."},
+      {q:"What gets added to the California Delight after it comes out of the oven?",a:0,opts:["Sliced avocado + cilantro","Cilantro only","Ranch drizzle","Chopped onion rings"],cat:"Oven / Pizza",exp:"California Delight is finished with sliced avocado and cilantro."},
+      {q:"What gets added to the BBQ Pulled Pork pizza after the oven?",a:3,opts:["Sliced avocado","Fresh basil","Nothing","Chopped onion rings + a side of coleslaw"],cat:"Oven / Pizza",exp:"BBQ Pulled Pork gets chopped onion rings plus a side of coleslaw."},
+      {q:"How many times do Detroit Style pizzas go through the oven?",a:1,opts:["Once","1.5 times","Twice","Three times"],cat:"Oven / Pizza",exp:"Detroit Style is deep dish baked in pans — push it back through for 1.5 passes to ensure a full cook."},
+      {q:"A pizza doesn't match the ticket. What do you do?",a:2,opts:["Send it out — close enough","Throw it away quietly","Notify the kitchen and report it to your shift lead so waste is tracked","Fix the ticket to match the pizza"],cat:"Oven / Pizza",exp:"Notify the kitchen and your shift lead so the waste gets tracked. Never send out a pizza you're not sure about."},
+      {q:"For a takeout order with several pizzas, where does the ticket go?",a:0,opts:["Attached with the last pizza in the stack","On the first pizza","Inside the top box","Given to the cashier"],cat:"Oven / Pizza",exp:"Stack takeout pizzas and attach the ticket with the last pizza in the order."}
+    ]},
+    bar: { name: 'Bar', icon: '🍺', questions: [
+      {q:"What do you need before you can work the bar?",a:1,opts:["Be 21+ and have 6 months on staff","Be 18+ with a valid RBS certificate on file","A Food Handler Card only","Manager approval for each shift"],cat:"Bar",exp:"You must be 18 or older and have a valid RBS certificate on file before working the bar."},
+      {q:"How much head should a 16oz beer have?",a:0,opts:["About ½ inch","About 1 inch","None","About 2 inches"],cat:"Bar",exp:"16oz beers get ~½ inch of head; 34oz beers get ~1 inch."},
+      {q:"How do you pour to minimize foam?",a:3,opts:["Hold the glass straight under the tap","Pour fast and let it settle","Fill halfway, wait, then top off","Keep the glass tilted against the nozzle"],cat:"Bar",exp:"Keep the glass tilted against the nozzle to minimize foam."},
+      {q:"What goes in a beer bucket?",a:2,opts:["6 beers, no ice","4 beers + a bottle opener","5 beers + a scoop of ice","A pitcher and 4 glasses"],cat:"Bar",exp:"5 beers + a scoop of ice — and ask \"Do you need a bottle opener?\""},
+      {q:"A guest is waiting for their beers. What do you do first?",a:1,opts:["Start pouring right away","Ask for their receipt, mark or tear it, then pour","Ring them up at the bar","Check with the cashier"],cat:"Bar",exp:"Ask for the receipt and mark or slightly tear it to show it's been fulfilled, then pour."},
+      {q:"The bar is slow. What should you do?",a:0,opts:["Help run food or assist with takeout","Stay behind the bar until someone orders","Take your break","Start restocking tomorrow's kegs"],cat:"Bar",exp:"The bar is a flex position — help run food or takeout, and check with your shift lead."}
+    ]},
+    takeout: { name: 'Takeout / 3rd Party', icon: '📦', questions: [
+      {q:"How do you make sure you've found the right order?",a:2,opts:["By first name only","By the time it was placed","Verify by last name or phone number","Ask the guest what they ordered"],cat:"Takeout",exp:"Always verify by last name or phone number — duplicate first names are common."},
+      {q:"The order shows a red \"NOT PAID\" banner. What do you do?",a:0,opts:["Collect payment before handing anything over","Hand it over and settle up later","Ask a manager to comp it","Tell the guest to pay online"],cat:"Takeout",exp:"Collect payment first — handheld for card, POS for cash — before proceeding."},
+      {q:"Which items are most commonly missed on takeout orders?",a:3,opts:["Drinks","Entrées","Desserts","Sauces and dressings"],cat:"Takeout",exp:"Sauces and dressings are the most commonly missed — check them every time."},
+      {q:"What do you use to check off every item in the bag?",a:1,opts:["Your memory","The printed receipt","The kitchen screen","The guest's phone"],cat:"Takeout",exp:"Print the receipt and use it to check off every item before handoff."},
+      {q:"What do large orders get automatically?",a:2,opts:["A free dessert","Extra ranch","Plates, napkins, and utensils","A discount"],cat:"Takeout",exp:"Large orders always get plates, napkins, and utensils."},
+      {q:"A DoorDash driver arrives. When can you hand over the order?",a:0,opts:["After they confirm pickup in their app","As soon as they say the customer's name","After they show their driver's license","Whenever the food is ready"],cat:"Takeout",exp:"Never hand off to a 3rd-party driver until they've confirmed pickup in their app."}
+    ]},
+    pos: { name: 'Toast POS', icon: '🖥️', questions: [
+      {q:"What's the first step when entering an order?",a:1,opts:["Tap Pay","Tap New Order and select the order type","Enter the guest's phone number","Scan the menu"],cat:"Toast POS",exp:"Start with New Order and pick Dine-In, Takeout, or Delivery."},
+      {q:"For a dine-in order, what goes in as the tab name?",a:3,opts:["The guest's first name","The server's name","The time","The table number"],cat:"Toast POS",exp:"Dine-in orders use the table number as the tab name."},
+      {q:"What info is required for a delivery order?",a:2,opts:["Name only","Name + phone","Name, phone, and full address — repeated back to confirm","Address only"],cat:"Toast POS",exp:"Delivery needs name, phone, and full address — and always repeat it back."},
+      {q:"What should you do before tapping Pay?",a:0,opts:["Review the full order — read it back if needed","Ask for a tip","Print the kitchen ticket","Close the check"],cat:"Toast POS",exp:"Review the full order before payment. Accuracy prevents remakes."},
+      {q:"Which payment types can you accept at the POS?",a:1,opts:["Card only","Card, cash, or gift card","Cash only","Card or Venmo"],cat:"Toast POS",exp:"Accept card, cash, or gift card, confirm approval, and close the check."},
+      {q:"When must you always print a receipt?",a:2,opts:["Every order","Only orders over $50","Alcohol orders — hand it to the guest to present at the bar","Never — receipts are emailed"],cat:"Toast POS",exp:"Standard orders: offer if requested. Alcohol orders: always print and hand to the guest."}
+    ]},
+    best: { name: 'Best Practices', icon: '⭐', questions: [
+      {q:"Your station is slow. What should you do?",a:0,opts:["Check the 7Shifts downtime checklist or ask coworkers how you can help","Wait at your station","Go on your phone","Clock out early"],cat:"Best Practices",exp:"There's always something to do — check the 7Shifts downtime checklist or ask how you can support your team."},
+      {q:"Your station is falling behind. What should you do?",a:2,opts:["Keep quiet and work faster","Skip steps to catch up","Ask for help before it affects the guest experience","Wait for the shift lead to notice"],cat:"Best Practices",exp:"Ask for help early — before it affects guests."},
+      {q:"What should you do before clocking out?",a:1,opts:["Nothing — just clock out","Check in with your shift lead to see if anything's left","Text Ryan","Clean the bathrooms"],cat:"Best Practices",exp:"Always check in with your shift lead before clocking out."},
+      {q:"You borrowed a review lanyard and a bar key. When do they go back?",a:3,opts:["Next shift","Whenever someone asks","They're yours to keep","Before you clock out"],cat:"Best Practices",exp:"Return borrowed items like lanyards and bar keys before you clock out."},
+      {q:"You have a question during your shift. Who do you ask first?",a:0,opts:["Your shift lead","Ryan","A guest","Google"],cat:"Best Practices",exp:"Ask your shift lead first. You can also reach Ryan if needed."},
+      {q:"What should your work station look like during a shift?",a:2,opts:["However it ends up — clean at close","Spotless only when a manager is around","Clean and organized throughout","Whatever's fastest"],cat:"Best Practices",exp:"Keep your station clean and organized throughout your shift."}
+    ]}
+  };
+
   // ─── Quiz state ───
   let activeQuizBank = null;
   let activeQuizName = '';
+  let activeQuizType = '';
   let sessionQuestions = [];
   let currentQIndex = 0;
   let correctCount = 0;
@@ -2277,8 +2449,16 @@
   }
 
   function startQuiz(type) {
-    activeQuizBank = type === 'menu' ? MENU_QUESTIONS : OPS_QUESTIONS;
-    activeQuizName = type === 'menu' ? 'Menu Knowledge' : 'Operations Knowledge';
+    if (!getStaffName()) { openNameModal(() => startQuiz(type)); return; }
+    const role = ROLE_QUIZZES[type];
+    activeQuizType = type;
+    if (role) {
+      activeQuizBank = role.questions;
+      activeQuizName = role.name + ' Role Quiz';
+    } else {
+      activeQuizBank = type === 'menu' ? MENU_QUESTIONS : OPS_QUESTIONS;
+      activeQuizName = type === 'menu' ? 'Menu Knowledge' : 'Operations Knowledge';
+    }
     sessionQuestions = shuffleArray(activeQuizBank).slice(0, 15);
     currentQIndex = 0;
     correctCount = 0;
@@ -2365,8 +2545,30 @@
     else if (pct >= 60)   { msg = '👍 Good Effort';         sub = 'Solid foundation. Check the questions you missed and retake when ready.'; }
     else                  { msg = '📖 Keep Studying';        sub = 'Review the training materials and give it another shot — you\'ve got this.'; }
 
+    const isRole = !!ROLE_QUIZZES[activeQuizType];
+    const passed = pct >= ROLE_PASS_PCT;
+    const badge = document.getElementById('qzPassBadge');
+    badge.hidden = !isRole;
+    if (isRole) {
+      badge.className = 'qz-pass-badge ' + (passed ? 'pass' : 'fail');
+      badge.textContent = passed ? `✅ ${ROLE_QUIZZES[activeQuizType].name} — Passed` : `Need ${ROLE_PASS_PCT}% to pass`;
+      if (!passed) sub = 'Re-read the role guide in Training → Role Guides, then retake the quiz.';
+      saveRoleProgress(activeQuizType, pct);
+    }
+
     document.getElementById('qzResultMsg').textContent = msg;
     document.getElementById('qzResultSub').textContent = sub;
+
+    submitQuizResult({
+      name: getStaffName(),
+      quiz: activeQuizName,
+      quiz_type: isRole ? 'Role' : 'Knowledge',
+      score: `${correctCount}/${total}`,
+      percent: pct + '%',
+      result: (isRole ? passed : pct >= ROLE_PASS_PCT) ? 'Passed' : 'Not passed',
+      missed: sessionResults.filter(r => !r.correct).map(r => r.q).join(' | ') || 'None',
+      completed_at: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })
+    });
 
     const breakdown = document.getElementById('qzBreakdown');
     breakdown.innerHTML = sessionResults.map(r =>
@@ -2380,14 +2582,14 @@
   }
 
   function retakeQuiz() {
-    const type = activeQuizBank === MENU_QUESTIONS ? 'menu' : 'ops';
-    startQuiz(type);
+    startQuiz(activeQuizType);
   }
 
   function backToQuizList() {
     document.getElementById('quizActive').classList.remove('visible');
     document.getElementById('quizListWrap').classList.remove('hidden');
     document.getElementById('quizResults').classList.remove('visible');
+    renderRoleQuizUI();
   }
 
   // ═══════════════════════════════════════════════════════
@@ -2472,6 +2674,160 @@
         <div class="ann-from">— Ryan</div>
       </div>`).join('');
   }
+
+  // ═══════════════════════════════════════════════════════
+  //  QUIZ RESULT TRACKING
+  //  Each finished quiz is posted to the Netlify form "quiz-results".
+  //  View submissions: Netlify → this site → Forms → quiz-results.
+  //  If a post fails (e.g. no signal), it's queued on the device and
+  //  retried the next time the hub is opened.
+  // ═══════════════════════════════════════════════════════
+  const STAFF_NAME_KEY = 'pepzStaffName';
+  const ROLE_PROGRESS_KEY = 'pepzRoleProgress';
+  const PENDING_KEY = 'pepzPendingResults';
+  let afterNameSaved = null;
+
+  function readStore(key, fallback) {
+    try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; }
+  }
+  function writeStore(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+  }
+
+  function getStaffName() { return readStore(STAFF_NAME_KEY, ''); }
+
+  function openNameModal(onSaved) {
+    afterNameSaved = onSaved || null;
+    const [first = '', ...rest] = getStaffName().split(' ');
+    document.getElementById('nmFirst').value = first;
+    document.getElementById('nmLast').value = rest.join(' ');
+    document.getElementById('nmError').style.display = 'none';
+    document.querySelector('#nameModal .nm-save').textContent = onSaved ? 'Start Quiz' : 'Save';
+    document.getElementById('nameModal').classList.add('visible');
+    document.getElementById('nmFirst').focus();
+  }
+
+  function closeNameModal() {
+    document.getElementById('nameModal').classList.remove('visible');
+    afterNameSaved = null;
+  }
+
+  function saveStaffName(e) {
+    e.preventDefault();
+    const tidy = v => v.trim().replace(/\s+/g, ' ');
+    const first = tidy(document.getElementById('nmFirst').value);
+    const last = tidy(document.getElementById('nmLast').value);
+    if (!first || !last) { document.getElementById('nmError').style.display = 'block'; return; }
+    writeStore(STAFF_NAME_KEY, `${first} ${last}`);
+    const next = afterNameSaved;
+    closeNameModal();
+    renderRoleQuizUI();
+    if (next) next();
+  }
+
+  // Progress is stored per name so a shared store device doesn't mix people up
+  function getRoleProgress() {
+    const all = readStore(ROLE_PROGRESS_KEY, {});
+    return all[getStaffName()] || {};
+  }
+
+  function saveRoleProgress(roleKey, pct) {
+    const name = getStaffName();
+    const all = readStore(ROLE_PROGRESS_KEY, {});
+    const mine = all[name] || {};
+    const prev = mine[roleKey];
+    if (!prev || pct >= prev.best) {
+      mine[roleKey] = { best: pct, passed: pct >= ROLE_PASS_PCT || !!(prev && prev.passed), date: new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }) };
+    }
+    all[name] = mine;
+    writeStore(ROLE_PROGRESS_KEY, all);
+  }
+
+  function postResult(fields) {
+    const body = new URLSearchParams({ 'form-name': 'quiz-results', ...fields }).toString();
+    return fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body })
+      .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); });
+  }
+
+  function submitQuizResult(fields) {
+    const status = document.getElementById('qzSubmitStatus');
+    status.className = 'qz-submit-status';
+    status.textContent = 'Sending your result…';
+    postResult(fields)
+      .then(() => {
+        status.className = 'qz-submit-status ok';
+        status.textContent = `✓ Result recorded for ${fields.name}`;
+      })
+      .catch(() => {
+        writeStore(PENDING_KEY, [...readStore(PENDING_KEY, []), fields]);
+        status.className = 'qz-submit-status warn';
+        status.textContent = "Couldn't send your result right now — it's saved and will send next time you open the hub.";
+      });
+  }
+
+  function flushPendingResults() {
+    const pending = readStore(PENDING_KEY, []);
+    if (!pending.length) return;
+    writeStore(PENDING_KEY, []);
+    pending.forEach(fields => postResult(fields).catch(() => {
+      writeStore(PENDING_KEY, [...readStore(PENDING_KEY, []), fields]);
+    }));
+  }
+
+  function startRoleQuiz(roleKey) {
+    showSection('quizzes');
+    startQuiz(roleKey);
+  }
+
+  function renderRoleQuizUI() {
+    const name = getStaffName();
+    const progress = getRoleProgress();
+    const keys = Object.keys(ROLE_QUIZZES);
+    const passedCount = keys.filter(k => progress[k] && progress[k].passed).length;
+    const statusText = k => {
+      const p = progress[k];
+      if (!p) return 'Not taken yet';
+      return p.passed ? `Passed · best ${p.best}%` : `Best ${p.best}% · need ${ROLE_PASS_PCT}%`;
+    };
+
+    const bar = document.getElementById('staffBar');
+    bar.innerHTML = '';
+    const label = document.createElement('span');
+    label.textContent = name ? `👤 Taking quizzes as ${name}` : '👤 You’ll be asked for your name before your first quiz';
+    const btn = document.createElement('button');
+    btn.textContent = name ? 'Change' : 'Set name';
+    btn.onclick = () => openNameModal();
+    bar.append(label, btn);
+
+    document.getElementById('roleQuizList').innerHTML = keys.map(k => {
+      const r = ROLE_QUIZZES[k], p = progress[k];
+      return `<button class="role-quiz-card${p && p.passed ? ' passed' : ''}" onclick="startQuiz('${k}')">
+        <span class="rq-icon">${r.icon}</span>
+        <span class="rq-info"><span class="rq-name">${r.name}</span><span class="rq-status" style="display:block">${statusText(k)} · ${r.questions.length} questions</span></span>
+      </button>`;
+    }).join('');
+
+    document.querySelectorAll('.role-quiz[data-role]').forEach(slot => {
+      const k = slot.dataset.role, r = ROLE_QUIZZES[k], p = progress[k];
+      if (!r) return;
+      slot.innerHTML = `
+        <span class="role-quiz-status${p && p.passed ? ' passed' : ''}">${p && p.passed ? '✅ ' : ''}${statusText(k)}</span>
+        <button class="role-quiz-btn" onclick="startRoleQuiz('${k}')">${p && p.passed ? 'Retake' : 'Take the'} ${r.name} Quiz →</button>`;
+    });
+
+    const pct = Math.round((passedCount / keys.length) * 100);
+    document.getElementById('roleProgress').innerHTML = `
+      <div class="role-progress-head"><h4>${name ? 'Your role quizzes' : 'Role quizzes'}</h4><span>${passedCount} of ${keys.length} passed</span></div>
+      <div class="qz-progress-bar-wrap"><div class="qz-progress-bar" style="width:${pct}%"></div></div>
+      <div class="role-chips">${keys.map(k => `<span class="role-chip${progress[k] && progress[k].passed ? ' passed' : ''}">${progress[k] && progress[k].passed ? '✓ ' : ''}${ROLE_QUIZZES[k].name}</span>`).join('')}</div>`;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('nameModal').classList.contains('visible')) closeNameModal();
+  });
+
+  renderRoleQuizUI();
+  flushPendingResults();
 
   renderLatestAnnouncement();
   </script>
